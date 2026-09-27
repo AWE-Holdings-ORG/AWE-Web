@@ -8,8 +8,11 @@ The Crowd is the first full interactive House inside the AW Enterprises Crown Ne
 2. Universal Judging Engine
 3. Scoreboard / Rankings
 4. Crowd Coin
-5. The Archives
-6. Official Network Signal
+5. Recovered Vault
+6. Battle Catalog / Database
+7. The Archives
+8. Merch Lab / recovered Hype3Wear lane
+9. Official Network Signal
 
 ## Crowd Player law
 - YouTube remains the media host for existing public Crowd videos.
@@ -28,3 +31,16 @@ The Crowd is the first full interactive House inside the AW Enterprises Crown Ne
 
 ## App blueprint
 The web House and future app share the same planned backend concepts: users, battles, media, ballots, judging windows, results, rankings, Crowd Coin balances, entitlements and archive metadata.
+
+
+## Recovered data law
+- The first normalized catalog contains 47 recovered battle records.
+- Private source URLs and file IDs do not ship in the public frontend dataset.
+- Raw/source media proves provenance; official public playback remains YouTube-first when a Crowd upload exists.
+- Catalog records can route directly into the archived judging prototype through battle ID + competitor parameters.
+- Large photo/video source folders remain recovery material until metadata is normalized.
+
+## Recovered merch law
+- Existing Hype3Wear source structure is preserved before redesign.
+- Recovered lanes currently include Samples, Phantom, Good Business, BearVan, Big Chief Smash and X Tha God.
+- No store or checkout is considered live until commerce infrastructure is separately approved and implemented.
