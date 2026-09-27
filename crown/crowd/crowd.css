@@ -53,3 +53,19 @@ border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:
 .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--acid);box-shadow:0 0 16px rgba(185,255,57,.5);margin-right:7px}
 @media(max-width:900px){.house-grid{grid-template-columns:1fr 1fr}.player-layout,.house-rule,.judge-grid,.coin-grid,.rank-grid{grid-template-columns:1fr}.crowd-links{display:none}.house-hero{min-height:570px}}
 @media(max-width:580px){.crowd-main{padding-left:18px;padding-right:18px}.house-grid{grid-template-columns:1fr}.house-hero:after{font-size:8rem}.player-meta{flex-direction:column}.final-vote{grid-template-columns:1fr}.category-row{grid-template-columns:1fr 1fr}.category-row span{grid-column:1/-1}}
+
+/* Judging Engine v0.2 — 50-point scorecards */
+.scoreboard-head,.score-row{display:grid;grid-template-columns:minmax(150px,1fr) 105px 105px;gap:10px;align-items:center}
+.scoreboard-head{padding:0 0 8px;border-bottom:1px solid var(--line);color:var(--acid2);font-size:.76rem;text-align:center}
+.scoreboard-head strong:first-of-type,.scoreboard-head strong:last-of-type{font-weight:900}
+.score-row{padding-top:12px}
+.score-row input{width:100%;min-width:0;background:#070a07;color:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font-weight:900;outline:none}
+.score-row input:focus{border-color:var(--acid);box-shadow:0 0 0 3px rgba(185,255,57,.06)}
+.score-row input:disabled{opacity:.7;color:var(--acid2)}
+.total-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.total-board>div{border:1px solid var(--line);border-radius:14px;padding:16px;background:#070a07;text-align:center}
+.total-board span,.total-board small{display:block;color:var(--muted);font-size:.68rem;letter-spacing:.1em}
+.total-board strong{display:inline-block;font-family:Georgia,serif;font-size:3.5rem;line-height:1;color:var(--acid2);margin:8px 4px}
+.decision-box{border:1px solid rgba(185,255,57,.28);border-radius:14px;padding:16px;background:rgba(185,255,57,.035)}
+.decision-box strong{display:block;margin-top:6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#eef7e9}
+@media(max-width:580px){.scoreboard-head,.score-row{grid-template-columns:minmax(120px,1fr) 74px 74px}.total-board{grid-template-columns:1fr 1fr}.total-board strong{font-size:2.6rem}}
