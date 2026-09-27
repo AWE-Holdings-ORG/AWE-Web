@@ -1,0 +1,480 @@
+{
+  "schema_version": "0.1",
+  "generated_from": "Recovered Crowd source vault + verified historical artifact",
+  "source_links_exposed": false,
+  "rule": "Public player remains YouTube-first. Raw Drive media is provenance/source material and is not embedded here.",
+  "records": [
+    {
+      "battle_id": "crowd-0001",
+      "a": "Adè",
+      "b": "Danny Myers",
+      "event": "The FUnction",
+      "format": "battle_rap",
+      "source_group": "historical-flyer",
+      "media_status": "METADATA_VERIFIED",
+      "public_media": "PENDING",
+      "notes": "Twitter Spaces event; archive media reconciliation pending."
+    },
+    {
+      "battle_id": "crowd-0002",
+      "a": "Godfrey",
+      "b": "Just Thoughts",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-monday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0003",
+      "a": "Chano",
+      "b": "Nemo",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-monday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0004",
+      "a": "Rari Lauren",
+      "b": "MDK",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-tuesday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0005",
+      "a": "King TR",
+      "b": "Thanos",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-tuesday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0006",
+      "a": "NOTR",
+      "b": "Shaad",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-tuesday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0007",
+      "a": "Lobo",
+      "b": "Luxry",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-wednesday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0008",
+      "a": "Spazzmatic",
+      "b": "Meddlehead",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-wednesday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0009",
+      "a": "King TR",
+      "b": "Na$hon",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-wednesday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0010",
+      "a": "Six Paths Dice",
+      "b": "Scratch",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-thursday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0011",
+      "a": "X Tha God",
+      "b": "Luxry",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-thursday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0012",
+      "a": "Fuzhjin",
+      "b": "Na$hon",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-thursday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0013",
+      "a": "Snip Drago",
+      "b": "Lobo",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "weekday-vault-friday",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0014",
+      "a": "BearVan",
+      "b": "Xciled Keese",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0015",
+      "a": "Phantom",
+      "b": "Big Chief Smash",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0016",
+      "a": "Gatekeepers",
+      "b": "IHOP",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0017",
+      "a": "Phantom",
+      "b": "King Stizz",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0018",
+      "a": "Big Chief Smash",
+      "b": "ExoticZa",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0019",
+      "a": "BearVan The God",
+      "b": "LUXRY",
+      "event": "BOTBX",
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0020",
+      "a": "NOTR",
+      "b": "GEMINII",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0021",
+      "a": "Firearm Zeek",
+      "b": "Gudda",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "mixed-event-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0022",
+      "a": "Fuzhjin",
+      "b": "S Tha Artist",
+      "event": "No Respect",
+      "format": "battle_rap",
+      "source_group": "no-respect",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0023",
+      "a": "Dove 6",
+      "b": "Godfrey",
+      "event": "No Respect",
+      "format": "battle_rap",
+      "source_group": "no-respect",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0024",
+      "a": "Tee Moody",
+      "b": "Na$hon",
+      "event": "No Respect",
+      "format": "battle_rap",
+      "source_group": "no-respect",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0025",
+      "a": "YG",
+      "b": "Germ",
+      "event": "No Respect",
+      "format": "battle_rap",
+      "source_group": "no-respect",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0026",
+      "a": "BearVan",
+      "b": "Wock",
+      "event": "No Respect",
+      "format": "battle_rap",
+      "source_group": "no-respect",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0027",
+      "a": "Adè",
+      "b": "AyeOne",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0028",
+      "a": "Loso",
+      "b": "Wock",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0029",
+      "a": "Jace",
+      "b": "Snip",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0030",
+      "a": "Jenks",
+      "b": "JT",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0031",
+      "a": "X Tha God",
+      "b": "MDK",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0032",
+      "a": "Snip",
+      "b": "Dice",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0033",
+      "a": "Gem",
+      "b": "Deuce",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "raw-battle-vault",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0034",
+      "a": "Big Chief Smash",
+      "b": "Danny Myers",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING",
+      "notes": "Two source versions recovered; canonical selection pending."
+    },
+    {
+      "battle_id": "crowd-0035",
+      "a": "Deuce",
+      "b": "Ace",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0036",
+      "a": "Eugene",
+      "b": "Jakk",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0037",
+      "a": "Jack Bleezus",
+      "b": "Big Taliban",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0038",
+      "a": "Jin",
+      "b": "Excel",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0039",
+      "a": "Joce",
+      "b": "KD",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0040",
+      "a": "Loso BXNY",
+      "b": "Germ",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0041",
+      "a": "Snip Drago",
+      "b": "Covid B",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0042",
+      "a": "Snip Drago",
+      "b": "King TR",
+      "event": "UC 13",
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0043",
+      "a": "Snip",
+      "b": "Trez",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0044",
+      "a": "Tali",
+      "b": "Quban",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0045",
+      "a": "Tekato",
+      "b": "King TR",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0046",
+      "a": "X Tha God",
+      "b": "Kannon",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    },
+    {
+      "battle_id": "crowd-0047",
+      "a": "YGS",
+      "b": "NOTR",
+      "event": null,
+      "format": "battle_rap",
+      "source_group": "standalone-source",
+      "media_status": "VIDEO_VERIFIED",
+      "public_media": "PENDING"
+    }
+  ]
+}
