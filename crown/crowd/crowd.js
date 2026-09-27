@@ -1,6 +1,5 @@
 (()=>{
-  const required=document.body.hasAttribute('data-crown-required');
-  if(required&&sessionStorage.getItem('awe-crown-access')!=='crowd-v1'){location.replace('/crown/');return;}
+  // Access is enforced server-side by Cloudflare Pages Functions.
   document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());
 
   const judge=document.querySelector('[data-judge-engine]');
