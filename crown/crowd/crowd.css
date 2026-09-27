@@ -91,3 +91,23 @@ border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:
 .brand-asset img{max-width:100%;max-height:150px;object-fit:contain}
 .vault-note{margin-top:26px;border-left:3px solid var(--acid);padding:14px 16px;background:rgba(185,255,57,.025);color:var(--muted);font-size:.86rem}
 @media(max-width:760px){.vault-summary,.brand-strip{grid-template-columns:1fr}.vault-list{grid-template-columns:1fr}.crowd-brand-mark{width:42px;height:42px}.crowd-hero-wordmark{width:min(520px,94vw)}}
+
+/* Recovered battle catalog + merch lane */
+.catalog-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:30px 0 18px}
+.catalog-toolbar input{flex:1;min-width:0;background:#070a07;color:#fff;border:1px solid var(--line);border-radius:999px;padding:13px 17px;outline:none}
+.catalog-toolbar input:focus{border-color:var(--acid);box-shadow:0 0 0 3px rgba(185,255,57,.06)}
+.catalog-count{white-space:nowrap;color:var(--muted);font-size:.82rem}.catalog-count strong{color:var(--acid2);font-size:1.25rem}
+.catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.catalog-card{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:18px;display:flex;flex-direction:column;min-height:190px}
+.catalog-status{color:var(--acid);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase}
+.catalog-card h2{font-family:Georgia,serif;font-weight:500;font-size:1.55rem;margin:10px 0 6px}
+.catalog-card p{color:var(--muted);font-size:.82rem;margin:0}
+.catalog-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}
+.catalog-actions a{color:var(--acid2);font-size:.76rem;font-weight:900}.catalog-actions span{color:#6f776e;font-size:.62rem;letter-spacing:.08em}
+.player-catalog-callout{margin-top:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(135deg,rgba(185,255,57,.04),transparent 50%),var(--panel);padding:24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.player-catalog-callout h2{font-family:Georgia,serif;font-size:2rem;font-weight:500;margin:7px 0}.player-catalog-callout p{color:var(--muted);max-width:760px;margin:0}
+.merch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+.merch-card{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(216,172,78,.045),transparent 45%),var(--panel);padding:22px;min-height:190px}
+.merch-card span{color:var(--gold);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase}.merch-card h2{font-family:Georgia,serif;font-weight:500;font-size:2rem;margin:12px 0 7px}.merch-card p{color:var(--muted);margin:0}
+@media(max-width:900px){.catalog-grid,.merch-grid{grid-template-columns:1fr 1fr}.player-catalog-callout{align-items:flex-start;flex-direction:column}}
+@media(max-width:580px){.catalog-toolbar{align-items:stretch;flex-direction:column}.catalog-grid,.merch-grid{grid-template-columns:1fr}}
