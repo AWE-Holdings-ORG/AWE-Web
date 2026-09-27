@@ -69,3 +69,25 @@ border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:
 .decision-box{border:1px solid rgba(185,255,57,.28);border-radius:14px;padding:16px;background:rgba(185,255,57,.035)}
 .decision-box strong{display:block;margin-top:6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#eef7e9}
 @media(max-width:580px){.scoreboard-head,.score-row{grid-template-columns:minmax(120px,1fr) 74px 74px}.total-board{grid-template-columns:1fr 1fr}.total-board strong{font-size:2.6rem}}
+
+/* Recovered Crowd brand assets + Vault */
+.crowd-brand-mark{width:48px;height:48px;object-fit:contain;display:block;filter:drop-shadow(0 0 12px rgba(216,172,78,.15))}
+.crowd-hero-wordmark{display:block;width:min(620px,88vw);max-height:230px;object-fit:contain;object-position:left center;margin:6px 0 8px;filter:drop-shadow(0 18px 35px rgba(0,0,0,.5))}
+.house-hero-copy{position:relative;z-index:2}
+.vault-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:32px 0}
+.vault-stat{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:20px}
+.vault-stat strong{display:block;font-family:Georgia,serif;font-size:2.5rem;line-height:1;color:var(--acid2)}
+.vault-stat span{display:block;margin-top:8px;color:var(--muted);font-size:.82rem}
+.vault-section{margin-top:38px}
+.vault-section>h2{font-family:Georgia,serif;font-size:2.2rem;font-weight:500;margin:0 0 14px}
+.vault-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.vault-record{border:1px solid var(--line);border-radius:14px;background:#080b08;padding:16px}
+.vault-record small{display:block;color:var(--acid);font-size:.65rem;letter-spacing:.13em;text-transform:uppercase}
+.vault-record strong{display:block;margin-top:5px;font-size:1rem}
+.vault-record span{display:block;margin-top:5px;color:var(--muted);font-size:.78rem}
+.vault-record.needs-review{border-style:dashed;opacity:.82}
+.brand-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.brand-asset{border:1px solid var(--line);border-radius:16px;background:#050705;min-height:180px;display:grid;place-items:center;padding:18px;overflow:hidden}
+.brand-asset img{max-width:100%;max-height:150px;object-fit:contain}
+.vault-note{margin-top:26px;border-left:3px solid var(--acid);padding:14px 16px;background:rgba(185,255,57,.025);color:var(--muted);font-size:.86rem}
+@media(max-width:760px){.vault-summary,.brand-strip{grid-template-columns:1fr}.vault-list{grid-template-columns:1fr}.crowd-brand-mark{width:42px;height:42px}.crowd-hero-wordmark{width:min(520px,94vw)}}
