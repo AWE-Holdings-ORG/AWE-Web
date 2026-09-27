@@ -44,10 +44,10 @@ if(crownDoor){
     const digest=await crypto.subtle.digest('SHA-256',bytes);
     const hash=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
     if(hash==='6403968b08c4301e5d18f12d391287961d57b49d4c4304657cd9501f003b8b5c'){
-      status.textContent='ACCESS GRANTED // THE CROWD ARCHIVE';
+      status.textContent='ACCESS GRANTED // THE CROWD HOUSE';
       status.className='crown-status granted';
       sessionStorage.setItem('awe-crown-access','crowd-v1');
-      setTimeout(()=>{window.location.href='/crown/archives/';},900);
+      setTimeout(()=>{window.location.href='/crown/crowd/';},900);
     }else{
       status.textContent='ACCESS DENIED // KEY NOT RECOGNIZED';
       status.className='crown-status denied';
