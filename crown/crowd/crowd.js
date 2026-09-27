@@ -6,11 +6,28 @@
   const judge=document.querySelector('[data-judge-engine]');
   if(!judge)return;
 
-  const battleId=judge.dataset.battleId||'crowd-demo-001';
-  const mode=new URLSearchParams(location.search).get('mode')==='live'?'live':'archive';
+  const params=new URLSearchParams(location.search);
+  const battleId=params.get('battle')||judge.dataset.battleId||'crowd-demo-001';
+  const mode=params.get('mode')==='live'?'live':'archive';
   const voteKey='crowd-vote:'+battleId;
-  const a=judge.dataset.a||'Competitor A';
-  const b=judge.dataset.b||'Competitor B';
+  const a=params.get('a')||judge.dataset.a||'Competitor A';
+  const b=params.get('b')||judge.dataset.b||'Competitor B';
+
+  judge.dataset.battleId=battleId;
+  judge.dataset.a=a;
+  judge.dataset.b=b;
+  const title=judge.querySelector('h2');
+  if(title)title.textContent=a+' vs '+b;
+  const headNames=judge.querySelectorAll('.scoreboard-head strong');
+  if(headNames[0])headNames[0].textContent=a;
+  if(headNames[1])headNames[1].textContent=b;
+  const totalLabels=judge.querySelectorAll('.total-board span');
+  if(totalLabels[0])totalLabels[0].textContent=a.toUpperCase()+' TOTAL';
+  if(totalLabels[1])totalLabels[1].textContent=b.toUpperCase()+' TOTAL';
+  judge.querySelectorAll('[data-score]').forEach(input=>{
+    const who=input.dataset.side==='a'?a:b;
+    input.setAttribute('aria-label',who+' '+input.dataset.score+' score');
+  });
   const modeLabel=judge.querySelector('[data-mode-label]');
   const countdown=judge.querySelector('[data-countdown]');
   const submit=judge.querySelector('[data-submit-vote]');
