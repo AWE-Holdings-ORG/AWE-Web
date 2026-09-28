@@ -69,10 +69,19 @@ async function enroll(request,env){
 export default {
   async fetch(request,env){
     const url=new URL(request.url);
-    if(url.pathname==="/api/crown/auth"&&request.method==="POST")return auth(request,env);
-    if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return enroll(request,env);
-    if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB});
-    if(url.pathname.startsWith("/crown/"))return crownAsset(request,env);
+    try {
+      if(url.pathname==="/api/crown/auth"&&request.method==="POST")return await auth(request,env);
+      if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
+      if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0});
+      if(url.pathname.startsWith("/crown/"))return await crownAsset(request,env);
+    } catch(error) {
+      // Classify locally; never emit raw exceptions, request bodies, or binding values.
+      const message=String(error?.message||"");
+      const code=/iteration counts above .*not supported/i.test(message)?"PCK_RUNTIME_LIMIT":/no such table/i.test(message)?"IDENTITY_SCHEMA_MISSING":"IDENTITY_RUNTIME_FAILURE";
+      const requestId=crypto.randomUUID();
+      console.error(JSON.stringify({event:"crown_request_failed",code,requestId}));
+      return json({ok:false,message:"CROWN SERVICE TEMPORARILY UNAVAILABLE.",code,requestId},503);
+    }
     return env.ASSETS.fetch(request);
   }
 };
