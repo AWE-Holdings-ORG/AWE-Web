@@ -34,6 +34,10 @@ async function sessionMember(request,env){
 async function crownAsset(request,env){
   const member=await sessionMember(request,env);
   if(!member)return Response.redirect(new URL("/",request.url).toString(),302);
+  const url=new URL(request.url);
+  const access=(await env.CROWN_DB.prepare(`SELECT house_slug,destination FROM member_access WHERE member_id=? AND active=1 ORDER BY priority ASC`).bind(member.id).all()).results||[];
+  if(!access.length)return Response.redirect(new URL("/",request.url).toString(),302);
+  if(url.pathname.startsWith("/crown/crowd/")&&!access.some(a=>a.house_slug==="the-crowd"))return Response.redirect(new URL(access[0].destination||"/crown/",request.url).toString(),302);
   return env.ASSETS.fetch(request);
 }
 function normalizeName(v){return String(v||"").trim().toLowerCase();}
