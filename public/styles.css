@@ -26,3 +26,25 @@
 .crown-terminal[hidden],.crown-welcome[hidden]{display:none}.terminal-bar{height:34px;display:flex;align-items:center;gap:7px;padding:0 12px;background:#11120f;border-bottom:1px solid #28291f}.terminal-bar span{width:8px;height:8px;border-radius:50%;background:#47483d}.terminal-bar b{margin-left:8px;font:600 .62rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;color:#77796a}.terminal-screen{position:relative;min-height:330px;padding:28px 28px 52px;background-image:linear-gradient(rgba(184,210,118,.018) 1px,transparent 1px);background-size:100% 4px;color:#c7db8c;font:500 .9rem/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}.terminal-status{margin:0 0 26px;color:#66704f;font-size:.72rem;letter-spacing:.12em}.terminal-line{display:block;margin:0 0 22px}.terminal-prompt{display:block;min-height:24px;margin-bottom:8px;word-break:break-word}.terminal-input-wrap{display:flex;align-items:center;gap:10px}.terminal-input-wrap input{width:100%;border:0;border-bottom:1px solid rgba(199,219,140,.22);outline:0;background:transparent;color:#e0efae;font:inherit;padding:5px 0;border-radius:0}.terminal-input-wrap input:focus{border-bottom-color:#c7db8c;box-shadow:0 5px 10px -8px rgba(199,219,140,.7)}.terminal-submit{border:1px solid #4f5b35;background:#0c1008;color:#c7db8c;font:700 .68rem ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em;padding:9px 14px;cursor:pointer}.terminal-message{min-height:24px;margin:18px 0 0;color:#879765}.terminal-message.error{color:#b98772}.crown-enroll{position:absolute;right:18px;bottom:14px;border:0;background:transparent;color:#555c45;font:500 .62rem ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em;cursor:pointer;transition:color .25s}.crown-enroll:hover,.crown-enroll:focus-visible{color:#c7db8c}.crown-welcome{position:relative;z-index:4;text-align:center;padding:36px 20px}.crown-welcome p{color:#8f887b}
 .crown-door.terminal-mode .crown-key,.crown-door.terminal-mode .crown-whisper,.crown-door.terminal-mode .crown-copy,.crown-door.terminal-mode .crown-kicker,.crown-door.terminal-mode #crown-title,.crown-door.terminal-mode .crown-door-content>.crown-emblem{display:none}.crown-door.terminal-mode .crown-door-content{width:min(900px,96vw);padding-top:20px}
 @media(max-width:520px){.terminal-screen{min-height:360px;padding:22px 18px 58px}.crown-enroll{left:18px;right:auto;text-align:left}.terminal-prompt{font-size:.78rem}}
+
+
+/* Crown Door v3 — footer AW corner key */
+.footer{position:relative;padding-right:112px}
+.crown-corner-key{position:absolute;right:24px;bottom:38px;width:66px;height:66px;border:1px solid rgba(216,172,78,.18);border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 42% 38%,rgba(216,172,78,.055),rgba(0,0,0,.08) 62%);color:rgba(216,172,78,.32);-webkit-text-stroke:0;letter-spacing:-.08em;font-family:Georgia,serif;font-size:1.18rem;line-height:1;cursor:default;opacity:.62;transition:opacity .45s,border-color .45s,color .45s,box-shadow .45s,transform .45s}
+.crown-corner-key:hover{opacity:.76}
+.crown-corner-monogram{pointer-events:none}
+.crown-corner-key .crown-sigil{top:-10px;font-size:.88rem}
+.crown-corner-key.crown-discovered{cursor:pointer;opacity:1;color:var(--gold2);border-color:rgba(241,215,131,.58);box-shadow:0 0 0 1px rgba(216,172,78,.08),0 0 28px rgba(216,172,78,.2),inset 0 0 18px rgba(216,172,78,.06);transform:translateY(-2px)}
+.crown-corner-key.crown-pressing{opacity:.9;border-color:rgba(241,215,131,.4);box-shadow:0 0 20px rgba(216,172,78,.12);transform:scale(.97)}
+.crown-corner-key.crown-discovered .crown-sigil{color:rgba(241,215,131,.9)}
+.crown-corner-key+.crown-hint{right:102px;bottom:59px}
+@media(max-width:850px){
+  .footer{padding-right:96px}
+  .crown-trigger.crown-corner-key{display:grid;touch-action:manipulation;-webkit-touch-callout:none;user-select:none}
+  .crown-corner-key{right:18px;bottom:38px;width:58px;height:58px;font-size:1.02rem}
+  .crown-corner-key+.crown-hint{display:none}
+}
+@media(max-width:520px){
+  .footer{padding-right:86px}
+  .crown-corner-key{right:18px;bottom:34px;width:54px;height:54px}
+}
