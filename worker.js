@@ -8,6 +8,17 @@ async function pckDigest(pck,salt,pepper){
 }
 function randomToken(bytes=32){const a=new Uint8Array(bytes);crypto.getRandomValues(a);return b64url(a);}
 async function tokenDigest(token,pepper){return b64url(await crypto.subtle.digest("SHA-256",enc.encode(token+":"+pepper)));}
+function cookieValue(request,name){const raw=request.headers.get("cookie")||"";for(const part of raw.split(";")){const [k,...v]=part.trim().split("=");if(k===name)return v.join("=");}return "";}
+async function sessionMember(request,env){
+  const raw=cookieValue(request,"awe_crown_session"); if(!raw)return null;
+  const digest=await tokenDigest(raw,env.SESSION_PEPPER||env.PCK_PEPPER||"preview-only");
+  return env.CROWN_DB.prepare(`SELECT m.id,m.aw_id,m.crown_name,m.status FROM sessions s JOIN members m ON m.id=s.member_id WHERE s.token_hash=? AND s.expires_at>datetime('now') AND m.status='active' LIMIT 1`).bind(digest).first();
+}
+async function crownAsset(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return Response.redirect(new URL("/",request.url).toString(),302);
+  return env.ASSETS.fetch(request);
+}
 function normalizeName(v){return String(v||"").trim().toLowerCase();}
 async function readJson(request){try{return await request.json()}catch{return {}}}
 async function verifyTurnstile(token,request,env){
@@ -61,6 +72,7 @@ export default {
     if(url.pathname==="/api/crown/auth"&&request.method==="POST")return auth(request,env);
     if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return enroll(request,env);
     if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB});
+    if(url.pathname.startsWith("/crown/"))return crownAsset(request,env);
     return env.ASSETS.fetch(request);
   }
 };
