@@ -4,54 +4,62 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>The Crowd | Crown Network</title>
+<title>The CROWD | Crown Network</title>
 <style>
-:root{--gold:#d8ac4e;--gold2:#f1d783;--ink:#050505;--text:#f7f4ec;--muted:#9a9386}
-*{box-sizing:border-box}html{background:#020202}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at 50% 8%,#211708 0,#090806 25%,#040404 58%,#020202 100%);overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(216,172,78,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(216,172,78,.09) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(#000,transparent 78%)}
-.shell{position:relative;width:min(1180px,92vw);margin:auto;padding:38px 0 70px}
-.top{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid rgba(216,172,78,.18)}
-.brand{font:800 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.22em;color:var(--gold)}
-.identity{font:700 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em;color:#756e61}
-.hero{min-height:56vh;display:grid;place-items:center;text-align:center;padding:72px 0 48px}
-.crown{font-size:36px;color:var(--gold2);filter:drop-shadow(0 0 20px rgba(241,215,131,.22))}
-.kicker{margin:20px 0 13px;color:var(--gold);font-size:10px;letter-spacing:.38em;font-weight:800}
-h1{margin:0;font:600 clamp(62px,11vw,142px)/.78 Georgia,serif;letter-spacing:-.06em;text-transform:uppercase}
-h1 span{display:block;color:var(--gold2);font-style:italic;font-size:.48em;letter-spacing:.08em;margin-top:.24em}
-.lead{max-width:690px;margin:34px auto 0;color:var(--muted);font-size:15px;line-height:1.8}
-.threshold{border:1px solid rgba(216,172,78,.18);background:rgba(6,6,5,.72);padding:28px;box-shadow:0 0 70px rgba(216,172,78,.05)}
-.threshold-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:22px}
-.threshold h2{margin:0;font:500 clamp(25px,4vw,44px)/1 Georgia,serif}
-.threshold p{margin:0;color:#777064;font:700 9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.portal{min-height:150px;border:1px solid rgba(216,172,78,.12);padding:22px;background:linear-gradient(145deg,rgba(216,172,78,.035),rgba(255,255,255,.01));display:flex;flex-direction:column;justify-content:space-between}
-.portal b{color:var(--gold2);font:700 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em}
-.portal strong{font:500 22px/1.1 Georgia,serif}
-.portal small{color:#625d54;line-height:1.5}.locked{opacity:.5}
-.foot{margin-top:24px;text-align:center;color:#5d574d;font:700 9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em}
-@media(max-width:720px){.shell{padding-top:24px}.identity{display:none}.hero{min-height:50vh;padding:58px 0 40px}.grid{grid-template-columns:1fr}.threshold-head{align-items:start;flex-direction:column}.portal{min-height:120px}}
+:root{--gold:#d8ac4e;--gold2:#f1d783;--silver:#d8d8d8;--ink:#020202;--text:#f7f4ec;--muted:#918a7e}
+*{box-sizing:border-box}html{background:#000}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,sans-serif;background:#020202;overflow-x:hidden}
+.entry{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,#171109 0,#060504 36%,#000 72%);animation:entryAway .9s ease 4.4s forwards}
+.entry:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(216,172,78,.09) 48%,transparent 64%);transform:translateX(-120%);animation:sweep 1.5s ease 1.15s forwards}
+.entry-inner{text-align:center;width:min(1050px,88vw)}
+.entry-logo{display:block;width:min(980px,90vw);max-height:52vh;object-fit:contain;margin:auto;opacity:0;transform:scale(.93);filter:brightness(.3) drop-shadow(0 24px 38px #000);animation:logoRise 1.35s cubic-bezier(.2,.75,.2,1) .55s forwards}
+.entry-copy{margin:24px 0 0;color:var(--gold2);font:800 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.38em;opacity:0;animation:fadeUp .65s ease 2.1s forwards}
+@keyframes logoRise{to{opacity:1;transform:scale(1);filter:brightness(1) drop-shadow(0 28px 42px #000)}}
+@keyframes fadeUp{to{opacity:1;transform:none}}@keyframes sweep{to{transform:translateX(120%)}}@keyframes entryAway{to{opacity:0;visibility:hidden;pointer-events:none}}
+.world{min-height:100vh;background:radial-gradient(circle at 50% 0,#17130e 0,#080706 24%,#030303 58%,#010101 100%)}
+.world:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(216,172,78,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(216,172,78,.08) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(#000,transparent 76%)}
+.shell{position:relative;width:min(1220px,92vw);margin:auto;padding:32px 0 70px}
+.top{display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid rgba(216,172,78,.17)}
+.brand{font:900 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.2em;color:var(--gold)}
+.identity{font:700 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em;color:#6e675b}
+.hero{padding:68px 0 44px;text-align:center}
+.hero-logo{display:block;width:min(700px,82vw);margin:auto;filter:drop-shadow(0 24px 38px #000)}
+.kicker{margin:26px 0 0;color:var(--gold);font-size:9px;letter-spacing:.36em;font-weight:800}
+.lead{max-width:700px;margin:22px auto 0;color:var(--muted);font-size:14px;line-height:1.8}
+.console{border:1px solid rgba(216,172,78,.18);background:rgba(5,5,4,.76);padding:26px;box-shadow:0 0 80px rgba(216,172,78,.045)}
+.console-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:20px}.console-head p{margin:0;color:#746d61;font:700 9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}.console h2{margin:4px 0 0;font:500 clamp(28px,4vw,46px)/1 Georgia,serif}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.gate{min-height:154px;border:1px solid rgba(216,172,78,.13);padding:20px;background:linear-gradient(145deg,rgba(216,172,78,.035),rgba(255,255,255,.008));display:flex;flex-direction:column;justify-content:space-between}.gate b{color:var(--gold2);font:800 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}.gate strong{font:500 23px/1 Georgia,serif}.gate small{color:#686157;line-height:1.5}.coming{opacity:.58}.foot{text-align:center;margin-top:24px;color:#5e574c;font:700 9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}
+@media(max-width:720px){.entry-logo{width:94vw}.entry-copy{letter-spacing:.22em}.identity{display:none}.hero{padding-top:50px}.grid{grid-template-columns:1fr}.console-head{align-items:start;flex-direction:column}.gate{min-height:120px}}
+@media(prefers-reduced-motion:reduce){.entry{animation:none;display:none}.entry-logo,.entry-copy,.entry:before{animation:none}}
 </style>
 </head>
 <body>
+<section class="entry" aria-label="Entering The CROWD">
+  <div class="entry-inner">
+    <img class="entry-logo" src="/assets/crowd-logo.jpeg" alt="CROWD">
+    <p class="entry-copy">WELCOME TO THE CROWD</p>
+  </div>
+</section>
+<div class="world">
 <main class="shell">
 <header class="top"><div class="brand">CROWN NETWORK // THE CROWD</div><div class="identity">AUTHORIZED CROWN SESSION</div></header>
 <section class="hero">
-<div>
-<div class="crown" aria-hidden="true">♛</div>
-<p class="kicker">YOU FOUND THE DOOR. NOW ENTER THE WORLD.</p>
-<h1>THE CROWD<span>Where the Houses meet.</span></h1>
-<p class="lead">The Crowd is the central commons of the Crown Network — the place where Crown identities, Houses, culture, access and experiences converge. What opens from here depends on the Crown you wear.</p>
-</div>
+  <img class="hero-logo" src="/assets/crowd-logo.jpeg" alt="CROWD">
+  <p class="kicker">WHERE THE HOUSES MEET.</p>
+  <p class="lead">The central commons of the Crown Network — where Crown identities, Houses, culture, access and experiences converge. What opens from here depends on the Crown you wear.</p>
 </section>
-<section class="threshold">
-<div class="threshold-head"><div><p>CROWD DIRECTORY // PREVIEW</p><h2>Beyond this threshold.</h2></div><p>ACCESS IS ASSIGNED, NOT ASSUMED.</p></div>
-<div class="grid">
-<article class="portal"><b>01 // CROWN HOUSE</b><strong>The center of the system.</strong><small>Identity, governance and Crown-level access.</small></article>
-<article class="portal locked"><b>02 // HOUSE GATES</b><strong>Your worlds will appear here.</strong><small>House destinations unlock according to membership and permissions.</small></article>
-<article class="portal locked"><b>03 // CROWD SIGNAL</b><strong>The network is listening.</strong><small>Member activity, rewards and experiences arrive in later phases.</small></article>
-</div>
-<p class="foot">THE CROWD // PREVIEW CHAMBER 01 · MORE DOORS ARE COMING.</p>
+<section class="console">
+  <div class="console-head"><div><p>CROWD DIRECTORY // PREVIEW</p><h2>Choose your signal.</h2></div><p>ACCESS IS ASSIGNED, NOT ASSUMED.</p></div>
+  <div class="grid">
+    <article class="gate"><b>01 // LIVE</b><strong>Enter the moment.</strong><small>Live experiences and Crowd activity will surface here.</small></article>
+    <article class="gate coming"><b>02 // WATCH</b><strong>See what moves.</strong><small>CROWD media and programmed experiences are coming online.</small></article>
+    <article class="gate coming"><b>03 // JUDGE</b><strong>Your voice matters.</strong><small>Member participation and judgment systems arrive in later phases.</small></article>
+    <article class="gate coming"><b>04 // RANKINGS</b><strong>Know the board.</strong><small>CROWD rankings and competitive systems will live here.</small></article>
+    <article class="gate coming"><b>05 // CROWD COIN</b><strong>Earn your signal.</strong><small>Internal loyalty and reward activity will connect to your Crown identity.</small></article>
+    <article class="gate coming"><b>06 // ARCHIVES</b><strong>Nothing disappears.</strong><small>Past moments, media and Crown-access history will be organized here.</small></article>
+  </div>
+  <p class="foot">THE CROWD // PREVIEW CHAMBER 02 · THE WORLD IS OPENING.</p>
 </section>
 </main>
+</div>
 </body>
 </html>
