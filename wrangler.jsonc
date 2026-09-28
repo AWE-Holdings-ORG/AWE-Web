@@ -2,6 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "awe-web",
   "compatibility_date": "2026-09-27",
+  "send_metrics": false,
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
