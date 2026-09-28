@@ -79,6 +79,14 @@
           </form>
           <p class="terminal-message" aria-live="polite"></p>
           <button class="crown-enroll" type="button">YOU DON'T BELONG HERE... OR DO YOU?</button>
+          <form class="crown-enroll-form" hidden autocomplete="off">
+            <p class="terminal-status">CROWN ENROLLMENT // PREVIEW GATE</p>
+            <label class="terminal-line"><span class="terminal-prompt">EMAIL</span><span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="enroll-email" type="email" autocomplete="email" required></span></label>
+            <label class="terminal-line"><span class="terminal-prompt">CROWN NAME</span><span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="enroll-name" type="text" autocomplete="off" required></span></label>
+            <label class="terminal-line"><span class="terminal-prompt">ESTABLISH PCK</span><span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="enroll-pck" type="password" autocomplete="new-password" minlength="12" required></span></label>
+            <label class="terminal-line"><span class="terminal-prompt">CONFIRM PCK</span><span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="enroll-pck-confirm" type="password" autocomplete="new-password" minlength="12" required></span></label>
+            <button class="terminal-submit" type="submit">ESTABLISH CROWN IDENTITY</button>
+          </form>
         </div>
       </section>
 
