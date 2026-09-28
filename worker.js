@@ -2,10 +2,9 @@ const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{stat
 const enc=new TextEncoder();
 const b64url=bytes=>btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 async function pckDigest(pck,salt,pepper){
-  const material=enc.encode(`${salt}:${pck}:${pepper}`);
-  let digest=await crypto.subtle.digest("SHA-256",material);
-  for(let i=0;i<120000;i++) digest=await crypto.subtle.digest("SHA-256",digest);
-  return b64url(digest);
+  const base=await crypto.subtle.importKey("raw",enc.encode(String(pck)+":"+String(pepper||"")),"PBKDF2",false,["deriveBits"]);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:enc.encode(salt),iterations:310000},base,256);
+  return b64url(bits);
 }
 function randomToken(bytes=32){const a=new Uint8Array(bytes);crypto.getRandomValues(a);return b64url(a);}
 async function tokenDigest(token,pepper){return b64url(await crypto.subtle.digest("SHA-256",enc.encode(token+":"+pepper)));}
@@ -37,13 +36,24 @@ async function auth(request,env){
 async function enroll(request,env){
   const body=await readJson(request);
   if(!(await verifyTurnstile(body.turnstileToken,request,env)))return json({ok:false,message:"HUMAN VERIFICATION REQUIRED."},403);
-  const email=String(body.email||"").trim().toLowerCase(), crownName=String(body.crownName||"").trim();
-  if(!email||!crownName)return json({ok:false,message:"EMAIL AND CROWN NAME REQUIRED."},400);
+  const email=String(body.email||"").trim().toLowerCase(), crownName=String(body.crownName||"").trim(), pck=String(body.pck||"");
+  if(!email||!crownName||!pck)return json({ok:false,message:"EMAIL, CROWN NAME AND PCK REQUIRED."},400);
+  if(pck.length<12)return json({ok:false,message:"PCK MUST BE AT LEAST 12 CHARACTERS."},400);
   const exists=await env.CROWN_DB.prepare(`SELECT id FROM members WHERE email=? OR lower(crown_name)=lower(?) LIMIT 1`).bind(email,crownName).first();
   if(exists)return json({ok:false,message:"IDENTITY ALREADY EXISTS."},409);
-  const pending=randomToken(18);
-  await env.CROWN_DB.prepare(`INSERT INTO enrollment_requests(email,crown_name,verification_token,status,created_at) VALUES(?,?,?,'pending',datetime('now'))`).bind(email,crownName,pending).run();
-  return json({ok:true,message:"ENROLLMENT REQUEST RECEIVED.",verificationPending:true},202);
+  const awId="AWE-"+String((await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM members").first()).n+1).padStart(6,"0");
+  const salt=randomToken(18), hash=await pckDigest(pck,salt,env.PCK_PEPPER||"preview-only");
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare(`INSERT INTO members(aw_id,email,crown_name,status,verified_at) VALUES(?,?,?,'active',datetime('now'))`).bind(awId,email,crownName),
+    env.CROWN_DB.prepare(`INSERT INTO enrollment_requests(email,crown_name,verification_token,status,created_at) VALUES(?,?,?,'preview-activated',datetime('now'))`).bind(email,crownName,randomToken(18))
+  ]);
+  const member=await env.CROWN_DB.prepare("SELECT id FROM members WHERE aw_id=?").bind(awId).first();
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare("INSERT INTO crown_credentials(member_id,pck_hash,pck_salt) VALUES(?,?,?)").bind(member.id,hash,salt),
+    env.CROWN_DB.prepare("INSERT INTO member_access(member_id,house_slug,destination,active,priority) VALUES(?, 'crown-house','/crown/',1,1)").bind(member.id),
+    env.CROWN_DB.prepare("INSERT INTO access_events(member_id,event_type,created_at) VALUES(?,'preview_enrollment',datetime('now'))").bind(member.id)
+  ]);
+  return json({ok:true,message:"CROWN IDENTITY ESTABLISHED.",awId,crownName},201);
 }
 export default {
   async fetch(request,env){
