@@ -149,11 +149,20 @@ crownForm?.addEventListener('submit',e=>{
     crownPck?.focus();
     return;
   }
-  // Intentionally no credential validation in client-side JavaScript.
-  // Production AW ID + PCK verification must be performed by the authenticated backend.
-  showTerminalMessage('SECURE CROWN AUTHENTICATION IS NOT YET CONNECTED.',true);
+  showTerminalMessage('VERIFYING CROWN...');
+  const submit=crownForm.querySelector('.terminal-submit'); if(submit)submit.disabled=true;
+  fetch('/api/crown/auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:crownName?.value.trim(),pck:crownPck?.value||''})})
+    .then(async r=>({r,data:await r.json().catch(()=>({}))}))
+    .then(({r,data})=>{
+      if(!r.ok||!data.ok)throw new Error(data.message||'CROWN NOT RECOGNIZED.');
+      if(crownTerminal)crownTerminal.hidden=true;
+      if(crownWelcome)crownWelcome.hidden=false;
+      setTimeout(()=>{if(data.destination)window.location.assign(data.destination);},1800);
+    })
+    .catch(err=>showTerminalMessage(err.message||'CROWN NOT RECOGNIZED.',true))
+    .finally(()=>{if(submit)submit.disabled=false;});
 });
 crownEnroll?.addEventListener('click',()=>{
-  showTerminalMessage('CROWN ENROLLMENT // AW ID REGISTRATION — COMING NEXT.');
+  showTerminalMessage('CROWN ENROLLMENT // AW ID REGISTRATION GATE READY.');
 });
 
