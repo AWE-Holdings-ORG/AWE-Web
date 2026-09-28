@@ -31,7 +31,8 @@ async function auth(request,env){
   await env.CROWN_DB.prepare(`INSERT INTO sessions(token_hash,member_id,expires_at,created_at) VALUES(?,?,datetime('now','+8 hours'),datetime('now'))`).bind(digest,member.id).run();
   await env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,created_at) VALUES(?, 'login_success', datetime('now'))`).bind(member.id).run();
   const destination=access[0]?.destination||"/crown/";
-  return json({ok:true,awId:member.aw_id,crownName:member.crown_name,destination},{},{});
+  const cookie=`awe_crown_session=${raw}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=28800`;
+  return json({ok:true,awId:member.aw_id,crownName:member.crown_name,destination},200,{"set-cookie":cookie});
 }
 async function enroll(request,env){
   const body=await readJson(request);
