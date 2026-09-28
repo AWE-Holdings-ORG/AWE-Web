@@ -17,7 +17,7 @@ let crownHoverTimer=null;
 let mobileSequence=[];
 let mobileSequenceStartedAt=0;
 
-const DESKTOP_DISCOVERY_MS=60000;
+const DESKTOP_DISCOVERY_MS=45000;
 const MOBILE_SEQUENCE_WINDOW_MS=12000;
 const MOBILE_CORNER_RATIO=.18;
 
@@ -196,4 +196,3 @@ crownEnrollForm?.addEventListener('submit',e=>{
     .catch(err=>showTerminalMessage(err.message||'ENROLLMENT COULD NOT BE COMPLETED.',true))
     .finally(()=>{submit.disabled=false;});
 });
-
