@@ -162,7 +162,38 @@ crownForm?.addEventListener('submit',e=>{
     .catch(err=>showTerminalMessage(err.message||'CROWN NOT RECOGNIZED.',true))
     .finally(()=>{if(submit)submit.disabled=false;});
 });
+const crownEnrollForm=document.querySelector('.crown-enroll-form');
+const enrollEmail=document.querySelector('#enroll-email');
+const enrollName=document.querySelector('#enroll-name');
+const enrollPck=document.querySelector('#enroll-pck');
+const enrollPckConfirm=document.querySelector('#enroll-pck-confirm');
+
 crownEnroll?.addEventListener('click',()=>{
-  showTerminalMessage('CROWN ENROLLMENT // AW ID REGISTRATION GATE READY.');
+  crownForm.hidden=true;
+  crownEnroll.hidden=true;
+  crownEnrollForm.hidden=false;
+  showTerminalMessage('ESTABLISH YOUR CROWN IDENTITY.');
+  enrollEmail?.focus();
+});
+crownEnrollForm?.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(enrollPck.value!==enrollPckConfirm.value){showTerminalMessage('PCK CONFIRMATION DOES NOT MATCH.',true);return;}
+  const submit=crownEnrollForm.querySelector('.terminal-submit'); submit.disabled=true;
+  showTerminalMessage('ESTABLISHING CROWN IDENTITY...');
+  fetch('/api/crown/enroll',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:enrollEmail.value.trim(),crownName:enrollName.value.trim(),pck:enrollPck.value})})
+    .then(async r=>({r,data:await r.json().catch(()=>({}))}))
+    .then(({r,data})=>{
+      if(!r.ok||!data.ok)throw new Error(data.message||'ENROLLMENT COULD NOT BE COMPLETED.');
+      crownEnrollForm.hidden=true;
+      crownForm.hidden=false;
+      crownEnroll.hidden=false;
+      crownName.value=data.crownName||enrollName.value.trim();
+      terminalStage='pck';
+      pckLine.hidden=false;
+      showTerminalMessage(`CROWN IDENTITY ESTABLISHED // ${data.awId}. PRESENT YOUR PCK TO ENTER.`);
+      crownPck.focus();
+    })
+    .catch(err=>showTerminalMessage(err.message||'ENROLLMENT COULD NOT BE COMPLETED.',true))
+    .finally(()=>{submit.disabled=false;});
 });
 
