@@ -2,12 +2,14 @@
 
 /* Crown Door v1 — hidden experiential layer */
 .crown-trigger{appearance:none;background:transparent;border:0;padding:0;cursor:default;transition:color .5s,text-shadow .5s,-webkit-text-stroke .5s,transform .5s}
-.crown-trigger:hover,.crown-trigger:focus-visible{cursor:pointer;-webkit-text-stroke:1px rgba(241,215,131,.55);text-shadow:0 0 32px rgba(216,172,78,.18);transform:translateY(-2px)}
-.crown-trigger:focus-visible{outline:1px solid rgba(241,215,131,.35);outline-offset:10px}
+.crown-trigger:focus-visible{cursor:pointer;outline:1px solid rgba(241,215,131,.35);outline-offset:10px}
+.crown-trigger.crown-discovered{cursor:pointer;-webkit-text-stroke:1px rgba(241,215,131,.55);text-shadow:0 0 32px rgba(216,172,78,.18);transform:translateY(-2px)}
 .crown-sigil{position:absolute;left:50%;top:-22px;transform:translateX(-50%);font-family:Georgia,serif;font-size:1.4rem;color:rgba(216,172,78,0);-webkit-text-stroke:0;letter-spacing:0;transition:color .6s,text-shadow .6s}
-.crown-trigger:hover .crown-sigil,.crown-trigger:focus-visible .crown-sigil{color:rgba(241,215,131,.68);text-shadow:0 0 18px rgba(216,172,78,.4)}
+.crown-trigger.crown-discovered .crown-sigil,.crown-trigger:focus-visible .crown-sigil{color:rgba(241,215,131,.68);text-shadow:0 0 18px rgba(216,172,78,.4)}
 .crown-hint{position:absolute;right:max(24px,calc((100vw - var(--max))/2));bottom:38px;color:rgba(216,172,78,0);font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;transition:color .8s;pointer-events:none}
-.crown-trigger:hover+.crown-hint,.crown-trigger:focus-visible+.crown-hint{color:rgba(216,172,78,.42)}
+.crown-trigger.crown-discovered+.crown-hint,.crown-trigger:focus-visible+.crown-hint{color:rgba(216,172,78,.42)}
+.mobile-crown-signal{display:none;position:absolute;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);font-family:Georgia,serif;font-size:3rem;color:transparent;pointer-events:none;transition:color .45s,transform .45s,text-shadow .45s}
+.mobile-crown-signal.awake{color:var(--gold2);transform:translate(-50%,-50%) scale(1);text-shadow:0 0 30px rgba(216,172,78,.45)}
 .crown-door[hidden]{display:none}.crown-door{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 45%,rgba(80,57,13,.22),rgba(2,2,2,.97) 55%),#020202;animation:crownFade .7s ease both}
 .crown-door::before,.crown-door::after{content:"";position:absolute;top:0;bottom:0;width:50.2%;background:linear-gradient(90deg,#020202,#0b0803);transition:transform 1.35s cubic-bezier(.77,0,.18,1);z-index:2}
 .crown-door::before{left:0;border-right:1px solid rgba(216,172,78,.28)}.crown-door::after{right:0;border-left:1px solid rgba(216,172,78,.28)}
@@ -16,5 +18,5 @@
 .crown-door-content{position:relative;z-index:3;text-align:center;width:min(880px,90vw);padding:48px 24px;opacity:0;transform:translateY(14px);transition:opacity .8s .7s,transform .8s .7s}
 .crown-door.awake .crown-door-content{opacity:1;transform:none}.crown-emblem{font-family:Georgia,serif;font-size:3.5rem;color:var(--gold2);filter:drop-shadow(0 0 20px rgba(216,172,78,.25));margin-bottom:18px}.crown-kicker{color:var(--gold);font-size:.68rem;font-weight:700;letter-spacing:.32em}.crown-door h2{font-family:Georgia,serif;font-weight:500;font-size:clamp(2.4rem,6vw,5.7rem);line-height:.98;letter-spacing:-.035em;margin:18px 0;color:#f4eedf}.crown-copy{color:#8f887b;font-family:Georgia,serif;font-style:italic;font-size:1.08rem}.crown-key{margin-top:34px;border:1px solid rgba(216,172,78,.38);border-radius:999px;background:rgba(216,172,78,.04);color:var(--gold2);padding:14px 22px;font-size:.7rem;font-weight:800;letter-spacing:.2em;cursor:pointer;transition:.3s}.crown-key:hover,.crown-key:focus-visible{background:rgba(216,172,78,.12);border-color:var(--gold2);box-shadow:0 0 30px rgba(216,172,78,.1);transform:translateY(-2px)}.key-icon{margin-right:10px}.crown-whisper{min-height:24px;margin-top:22px;color:#5f594f;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;transition:color .4s}.crown-whisper.revealed{color:var(--gold)}.crown-close{position:absolute;z-index:5;top:24px;right:28px;border:0;background:transparent;color:#6e685e;font-size:2rem;cursor:pointer}.crown-close:hover{color:var(--gold2)}body.crown-open{overflow:hidden}
 @keyframes crownFade{from{opacity:0}to{opacity:1}}
-@media(max-width:850px){.crown-trigger,.crown-hint{display:none}}
+@media(max-width:850px){.crown-trigger,.crown-hint{display:none}.mobile-crown-signal{display:block}}
 @media(prefers-reduced-motion:reduce){.crown-door,.crown-door::before,.crown-door::after,.crown-door-content{animation:none;transition:none}}
