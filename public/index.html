@@ -61,6 +61,32 @@
         <span>TURN THE CROWN KEY</span>
       </button>
       <p class="crown-whisper" aria-live="polite">The network is listening.</p>
+
+      <section class="crown-terminal" aria-label="Crown identity terminal" hidden>
+        <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span><b>CROWN://IDENTITY</b></div>
+        <div class="terminal-screen">
+          <p class="terminal-status">AW IDENTITY GATE // SESSION 01</p>
+          <form class="terminal-form" autocomplete="off">
+            <label class="terminal-line" for="crown-name">
+              <span class="terminal-prompt" data-name-prompt>01001110 01100001 01101101 01100101</span>
+              <span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="crown-name" name="crown-name" type="text" spellcheck="false" autocapitalize="none" autocomplete="off"></span>
+            </label>
+            <label class="terminal-line terminal-pck-line" for="crown-pck" hidden>
+              <span class="terminal-prompt">PCK 🔑</span>
+              <span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="crown-pck" name="crown-pck" type="password" autocomplete="off"></span>
+            </label>
+            <button class="terminal-submit" type="submit">ENTER</button>
+          </form>
+          <p class="terminal-message" aria-live="polite"></p>
+          <button class="crown-enroll" type="button">YOU DON'T BELONG HERE... OR DO YOU?</button>
+        </div>
+      </section>
+
+      <section class="crown-welcome" hidden aria-live="polite">
+        <div class="crown-emblem" aria-hidden="true">♛</div>
+        <h2>WEAR YOUR CROWN<br>PROUDLY.</h2>
+        <p>Your Crown has been recognized.</p>
+      </section>
     </div>
   </div>
 </section>
