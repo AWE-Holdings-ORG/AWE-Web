@@ -33,7 +33,7 @@ function closeCrownDoor(){
   if(!crownDoor)return;
   crownDoor.classList.remove('awake');
   document.body.classList.remove('crown-open');
-  setTimeout(()=>{crownDoor.hidden=true;crownReturnFocus?.focus?.();},500);
+  setTimeout(()=>{crownDoor.hidden=true;crownDoor.classList.remove('terminal-mode');if(crownTerminal)crownTerminal.hidden=true;resetTerminal();crownReturnFocus?.focus?.();},500);
 }
 function revealDesktopCrown(){
   crownTrigger?.classList.add('crown-discovered');
@@ -97,8 +97,63 @@ hero?.addEventListener('pointerup',e=>{
 crownClose?.addEventListener('click',closeCrownDoor);
 crownDoor?.addEventListener('click',e=>{if(e.target===crownDoor)closeCrownDoor();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&crownDoor&&!crownDoor.hidden)closeCrownDoor();});
-crownKey?.addEventListener('click',()=>{
-  crownWhisper?.classList.add('revealed');
-  if(crownWhisper)crownWhisper.textContent='IDENTITY GATE READY';
-  crownKey.setAttribute('aria-pressed','true');
+const crownTerminal=document.querySelector('.crown-terminal');
+const crownForm=document.querySelector('.terminal-form');
+const crownName=document.querySelector('#crown-name');
+const crownPck=document.querySelector('#crown-pck');
+const pckLine=document.querySelector('.terminal-pck-line');
+const namePrompt=document.querySelector('[data-name-prompt]');
+const terminalMessage=document.querySelector('.terminal-message');
+const crownEnroll=document.querySelector('.crown-enroll');
+const crownWelcome=document.querySelector('.crown-welcome');
+let terminalIdleTimer=null;
+let terminalStage='name';
+
+function resetTerminal(){
+  clearTimeout(terminalIdleTimer);
+  terminalStage='name';
+  if(namePrompt)namePrompt.textContent='01001110 01100001 01101101 01100101';
+  if(crownName)crownName.value='';
+  if(crownPck)crownPck.value='';
+  if(pckLine)pckLine.hidden=true;
+  if(terminalMessage){terminalMessage.textContent='';terminalMessage.classList.remove('error');}
+  crownWelcome&&(crownWelcome.hidden=true);
+}
+function armNameTranslation(){
+  clearTimeout(terminalIdleTimer);
+  terminalIdleTimer=setTimeout(()=>{if(namePrompt&&terminalStage==='name')namePrompt.textContent='NAME....';},30000);
+}
+function enterTerminal(){
+  crownDoor?.classList.add('terminal-mode');
+  if(crownTerminal)crownTerminal.hidden=false;
+  resetTerminal();
+  requestAnimationFrame(()=>crownName?.focus());
+  armNameTranslation();
+}
+function showTerminalMessage(message,isError=false){
+  if(!terminalMessage)return;
+  terminalMessage.textContent=message;
+  terminalMessage.classList.toggle('error',isError);
+}
+crownKey?.addEventListener('click',enterTerminal);
+crownName?.addEventListener('input',armNameTranslation);
+crownForm?.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(terminalStage==='name'){
+    const name=crownName?.value.trim();
+    if(!name){showTerminalMessage('IDENTITY REQUIRED.',true);return;}
+    clearTimeout(terminalIdleTimer);
+    terminalStage='pck';
+    if(pckLine)pckLine.hidden=false;
+    showTerminalMessage('IDENTITY RECEIVED. PRESENT YOUR PERSONAL CROWN KEY.');
+    crownPck?.focus();
+    return;
+  }
+  // Intentionally no credential validation in client-side JavaScript.
+  // Production AW ID + PCK verification must be performed by the authenticated backend.
+  showTerminalMessage('SECURE CROWN AUTHENTICATION IS NOT YET CONNECTED.',true);
 });
+crownEnroll?.addEventListener('click',()=>{
+  showTerminalMessage('CROWN ENROLLMENT // AW ID REGISTRATION — COMING NEXT.');
+});
+
