@@ -1,31 +1,46 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>Crown Network | AWE Holdings</title>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Da Round Table | Crown Network</title>
 <style>
-:root{--gold:#d8ac4e;--gold2:#f1d783;--ink:#070707;--text:#f7f4ec;--muted:#8f897e}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 35%,#1b1408 0,#090806 28%,#050505 62%,#020202 100%);color:var(--text);font-family:Inter,system-ui,sans-serif;display:grid;place-items:center;overflow:hidden}
-body:before{content:"";position:fixed;inset:0;opacity:.16;background-image:linear-gradient(rgba(216,172,78,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(216,172,78,.12) 1px,transparent 1px);background-size:54px 54px;mask-image:radial-gradient(circle,#000,transparent 75%)}
-.chamber{position:relative;width:min(920px,90vw);padding:72px 34px;text-align:center;border:1px solid rgba(216,172,78,.24);background:rgba(5,5,4,.72);box-shadow:0 0 90px rgba(216,172,78,.08),inset 0 0 70px rgba(216,172,78,.025)}
-.crown{font-size:42px;color:var(--gold2);filter:drop-shadow(0 0 18px rgba(241,215,131,.25))}
-.kicker{margin:22px 0 12px;color:var(--gold);font-size:11px;letter-spacing:.34em;font-weight:800}
-h1{font:600 clamp(44px,7vw,84px)/.9 Georgia,serif;margin:0;letter-spacing:-.045em}
-h1 span{color:var(--gold2)}
-.copy{max-width:620px;margin:26px auto 0;color:var(--muted);line-height:1.7;font-size:14px}
-.status{margin:42px auto 0;width:max-content;max-width:100%;padding:12px 18px;border:1px solid rgba(216,172,78,.2);color:#b7aa8d;font:700 10px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.18em}
-@media(max-width:600px){.chamber{padding:54px 22px}.status{letter-spacing:.1em}}
-</style>
-</head>
-<body>
-<main class="chamber">
-<div class="crown" aria-hidden="true">♛</div>
-<p class="kicker">CROWN NETWORK · AUTHORIZED SESSION</p>
-<h1>WEAR YOUR CROWN<br><span>PROUDLY.</span></h1>
-<p class="copy">The gate recognized your Crown Identity. This is the first protected chamber of the AWE Crown Network. Houses, permissions and member experiences will open from here according to your access.</p>
-<p class="status">CROWN HOUSE // ACCESS GRANTED</p>
+:root{--gold:#d8ac4e;--gold2:#f1d783;--text:#f7f4ec;--muted:#817b70;--green:#b8cf7a}
+*{box-sizing:border-box}html{background:#020202}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at 50% 18%,#181107 0,#070605 32%,#020202 70%);overflow-x:hidden}
+#cipher{position:fixed;inset:0;width:100%;height:100%;opacity:.16;pointer-events:none;mask-image:linear-gradient(to bottom,#000 0,#000 70%,transparent 100%)}
+.shell{position:relative;z-index:2;width:min(1180px,92vw);margin:auto;padding:38px 0 72px}
+.top{display:flex;justify-content:space-between;gap:20px;color:#6f685b;font:700 9px ui-monospace,monospace;letter-spacing:.18em;border-bottom:1px solid rgba(216,172,78,.15);padding-bottom:18px}
+.hero{text-align:center;padding:62px 0 36px}.crown{color:var(--gold2);font-size:34px}.kicker{color:var(--gold);font:800 10px ui-monospace,monospace;letter-spacing:.34em;margin:16px 0}.hero h1{font:500 clamp(42px,7vw,78px)/.92 Georgia,serif;margin:0}.hero h1 span{color:var(--gold2)}.welcome{color:var(--muted);margin:22px auto 0;font:600 11px ui-monospace,monospace;letter-spacing:.12em}
+.prompt{text-align:center;margin:30px 0 28px;color:#a99e87;font:700 10px ui-monospace,monospace;letter-spacing:.25em}
+.houses{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.house{position:relative;min-height:220px;border:1px solid rgba(216,172,78,.14);background:rgba(6,6,5,.72);display:grid;place-items:center;text-align:center;padding:24px;overflow:hidden}.house:before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(216,172,78,.07),transparent 65%);opacity:0;transition:.5s}.house-logo{max-width:82%;max-height:120px;filter:grayscale(1) brightness(.12);opacity:.38;transition:.55s}.house-name{font:700 9px ui-monospace,monospace;letter-spacing:.17em;color:#4c483f;margin-top:14px}.house.locked:after{content:"UNKNOWN // LOCKED";position:absolute;bottom:18px;color:#454139;font:700 8px ui-monospace,monospace;letter-spacing:.15em}.house.unlocked{cursor:pointer;border-color:rgba(241,215,131,.38);box-shadow:inset 0 0 35px rgba(216,172,78,.025)}.house.unlocked:before{opacity:1}.house.unlocked .house-logo{filter:none;opacity:1}.house.unlocked .house-name{color:var(--gold2)}.house.unlocked:after{content:"ACCESS GRANTED";position:absolute;bottom:18px;color:#817653;font:700 8px ui-monospace,monospace;letter-spacing:.15em}
+.crowd-logo{width:90%;max-width:290px}.sigil{font:600 54px Georgia,serif;color:#25221c;filter:blur(.3px)}
+.keybox{max-width:680px;margin:34px auto 0;padding:20px;border:1px solid rgba(216,172,78,.14);background:rgba(3,4,3,.78)}.keybox label{display:block;color:#6f7659;font:700 9px ui-monospace,monospace;letter-spacing:.18em;margin-bottom:10px}.keyrow{display:flex;gap:10px}.keyrow input{flex:1;min-width:0;background:#050704;border:0;border-bottom:1px solid #47502f;color:#d9e9a5;padding:10px;font:600 14px ui-monospace,monospace;outline:0}.keyrow button{background:#0a0d08;border:1px solid #4e5936;color:#c7db8c;font:700 9px ui-monospace,monospace;letter-spacing:.15em;padding:0 18px}.msg{min-height:20px;margin:12px 0 0;color:#79845e;font:600 10px ui-monospace,monospace;letter-spacing:.08em}.msg.error{color:#b98772}
+.foot{text-align:center;margin-top:42px;color:#4e493f;font:700 8px ui-monospace,monospace;letter-spacing:.18em}
+@media(max-width:760px){.shell{width:94vw;padding-top:24px}.top span:last-child{display:none}.hero{padding-top:42px}.houses{grid-template-columns:repeat(2,1fr)}.house{min-height:170px}.keyrow{flex-direction:column}.keyrow button{padding:12px}.crowd-logo{max-width:220px}}
+@media(max-width:420px){.houses{gap:9px}.house{min-height:150px;padding:14px}.sigil{font-size:42px}}
+@media(prefers-reduced-motion:reduce){#cipher{display:none}.house-logo{transition:none}}
+</style></head><body>
+<canvas id="cipher" aria-hidden="true"></canvas>
+<main class="shell">
+<header class="top"><span>CROWN NETWORK // DRT</span><span>AUTHORIZED CROWN SESSION</span></header>
+<section class="hero"><div class="crown">♛</div><p class="kicker">DA ROUND TABLE</p><h1>WEAR YOUR CROWN<br><span>PROUDLY.</span></h1><p class="welcome" id="welcome">IDENTITY CONFIRMED.</p></section>
+<p class="prompt">WHICH HOUSE DO YOU SEEK?</p>
+<section class="houses" aria-label="Crown Network Houses">
+  <article class="house locked" data-house="the-crowd"><div><img class="house-logo crowd-logo" src="/assets/Crowd.png" alt="The CROWD"><div class="house-name">THE CROWD</div></div></article>
+  <article class="house locked" data-house="echo-x-labs"><div><div class="sigil">X</div><div class="house-name">UNKNOWN HOUSE</div></div></article>
+  <article class="house locked" data-house="gbe"><div><div class="sigil">G</div><div class="house-name">UNKNOWN HOUSE</div></div></article>
+  <article class="house locked" data-house="da-bay-chicz"><div><div class="sigil">D</div><div class="house-name">UNKNOWN HOUSE</div></div></article>
+  <article class="house locked" data-house="awe-4-kids"><div><div class="sigil">4</div><div class="house-name">UNKNOWN HOUSE</div></div></article>
+  <article class="house locked"><div><div class="sigil">?</div><div class="house-name">UNKNOWN SIGNAL</div></div></article>
+</section>
+<form class="keybox" id="house-key"><label for="key">HOUSE KEY // DISCOVER ANOTHER DOOR</label><div class="keyrow"><input id="key" name="key" placeholder="#________" autocomplete="off" spellcheck="false"><button>SEEK</button></div><p class="msg" id="msg" aria-live="polite"></p></form>
+<p class="foot">DA ROUND TABLE // THE HOUSES ARE LISTENING.</p>
 </main>
-</body>
-</html>
+<script>
+const welcome=document.querySelector('#welcome'),msg=document.querySelector('#msg'),keyForm=document.querySelector('#house-key'),keyInput=document.querySelector('#key');
+const unlock=(slug,destination)=>{const card=document.querySelector('[data-house="'+slug+'"]');if(!card)return;card.classList.remove('locked');card.classList.add('unlocked');card.dataset.destination=destination||'';card.addEventListener('click',()=>{if(card.dataset.destination)location.assign(card.dataset.destination)},{once:false});};
+fetch('/api/crown/atrium').then(r=>r.json().then(data=>({r,data}))).then(({r,data})=>{if(!r.ok)throw 0;welcome.textContent='IDENTITY CONFIRMED // '+data.awId+' // WELCOME, '+String(data.crownName).toUpperCase()+'.';(data.access||[]).forEach(a=>unlock(a.slug,a.destination));const q=new URLSearchParams(location.search).get('key');if(q){keyInput.value=q;keyForm.requestSubmit();}}).catch(()=>location.assign('/'));
+keyForm.addEventListener('submit',e=>{e.preventDefault();const key=keyInput.value.trim();if(!key)return;msg.classList.remove('error');msg.textContent='SEEKING HOUSE...';fetch('/api/crown/house-key',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key})}).then(async r=>({r,data:await r.json().catch(()=>({}))})).then(({r,data})=>{if(!r.ok)throw new Error(data.message||'HOUSE KEY NOT RECOGNIZED.');unlock(data.house,data.destination);msg.textContent='HOUSE KEY RECOGNIZED // '+data.houseName.toUpperCase()+'.';document.querySelector('[data-house="'+data.house+'"]')?.scrollIntoView({behavior:'smooth',block:'center'});}).catch(err=>{msg.classList.add('error');msg.textContent=err.message;});});
+const canvas=document.querySelector('#cipher'),ctx=canvas.getContext('2d'),glyphs=['AW','01','//','#','♛','AWE','CROWN','DRT','0','1','X','7','∆','◇'];let cols=[],w=0,h=0;
+function resize(){const d=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=w*d;canvas.height=h*d;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(d,0,0,d,0,0);cols=Array.from({length:Math.ceil(w/34)},()=>Math.random()*-h/18);}
+function draw(){ctx.fillStyle='rgba(2,2,2,.13)';ctx.fillRect(0,0,w,h);ctx.font='11px ui-monospace,monospace';for(let i=0;i<cols.length;i++){const g=glyphs[(Math.random()*glyphs.length)|0],x=i*34,y=cols[i]*18;ctx.fillStyle=Math.random()>.93?'rgba(241,215,131,.78)':'rgba(184,207,122,.42)';ctx.fillText(g,x,y);cols[i]++;if(y>h&&Math.random()>.975)cols[i]=Math.random()*-30;}requestAnimationFrame(draw)}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){addEventListener('resize',resize);resize();draw();}
+</script></body></html>
