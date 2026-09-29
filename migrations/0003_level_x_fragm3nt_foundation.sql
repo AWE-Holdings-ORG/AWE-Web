@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS member_fragm3ntz (
 );
 
 INSERT OR IGNORE INTO artists(artist_slug,display_name,artist_number,status,primary_house_slug,label_house_slug)
-VALUES('x-tha-god','X Tha God',1,'the-crowd','gbe');
+VALUES('x-tha-god','X Tha God',1,'active','the-crowd','gbe');
 
 CREATE INDEX IF NOT EXISTS idx_artist_media_artist ON artist_media(artist_id,active,sort_order);
 CREATE INDEX IF NOT EXISTS idx_fragm3nt_artist ON fragm3nt_definitions(artist_id);
