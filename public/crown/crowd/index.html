@@ -20,7 +20,7 @@
 .shell{position:relative;width:min(1220px,92vw);margin:auto;padding:32px 0 70px}
 .top{display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid rgba(216,172,78,.17)}
 .brand{font:900 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.2em;color:var(--gold)}
-.identity{font:700 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em;color:#6e675b}
+.identity{font:700 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em;color:#6e675b}.top-actions{display:flex;align-items:center;gap:18px}.round-table-return{color:#8e805f;text-decoration:none;border:1px solid rgba(216,172,78,.18);padding:9px 12px;font:800 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em;transition:.25s}.round-table-return:hover,.round-table-return:focus-visible{color:var(--gold2);border-color:rgba(241,215,131,.5);box-shadow:0 0 18px rgba(216,172,78,.08);outline:none}
 .hero{padding:68px 0 44px;text-align:center}
 .hero-logo{display:block;width:min(700px,82vw);margin:auto;filter:drop-shadow(0 24px 38px #000)}
 .kicker{margin:26px 0 0;color:var(--gold);font-size:9px;letter-spacing:.36em;font-weight:800}
@@ -28,7 +28,7 @@
 .console{border:1px solid rgba(216,172,78,.18);background:rgba(5,5,4,.76);padding:26px;box-shadow:0 0 80px rgba(216,172,78,.045)}
 .console-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:20px}.console-head p{margin:0;color:#746d61;font:700 9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}.console h2{margin:4px 0 0;font:500 clamp(28px,4vw,46px)/1 Georgia,serif}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.gate{min-height:154px;border:1px solid rgba(216,172,78,.13);padding:20px;background:linear-gradient(145deg,rgba(216,172,78,.035),rgba(255,255,255,.008));display:flex;flex-direction:column;justify-content:space-between}.gate b{color:var(--gold2);font:800 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}.gate strong{font:500 23px/1 Georgia,serif}.gate small{color:#686157;line-height:1.5}.coming{opacity:.58}.foot{text-align:center;margin-top:24px;color:#5e574c;font:700 9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em}
-@media(max-width:720px){.entry-logo{width:94vw}.entry-copy{letter-spacing:.22em}.identity{display:none}.hero{padding-top:50px}.grid{grid-template-columns:1fr}.console-head{align-items:start;flex-direction:column}.gate{min-height:120px}}
+@media(max-width:720px){.entry-logo{width:94vw}.entry-copy{letter-spacing:.22em}.identity{display:none}.top-actions{gap:0}.round-table-return{padding:8px 9px;letter-spacing:.1em}.hero{padding-top:50px}.grid{grid-template-columns:1fr}.console-head{align-items:start;flex-direction:column}.gate{min-height:120px}}
 @media(prefers-reduced-motion:reduce){.entry{animation:none;display:none}.entry-logo,.entry-copy,.entry:before{animation:none}}
 </style>
 </head>
@@ -41,7 +41,7 @@
 </section>
 <div class="world">
 <main class="shell">
-<header class="top"><div class="brand">CROWN NETWORK // THE CROWD</div><div class="identity">AUTHORIZED CROWN SESSION</div></header>
+<header class="top"><div class="brand">CROWN NETWORK // THE CROWD</div><div class="top-actions"><a class="round-table-return" href="/crown/" aria-label="Return to Da Round Table">← DA ROUND TABLE</a><div class="identity">AUTHORIZED CROWN SESSION</div></div></header>
 <section class="hero">
   <img class="hero-logo" src="/assets/Crowd.png" alt="CROWD">
   <p class="kicker">WHERE THE HOUSES MEET.</p>
