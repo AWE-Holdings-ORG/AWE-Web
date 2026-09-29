@@ -50,23 +50,46 @@ async function verifyTurnstile(token,request,env){
   const r=await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify",{method:"POST",body:form});
   return !!(await r.json()).success;
 }
-const HOUSE_KEYS={crowdshyt:"the-crowd"};
 function normalizeHouseKey(v){return String(v||"").trim().replace(/^#+/,"").toLowerCase().replace(/[^a-z0-9_-]/g,"");}
 async function resolveHouseKey(request,env){
   const member=await sessionMember(request,env);
   if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
-  const body=await readJson(request), key=normalizeHouseKey(body.key), house=HOUSE_KEYS[key];
-  if(!house)return json({ok:false,message:"HOUSE KEY NOT RECOGNIZED."},404);
-  const access=await env.CROWN_DB.prepare(`SELECT h.slug,h.name,a.destination FROM member_access a JOIN houses h ON h.slug=a.house_slug WHERE a.member_id=? AND a.house_slug=? AND a.active=1 LIMIT 1`).bind(member.id,house).first();
-  if(!access)return json({ok:false,message:"HOUSE DISCOVERED // ACCESS NOT YET GRANTED.",house},403);
-  await env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,house_slug,created_at) VALUES(?,'house_key_resolved',?,datetime('now'))`).bind(member.id,house).run();
-  return json({ok:true,house:access.slug,houseName:access.name,destination:access.destination});
+  const body=await readJson(request), key=normalizeHouseKey(body.key);
+  if(!key)return json({ok:false,message:"HOUSE KEY REQUIRED."},400);
+  const route=await env.CROWN_DB.prepare(`SELECT k.key_slug,k.house_slug,COALESCE(k.destination,h.destination) AS destination,h.name FROM house_keys k JOIN houses h ON h.slug=k.house_slug WHERE lower(k.key_slug)=? AND k.active=1 LIMIT 1`).bind(key).first();
+  if(!route)return json({ok:false,message:"HOUSE KEY NOT RECOGNIZED."},404);
+  const access=await env.CROWN_DB.prepare(`SELECT destination FROM member_access WHERE member_id=? AND house_slug=? AND active=1 LIMIT 1`).bind(member.id,route.house_slug).first();
+  if(!access)return json({ok:false,message:"HOUSE DISCOVERED // ACCESS NOT YET GRANTED.",house:route.house_slug,houseName:route.name},403);
+  const destination=route.destination||access.destination;
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare(`INSERT INTO member_discoveries(member_id,house_slug,discovery_key,discovered_at,last_visited_at) VALUES(?,?,?,datetime('now'),datetime('now')) ON CONFLICT(member_id,house_slug) DO UPDATE SET discovery_key=COALESCE(member_discoveries.discovery_key,excluded.discovery_key),last_visited_at=datetime('now')`).bind(member.id,route.house_slug,key),
+    env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,house_slug,created_at) VALUES(?,'house_key_resolved',?,datetime('now'))`).bind(member.id,route.house_slug)
+  ]);
+  return json({ok:true,house:route.house_slug,houseName:route.name,destination,discovered:true});
 }
 async function atriumState(request,env){
   const member=await sessionMember(request,env);
   if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
-  const access=(await env.CROWN_DB.prepare(`SELECT h.slug,h.name,a.destination FROM member_access a JOIN houses h ON h.slug=a.house_slug WHERE a.member_id=? AND a.active=1 ORDER BY a.priority ASC`).bind(member.id).all()).results||[];
-  return json({ok:true,awId:member.aw_id,crownName:member.crown_name,access});
+  const discoveries=(await env.CROWN_DB.prepare(`SELECT d.house_slug,h.name,COALESCE(a.destination,h.destination) AS destination,d.discovered_at,d.last_visited_at,CASE WHEN a.active=1 THEN 1 ELSE 0 END AS authorized FROM member_discoveries d JOIN houses h ON h.slug=d.house_slug LEFT JOIN member_access a ON a.member_id=d.member_id AND a.house_slug=d.house_slug WHERE d.member_id=? ORDER BY d.discovered_at ASC`).bind(member.id).all()).results||[];
+  return json({ok:true,awId:member.aw_id,crownName:member.crown_name,discoveries});
+}
+async function visitHouse(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const body=await readJson(request),house=String(body.house||"").trim();
+  if(!house)return json({ok:false,message:"HOUSE REQUIRED."},400);
+  const access=await env.CROWN_DB.prepare(`SELECT 1 AS ok FROM member_access WHERE member_id=? AND house_slug=? AND active=1 LIMIT 1`).bind(member.id,house).first();
+  if(!access)return json({ok:false,message:"HOUSE ACCESS NOT GRANTED."},403);
+  await env.CROWN_DB.prepare(`UPDATE member_discoveries SET last_visited_at=datetime('now') WHERE member_id=? AND house_slug=?`).bind(member.id,house).run();
+  return json({ok:true});
+}
+async function logout(request,env){
+  const raw=cookieValue(request,"awe_crown_session");
+  if(raw&&env.SESSION_PEPPER&&env.CROWN_DB){
+    const digest=await tokenDigest(raw,env.SESSION_PEPPER);
+    await env.CROWN_DB.prepare(`DELETE FROM sessions WHERE token_hash=?`).bind(digest).run();
+  }
+  return json({ok:true,message:"CROWN SESSION ENDED."},200,{"set-cookie":"awe_crown_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0"});
 }
 async function auth(request,env){
   requireRuntime(env);
@@ -115,6 +138,8 @@ export default {
       if(url.pathname==="/api/crown/auth"&&request.method==="POST")return await auth(request,env);
       if(url.pathname==="/api/crown/atrium"&&request.method==="GET")return await atriumState(request,env);
       if(url.pathname==="/api/crown/house-key"&&request.method==="POST")return await resolveHouseKey(request,env);
+      if(url.pathname==="/api/crown/visit"&&request.method==="POST")return await visitHouse(request,env);
+      if(url.pathname==="/api/crown/logout"&&request.method==="POST")return await logout(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
       if(url.pathname.startsWith("/crown/"))return await crownAsset(request,env);
