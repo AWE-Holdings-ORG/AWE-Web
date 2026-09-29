@@ -50,6 +50,24 @@ async function verifyTurnstile(token,request,env){
   const r=await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify",{method:"POST",body:form});
   return !!(await r.json()).success;
 }
+const HOUSE_KEYS={crowdshyt:"the-crowd"};
+function normalizeHouseKey(v){return String(v||"").trim().replace(/^#+/,"").toLowerCase().replace(/[^a-z0-9_-]/g,"");}
+async function resolveHouseKey(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const body=await readJson(request), key=normalizeHouseKey(body.key), house=HOUSE_KEYS[key];
+  if(!house)return json({ok:false,message:"HOUSE KEY NOT RECOGNIZED."},404);
+  const access=await env.CROWN_DB.prepare(`SELECT h.slug,h.name,a.destination FROM member_access a JOIN houses h ON h.slug=a.house_slug WHERE a.member_id=? AND a.house_slug=? AND a.active=1 LIMIT 1`).bind(member.id,house).first();
+  if(!access)return json({ok:false,message:"HOUSE DISCOVERED // ACCESS NOT YET GRANTED.",house},403);
+  await env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,house_slug,created_at) VALUES(?,'house_key_resolved',?,datetime('now'))`).bind(member.id,house).run();
+  return json({ok:true,house:access.slug,houseName:access.name,destination:access.destination});
+}
+async function atriumState(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const access=(await env.CROWN_DB.prepare(`SELECT h.slug,h.name,a.destination FROM member_access a JOIN houses h ON h.slug=a.house_slug WHERE a.member_id=? AND a.active=1 ORDER BY a.priority ASC`).bind(member.id).all()).results||[];
+  return json({ok:true,awId:member.aw_id,crownName:member.crown_name,access});
+}
 async function auth(request,env){
   requireRuntime(env);
   const body=await readJson(request), name=normalizeName(body.name), pck=String(body.pck||"");
@@ -95,6 +113,8 @@ export default {
     const url=new URL(request.url);
     try {
       if(url.pathname==="/api/crown/auth"&&request.method==="POST")return await auth(request,env);
+      if(url.pathname==="/api/crown/atrium"&&request.method==="GET")return await atriumState(request,env);
+      if(url.pathname==="/api/crown/house-key"&&request.method==="POST")return await resolveHouseKey(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
       if(url.pathname.startsWith("/crown/"))return await crownAsset(request,env);
