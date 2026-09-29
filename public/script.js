@@ -134,9 +134,9 @@ crownForm?.addEventListener('submit',e=>{
     terminalStage='pck';
     if(pckLine)pckLine.hidden=false;
     showTerminalMessage('IDENTITY RECEIVED. PRESENT YOUR PERSONAL CROWN KEY.');
-    crownPck?.focus();
-    return;
+    if(!crownPck?.value){crownPck?.focus();return;}
   }
+  if(!crownPck?.value){showTerminalMessage('PRESENT YOUR PERSONAL CROWN KEY.',true);crownPck?.focus();return;}
   showTerminalMessage('VERIFYING CROWN...');
   const submit=crownForm.querySelector('.terminal-submit'); if(submit)submit.disabled=true;
   fetch('/api/crown/auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:crownName?.value.trim(),pck:crownPck?.value||''})})
@@ -145,7 +145,7 @@ crownForm?.addEventListener('submit',e=>{
       if(!r.ok||!data.ok)throw new Error(data.message||'CROWN NOT RECOGNIZED.');
       if(crownTerminal)crownTerminal.hidden=true;
       if(crownWelcome)crownWelcome.hidden=false;
-      setTimeout(()=>{if(data.destination)window.location.assign(data.destination);},1800);
+      setTimeout(()=>window.location.assign('/crown/'),1400);
     })
     .catch(err=>showTerminalMessage(err.message||'CROWN NOT RECOGNIZED.',true))
     .finally(()=>{if(submit)submit.disabled=false;});
