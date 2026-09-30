@@ -68,10 +68,10 @@
               <span class="terminal-prompt" data-name-prompt>01001110 01100001 01101101 01100101</span>
               <span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="crown-name" name="crown-name" type="text" spellcheck="false" autocapitalize="none" autocomplete="off"></span>
             </label>
-            <label class="terminal-line terminal-pck-line" for="crown-pck" hidden>
-              <span class="terminal-prompt">PCK 🔑</span>
-              <span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="crown-pck" name="crown-pck" type="password" autocomplete="off"></span>
-            </label>
+            <div class="terminal-line terminal-pck-line" hidden>
+              <label class="terminal-prompt" for="crown-pck">PCK 🔑</label>
+              <span class="terminal-input-wrap"><span aria-hidden="true">&gt;</span><input id="crown-pck" name="crown-pck" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><button class="pck-visibility" type="button" aria-controls="crown-pck" aria-pressed="false" aria-label="Show Personal Crown Key">SHOW</button></span>
+            </div>
             <button class="terminal-submit" type="submit">ENTER</button>
           </form>
           <p class="terminal-message" aria-live="polite"></p>
