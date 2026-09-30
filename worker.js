@@ -83,6 +83,82 @@ async function visitHouse(request,env){
   await env.CROWN_DB.prepare(`UPDATE member_discoveries SET last_visited_at=datetime('now') WHERE member_id=? AND house_slug=?`).bind(member.id,house).run();
   return json({ok:true});
 }
+function cleanPath(v){const p=String(v||"/").trim();return p.startsWith("/")?p.slice(0,240):"/";}
+function cleanText(v,max=1200){return String(v||"").replace(/[\\u0000-\\u001F\\u007F]/g," ").replace(/\\s+/g," ").trim().slice(0,max);}
+async function visitorDigest(request,env){
+  const ip=request.headers.get("CF-Connecting-IP")||"unknown";
+  const ua=request.headers.get("user-agent")||"unknown";
+  const day=new Date().toISOString().slice(0,10);
+  const pepper=env.ANALYTICS_PEPPER||env.SESSION_PEPPER;
+  if(!pepper)throw new Error("SESSION_PEPPER_MISSING");
+  return b64url(await crypto.subtle.digest("SHA-256",enc.encode(ip+"|"+ua+"|"+day+"|"+pepper)));
+}
+function referrerHost(request){
+  try{const r=request.headers.get("referer");return r?new URL(r).hostname.slice(0,160):null}catch{return null}
+}
+async function analyticsSummary(env){
+  requireRuntime(env);
+  const visitors=await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM site_visitors").first();
+  const visits=await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM site_visits").first();
+  return {uniqueVisitors:Number(visitors?.n||0),visits:Number(visits?.n||0)};
+}
+async function trackSiteVisit(request,env){
+  requireRuntime(env);
+  const body=await readJson(request),path=cleanPath(body.path);
+  const visitorKey=await visitorDigest(request,env),member=await sessionMember(request,env);
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare("INSERT INTO site_visitors(visitor_key,first_seen_at,last_seen_at,visit_count) VALUES(?,datetime('now'),datetime('now'),1) ON CONFLICT(visitor_key) DO UPDATE SET last_seen_at=datetime('now'),visit_count=site_visitors.visit_count+1").bind(visitorKey),
+    env.CROWN_DB.prepare("INSERT INTO site_visits(visitor_key,path,referrer_host,crown_member_id,visited_at) VALUES(?,?,?,?,datetime('now'))").bind(visitorKey,path,referrerHost(request),member?.id||null)
+  ]);
+  return json({ok:true,...await analyticsSummary(env)});
+}
+async function siteStats(request,env){
+  return json({ok:true,...await analyticsSummary(env)});
+}
+async function playerCatalog(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const url=new URL(request.url),slug=String(url.searchParams.get("artist")||"x-tha-god").trim().toLowerCase();
+  const artist=await env.CROWN_DB.prepare("SELECT id,artist_slug,display_name,artist_number,status,primary_house_slug,label_house_slug,public_bio FROM artists WHERE artist_slug=? AND status='active' LIMIT 1").bind(slug).first();
+  if(!artist)return json({ok:false,message:"ARTIST SIGNAL NOT FOUND."},404);
+  const media=(await env.CROWN_DB.prepare("SELECT id,media_type,provider,external_id,canonical_url,title,event_date,era_slug,visibility,sort_order,description,source_name,source_url,thumbnail_url,rights_status,duration_seconds,published_at FROM artist_media WHERE artist_id=? AND active=1 AND visibility IN ('public','crown') ORDER BY sort_order,event_date,id").bind(artist.id).all()).results||[];
+  for(const item of media){
+    const c=await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM media_views WHERE media_id=?").bind(item.id).first();
+    const m=await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM media_comments WHERE media_id=? AND status='visible'").bind(item.id).first();
+    item.view_count=Number(c?.n||0); item.comment_count=Number(m?.n||0);
+  }
+  return json({ok:true,artist,media});
+}
+async function recordMediaView(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const body=await readJson(request),mediaId=Number(body.mediaId),sessionKey=cleanText(body.sessionKey,100);
+  if(!Number.isInteger(mediaId)||mediaId<1||sessionKey.length<12)return json({ok:false,message:"INVALID VIEW SIGNAL."},400);
+  const exists=await env.CROWN_DB.prepare("SELECT 1 AS ok FROM artist_media WHERE id=? AND active=1 LIMIT 1").bind(mediaId).first();
+  if(!exists)return json({ok:false,message:"MEDIA NOT FOUND."},404);
+  const visitorKey=await visitorDigest(request,env);
+  await env.CROWN_DB.prepare("INSERT OR IGNORE INTO media_views(media_id,visitor_key,crown_member_id,session_key,qualified_at) VALUES(?,?,?,?,datetime('now'))").bind(mediaId,visitorKey,member.id,sessionKey).run();
+  const count=await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM media_views WHERE media_id=?").bind(mediaId).first();
+  return json({ok:true,views:Number(count?.n||0)});
+}
+async function listMediaComments(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const mediaId=Number(new URL(request.url).searchParams.get("mediaId"));
+  if(!Number.isInteger(mediaId)||mediaId<1)return json({ok:false,message:"MEDIA REQUIRED."},400);
+  const comments=(await env.CROWN_DB.prepare("SELECT c.id,c.body,c.created_at,m.crown_name,m.aw_id FROM media_comments c JOIN members m ON m.id=c.member_id WHERE c.media_id=? AND c.status='visible' ORDER BY c.created_at DESC LIMIT 100").bind(mediaId).all()).results||[];
+  return json({ok:true,comments});
+}
+async function addMediaComment(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const body=await readJson(request),mediaId=Number(body.mediaId),comment=cleanText(body.body,1000);
+  if(!Number.isInteger(mediaId)||mediaId<1||comment.length<1)return json({ok:false,message:"COMMENT REQUIRED."},400);
+  const exists=await env.CROWN_DB.prepare("SELECT 1 AS ok FROM artist_media WHERE id=? AND active=1 LIMIT 1").bind(mediaId).first();
+  if(!exists)return json({ok:false,message:"MEDIA NOT FOUND."},404);
+  await env.CROWN_DB.prepare("INSERT INTO media_comments(media_id,member_id,body,status,created_at,updated_at) VALUES(?,? ,?,'visible',datetime('now'),datetime('now'))").bind(mediaId,member.id,comment).run();
+  return json({ok:true,message:"COMMENT POSTED."},201);
+}
 async function logout(request,env){
   const raw=cookieValue(request,"awe_crown_session");
   if(raw&&env.SESSION_PEPPER&&env.CROWN_DB){
@@ -139,6 +215,12 @@ export default {
       if(url.pathname==="/api/crown/atrium"&&request.method==="GET")return await atriumState(request,env);
       if(url.pathname==="/api/crown/house-key"&&request.method==="POST")return await resolveHouseKey(request,env);
       if(url.pathname==="/api/crown/visit"&&request.method==="POST")return await visitHouse(request,env);
+      if(url.pathname==="/api/analytics/visit"&&request.method==="POST")return await trackSiteVisit(request,env);
+      if(url.pathname==="/api/analytics/stats"&&request.method==="GET")return await siteStats(request,env);
+      if(url.pathname==="/api/crown/player/catalog"&&request.method==="GET")return await playerCatalog(request,env);
+      if(url.pathname==="/api/crown/player/view"&&request.method==="POST")return await recordMediaView(request,env);
+      if(url.pathname==="/api/crown/player/comments"&&request.method==="GET")return await listMediaComments(request,env);
+      if(url.pathname==="/api/crown/player/comments"&&request.method==="POST")return await addMediaComment(request,env);
       if(url.pathname==="/api/crown/logout"&&request.method==="POST")return await logout(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
