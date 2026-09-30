@@ -23,6 +23,7 @@ THE SCRYPTUREZ is the canonical index for product law, system architecture, arti
 | SCRYPT-CROWN-004 | Crown / Player | Player Access Preview Promotion Runbook | ACTIVE / READY FOR PREVIEW |
 | SCRYPT-XTG-001 | Artist Intake | X Tha God Artist 001 Intake Registry | ACTIVE |
 | SCRYPT-CYPHERZ-001 | CYPHERZ | CYPHERZ Product Blueprint | ACTIVE / BUILDING |
+| SCRYPT-INFRA-001 | Infrastructure | Cloudflare Agent Setup & Operating Law | ACTIVE |
 
 ## Canonical Access Ladder
 PUBLIC → HOUSE → UNLOCK → CROWN → VAULT
