@@ -1,0 +1,43 @@
+name: Player Access Tests
+
+on:
+  push:
+    paths:
+      - "lib/player-access.js"
+      - "lib/player-viewer-context.js"
+      - "lib/player-catalog-service.js"
+      - "migrations/0009_player_access_states.sql"
+      - "migrations/0010_player_access_grants.sql"
+      - "tests/player-access.test.mjs"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
+      - ".github/workflows/player-access-tests.yml"
+  pull_request:
+    paths:
+      - "lib/player-access.js"
+      - "lib/player-viewer-context.js"
+      - "lib/player-catalog-service.js"
+      - "migrations/0009_player_access_states.sql"
+      - "migrations/0010_player_access_grants.sql"
+      - "tests/player-access.test.mjs"
+      - "SCRYPTUREZ/CROWN/**"
+      - ".github/workflows/player-access-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  player-access:
+    name: SCRYPT-CROWN-002 access gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run Player access resolver tests
+        run: node --test tests/player-access.test.mjs
