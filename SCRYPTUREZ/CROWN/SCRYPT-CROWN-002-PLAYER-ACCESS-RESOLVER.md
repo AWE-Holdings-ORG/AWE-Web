@@ -78,3 +78,12 @@ Every media policy must be tested against:
 
 ## Fail-Safe Law
 Unknown access state, malformed policy, missing required House/unlock identifier, or resolver error defaults to DENY/REDACT, never PUBLIC.
+
+
+## Implementation Map
+- Policy schema: migrations/0009_player_access_states.sql
+- Grant schema: migrations/0010_player_access_grants.sql
+- Pure resolver/redaction module: lib/player-access.js
+- Acceptance matrix: tests/player-access-cases.md
+
+Integration into the runtime Worker remains a separate controlled step. The module is designed so the Worker supplies viewer context and the resolver makes no authentication claims on its own.
