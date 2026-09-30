@@ -84,7 +84,7 @@ Unknown access state, malformed policy, missing required House/unlock identifier
 - Policy schema: migrations/0009_player_access_states.sql
 - Grant schema: migrations/0010_player_access_grants.sql
 - Pure resolver/redaction module: lib/player-access.js
-- Entitlement context builder: lib/player-viewer-context.js
-- Acceptance matrix: tests/player-access-cases.md
+- Entitlement context builder: lib/player-viewer-context.js\n- Catalog authorization service: lib/player-catalog-service.js
+- Acceptance matrix: tests/player-access-cases.md\n- Executable resolver tests: tests/player-access.test.mjs
 
 Integration into the runtime Worker remains a separate controlled step. The module is designed so the Worker supplies viewer context and the resolver makes no authentication claims on its own.
