@@ -6,6 +6,12 @@ on:
       - "lib/player-access.js"
       - "lib/player-viewer-context.js"
       - "lib/player-catalog-service.js"
+      - "lib/player-api.js"
+      - "worker-entry.js"
+      - "package.json"
+      - "lib/player-api.js"
+      - "worker-entry.js"
+      - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
       - "tests/player-access.test.mjs"
@@ -39,5 +45,8 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Check Player runtime syntax
+        run: npm run check:player-runtime
+
       - name: Run Player access resolver tests
-        run: node --test tests/player-access.test.mjs
+        run: npm run test:player-access
