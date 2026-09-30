@@ -39,9 +39,9 @@ SELECT
     ELSE 'crown'
   END,
   CASE
+    WHEN lower(visibility)='public' THEN 'visible'
     WHEN lower(visibility)='vault' THEN 'concealed'
-    WHEN lower(visibility)='crown' THEN 'locked'
-    ELSE 'visible'
+    ELSE 'locked'
   END,
   CASE
     WHEN lower(visibility)='vault' THEN 0
