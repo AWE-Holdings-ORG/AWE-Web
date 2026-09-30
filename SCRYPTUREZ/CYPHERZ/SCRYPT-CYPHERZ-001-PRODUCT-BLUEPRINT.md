@@ -1,7 +1,7 @@
 # SCRYPT-CYPHERZ-001 — CYPHERZ Product Blueprint
 
 Status: ACTIVE / BUILDING
-Version: 0.1
+Version: 0.2
 Target: solid beta before New Year 2027; launch window around New Year 2027
 Studio: Echo X Labs
 
@@ -15,6 +15,8 @@ CYPHERZ never receives or stores a member PCK as part of the linking flow.
 
 ## Access Relationship
 CYPHERZ natively participates in PUBLIC, HOUSE, and UNLOCK experiences.
+A CYPHERZ profile may earn House access and UNLOCK grants before ever receiving or linking a Crown.
+If later linked, the resolver recognizes eligible grants from both the CYPHERZ profile and Crown identity.
 CROWN and VAULT may appear as unexplained locked/encrypted identifiers without a direct Crown-access tutorial.
 
 ## Existing Foundation
