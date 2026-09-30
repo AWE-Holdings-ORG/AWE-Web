@@ -218,6 +218,20 @@ async function logout(request,env){
   }
   return json({ok:true,message:"CROWN SESSION ENDED."},200,{"set-cookie":"awe_crown_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0"});
 }
+async function previewRecoverUser01(request,env){
+  requireRuntime(env);
+  const expected=String(env.PREVIEW_RECOVERY_TOKEN||"");
+  const supplied=String(request.headers.get("x-awe-recovery-token")||"");
+  if(!expected||!supplied||!safeEqual(supplied,expected))return json({ok:false,message:"RECOVERY NOT AUTHORIZED."},403);
+  const body=await readJson(request),pck=String(body.pck||"");
+  if(pck.length<12)return json({ok:false,message:"VALID PCK REQUIRED."},400);
+  const member=await env.CROWN_DB.prepare(`SELECT id,aw_id,crown_name,status FROM members WHERE id=1 AND aw_id='AWE-000001' AND crown_name='Nitti_Bo' LIMIT 1`).first();
+  if(!member||member.status!=="active")return json({ok:false,message:"USER 01 NOT AVAILABLE."},409);
+  const salt=randomToken(18),hash=await pckDigest(pck,salt,env.PCK_PEPPER);
+  await env.CROWN_DB.prepare(`UPDATE crown_credentials SET pck_hash=?,pck_salt=? WHERE member_id=1`).bind(hash,salt).run();
+  await env.CROWN_DB.prepare(`DELETE FROM sessions WHERE member_id=1`).run();
+  return json({ok:true,message:"USER 01 CREDENTIAL RE-KEYED.",awId:member.aw_id,crownName:member.crown_name});
+}
 async function auth(request,env){
   requireRuntime(env);
   const body=await readJson(request), name=normalizeName(body.name), pck=String(body.pck||"");
@@ -262,6 +276,7 @@ export default {
   async fetch(request,env){
     const url=new URL(request.url);
     try {
+      if(url.pathname==="/api/crown/preview-recover-user01"&&request.method==="POST")return await previewRecoverUser01(request,env);
       if(url.pathname==="/api/crown/auth"&&request.method==="POST")return await auth(request,env);
       if(url.pathname==="/api/crown/atrium"&&request.method==="GET")return await atriumState(request,env);
       if(url.pathname==="/api/crown/house-key"&&request.method==="POST")return await resolveHouseKey(request,env);
