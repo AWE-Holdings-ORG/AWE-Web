@@ -84,7 +84,17 @@ Unknown access state, malformed policy, missing required House/unlock identifier
 - Policy schema: migrations/0009_player_access_states.sql
 - Grant schema: migrations/0010_player_access_grants.sql
 - Pure resolver/redaction module: lib/player-access.js
-- Entitlement context builder: lib/player-viewer-context.js\n- Catalog authorization service: lib/player-catalog-service.js
+- Entitlement context builder: lib/player-viewer-context.js\n- Catalog authorization service: lib/player-catalog-service.js\n- Runtime API bridge: lib/player-api.js
 - Acceptance matrix: tests/player-access-cases.md\n- Executable resolver tests: tests/player-access.test.mjs\n- CI gate: .github/workflows/player-access-tests.yml
 
 Integration into the runtime Worker remains a separate controlled step. The module is designed so the Worker supplies viewer context and the resolver makes no authentication claims on its own.
+
+
+## Runtime Wiring Rule
+Authentication and credential handling remain in the Crown/CYPHERZ runtime boundary.
+The runtime passes only already-authenticated identity IDs into lib/player-api.js.
+PCK values, credential hashes, session secrets, and recovery credentials never enter the Player access modules.
+
+Current integration target:
+- Crown route resolves its Crown session first, then calls playerCatalogResponse with crownAuthenticated=true and crownMemberId.
+- Future CYPHERZ route resolves its CYPHERZ session first, then calls playerCatalogResponse with cypherzProfileId and surface="cypherz".
