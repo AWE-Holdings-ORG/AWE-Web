@@ -9,23 +9,26 @@ on:
       - "lib/player-api.js"
       - "worker-entry.js"
       - "package.json"
-      - "lib/player-api.js"
-      - "worker-entry.js"
-      - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
       - "tests/player-access.test.mjs"
+      - "tests/player-migrations.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
       - ".github/workflows/player-access-tests.yml"
   pull_request:
     paths:
       - "lib/player-access.js"
       - "lib/player-viewer-context.js"
       - "lib/player-catalog-service.js"
+      - "lib/player-api.js"
+      - "worker-entry.js"
+      - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
       - "tests/player-access.test.mjs"
+      - "tests/player-migrations.test.py"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -50,3 +53,6 @@ jobs:
 
       - name: Run Player access resolver tests
         run: npm run test:player-access
+
+      - name: Validate Player access migrations
+        run: python tests/player-migrations.test.py
