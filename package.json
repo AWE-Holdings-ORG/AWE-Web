@@ -1,0 +1,9 @@
+{
+  "name": "awe-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:player-access": "node --test tests/player-access.test.mjs",
+    "check:player-runtime": "node --check worker-entry.js && node --check lib/player-access.js && node --check lib/player-viewer-context.js && node --check lib/player-catalog-service.js && node --check lib/player-api.js"
+  }
+}
