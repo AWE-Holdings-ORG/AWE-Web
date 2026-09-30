@@ -1,71 +1,70 @@
+import test from "node:test";
 import assert from "node:assert/strict";
 import {resolveAndSanitizeMedia} from "../lib/player-access.js";
 
-const sensitive={
+const media=(state,teaser="locked",extra={})=>({
+  id:1,
+  media_type:"battle",
+  title:"Secret Battle",
+  access_state:state,
+  teaser_mode:teaser,
   provider:"youtube",
-  external_id:"SECRET",
-  canonical_url:"https://protected.invalid/media",
-  source_url:"https://protected.invalid/source",
-  source_name:"protected-source",
-  rights_status:"private"
-};
-
-const media=(id,access_state,teaser_mode="locked",extra={})=>({
-  id,media_type:"battle",title:"Test Signal",access_state,teaser_mode,...sensitive,...extra
+  external_id:"abc",
+  canonical_url:"https://example.com/watch",
+  source_url:"https://example.com/source",
+  thumbnail_url:"https://example.com/thumb.jpg",
+  ...extra
 });
+const one=(item,viewer={})=>resolveAndSanitizeMedia([item],viewer)[0];
 
-function one(item,viewer={}){
-  const rows=resolveAndSanitizeMedia([item],viewer);
-  return rows[0]??null;
-}
-
-assert.equal(one(media(1,"public","visible"))?.canonical_url,sensitive.canonical_url);
-
-{
-  const row=one(media(2,"house","locked",{house_slug:"the-crowd"}));
-  assert.equal(row?.locked,true);
-  assert.equal("canonical_url" in row,false);
-  assert.equal("provider" in row,false);
-  assert.equal("external_id" in row,false);
-  assert.equal("source_url" in row,false);
-}
-
-assert.equal(
-  one(media(3,"house","locked",{house_slug:"the-crowd"}),{houseSlugs:["the-crowd"]})?.authorized,
-  true
-);
-
-assert.equal(
-  one(media(4,"house","concealed",{house_slug:"the-crowd"})),
-  null
-);
-
-assert.equal(
-  one(media(5,"unlock"),{unlockedMediaIds:[5]})?.authorized,
-  true
-);
-
-{
-  const row=one(media(6,"unlock","encrypted",{unlock_slug:"x-rare"}));
-  assert.equal(row?.title,"ENCRYPTED SIGNAL");
-  assert.equal("canonical_url" in row,false);
-  assert.equal("provider" in row,false);
-}
-
-assert.equal(one(media(7,"crown","locked"))?.locked,true);
-assert.equal(one(media(8,"crown"),{crownAuthenticated:true})?.authorized,true);
-
-assert.equal(
-  one(media(9,"vault","concealed"),{crownAuthenticated:true}),
-  null
-);
-
-assert.equal(
-  one(media(10,"vault","concealed"),{crownAuthenticated:true,unlockedMediaIds:[10]})?.authorized,
-  true
-);
-
-assert.equal(one(media(11,"unknown","visible")),null);
-assert.equal(one(media(12,"house","visible")),null);
-
-console.log("PASS: Player access resolver fail-closed acceptance checks");
+test("PUBLIC returns full source",()=>{
+  const r=one(media("public","visible"));
+  assert.equal(r.authorized,true);
+  assert.equal(r.canonical_url,"https://example.com/watch");
+});
+test("HOUSE without grant returns teaser but no source",()=>{
+  const r=one(media("house","locked",{house_slug:"the-crowd"}));
+  assert.equal(r.authorized,false);
+  assert.equal(r.canonical_url,undefined);
+  assert.equal(r.provider,undefined);
+});
+test("HOUSE with matching grant returns full source",()=>{
+  const r=one(media("house","locked",{house_slug:"the-crowd"}),{houseSlugs:["the-crowd"]});
+  assert.equal(r.authorized,true);
+  assert.equal(r.external_id,"abc");
+});
+test("concealed HOUSE is omitted",()=>{
+  assert.equal(one(media("house","concealed",{house_slug:"the-crowd"})),undefined);
+});
+test("UNLOCK grant returns full source",()=>{
+  const r=one(media("unlock","locked"),{unlockedMediaIds:[1]});
+  assert.equal(r.authorized,true);
+});
+test("encrypted UNLOCK redacts title, art and source",()=>{
+  const r=one(media("unlock","encrypted"));
+  assert.equal(r.title,"ENCRYPTED SIGNAL");
+  assert.equal(r.canonical_url,undefined);
+  assert.equal(r.thumbnail_url,null);
+});
+test("CROWN requires active Crown authentication",()=>{
+  const r=one(media("crown","locked"));
+  assert.equal(r.authorized,false);
+  assert.equal(r.canonical_url,undefined);
+});
+test("active Crown authentication returns CROWN source",()=>{
+  const r=one(media("crown","locked"),{crownAuthenticated:true});
+  assert.equal(r.authorized,true);
+});
+test("VAULT stays concealed for Crown without explicit media grant",()=>{
+  assert.equal(one(media("vault","concealed"),{crownAuthenticated:true}),undefined);
+});
+test("explicit VAULT media grant returns full source",()=>{
+  const r=one(media("vault","concealed"),{crownAuthenticated:true,unlockedMediaIds:[1]});
+  assert.equal(r.authorized,true);
+});
+test("unknown state fails closed",()=>{
+  assert.equal(one(media("banana","visible")),undefined);
+});
+test("HOUSE missing required house_slug fails closed",()=>{
+  assert.equal(one(media("house","visible")),undefined);
+});
