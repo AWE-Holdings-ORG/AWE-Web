@@ -194,6 +194,22 @@ async function submitBallot(request,env){
   stmts.push(env.CROWN_DB.prepare("UPDATE judging_ballots SET status='submitted',submitted_at=datetime('now'),updated_at=datetime('now') WHERE id=?").bind(ballotId)); await env.CROWN_DB.batch(stmts);
   return json({ok:true,message:"CROWD SCORECARD LOCKED."});
 }
+async function crownLinkRequest(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const body=await readJson(request),token=cleanText(body.linkToken,180);
+  if(token.length<24)return json({ok:false,message:"LINK SIGNAL INVALID."},400);
+  const digest=await tokenDigest(token,env.SESSION_PEPPER);
+  const link=await env.CROWN_DB.prepare("SELECT id,profile_id,status,expires_at FROM cypherz_link_requests WHERE request_token_digest=? LIMIT 1").bind(digest).first();
+  if(!link||link.status!=="pending"||Date.parse(link.expires_at)<=Date.now())return json({ok:false,message:"LINK SIGNAL EXPIRED OR INVALID."},409);
+  const existing=await env.CROWN_DB.prepare("SELECT id FROM cypherz_profiles WHERE crown_member_id=? AND id<>? LIMIT 1").bind(member.id,link.profile_id).first();
+  if(existing)return json({ok:false,message:"THIS CROWN IS ALREADY LINKED."},409);
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare("UPDATE cypherz_link_requests SET status='approved',approved_member_id=?,approved_at=datetime('now') WHERE id=? AND status='pending'").bind(member.id,link.id),
+    env.CROWN_DB.prepare("UPDATE cypherz_profiles SET crown_member_id=?,linked_at=datetime('now') WHERE id=? AND crown_member_id IS NULL").bind(member.id,link.profile_id)
+  ]);
+  return json({ok:true,message:"CROWN IDENTITY LINKED.",awId:member.aw_id,crownName:member.crown_name});
+}
 async function logout(request,env){
   const raw=cookieValue(request,"awe_crown_session");
   if(raw&&env.SESSION_PEPPER&&env.CROWN_DB){
@@ -259,6 +275,7 @@ export default {
       if(url.pathname==="/api/crown/competitions"&&request.method==="GET")return await competitionList(request,env);
       if(url.pathname==="/api/crown/competition"&&request.method==="GET")return await competitionDetail(request,env);
       if(url.pathname==="/api/crown/judge"&&request.method==="POST")return await submitBallot(request,env);
+      if(url.pathname==="/api/crown/cypherz/link"&&request.method==="POST")return await crownLinkRequest(request,env);
       if(url.pathname==="/api/crown/logout"&&request.method==="POST")return await logout(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
