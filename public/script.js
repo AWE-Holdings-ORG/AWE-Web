@@ -89,6 +89,7 @@ const crownTerminal=document.querySelector('.crown-terminal');
 const crownForm=document.querySelector('.terminal-form');
 const crownName=document.querySelector('#crown-name');
 const crownPck=document.querySelector('#crown-pck');
+const pckVisibility=document.querySelector('.pck-visibility');
 const pckLine=document.querySelector('.terminal-pck-line');
 const namePrompt=document.querySelector('[data-name-prompt]');
 const terminalMessage=document.querySelector('.terminal-message');
@@ -97,12 +98,23 @@ const crownWelcome=document.querySelector('.crown-welcome');
 let terminalIdleTimer=null;
 let terminalStage='name';
 
+function setPckVisibility(show=false){
+  if(crownPck)crownPck.type=show?'text':'password';
+  if(pckVisibility){
+    pckVisibility.textContent=show?'HIDE':'SHOW';
+    pckVisibility.setAttribute('aria-pressed',show?'true':'false');
+    pckVisibility.setAttribute('aria-label',show?'Hide Personal Crown Key':'Show Personal Crown Key');
+  }
+}
+pckVisibility?.addEventListener('click',()=>setPckVisibility(crownPck?.type==='password'));
+
 function resetTerminal(){
   clearTimeout(terminalIdleTimer);
   terminalStage='name';
   if(namePrompt)namePrompt.textContent='01001110 01100001 01101101 01100101';
   if(crownName)crownName.value='';
   if(crownPck)crownPck.value='';
+  setPckVisibility(false);
   if(pckLine)pckLine.hidden=true;
   if(terminalMessage){terminalMessage.textContent='';terminalMessage.classList.remove('error');}
   crownWelcome&&(crownWelcome.hidden=true);
