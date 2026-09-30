@@ -159,6 +159,41 @@ async function addMediaComment(request,env){
   await env.CROWN_DB.prepare("INSERT INTO media_comments(media_id,member_id,body,status,created_at,updated_at) VALUES(?,? ,?,'visible',datetime('now'),datetime('now'))").bind(mediaId,member.id,comment).run();
   return json({ok:true,message:"COMMENT POSTED."},201);
 }
+async function competitionList(request,env){
+  const member=await sessionMember(request,env); if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const rows=(await env.CROWN_DB.prepare("SELECT id,slug,title,competition_type,status,judging_opens_at,judging_closes_at,official_result_status FROM competitions WHERE status IN ('scheduled','live','closed') ORDER BY COALESCE(judging_opens_at,created_at) DESC LIMIT 50").all()).results||[];
+  return json({ok:true,competitions:rows});
+}
+async function competitionDetail(request,env){
+  const member=await sessionMember(request,env); if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const slug=cleanText(new URL(request.url).searchParams.get("slug"),100).toLowerCase();
+  const c=await env.CROWN_DB.prepare("SELECT * FROM competitions WHERE slug=? LIMIT 1").bind(slug).first(); if(!c)return json({ok:false,message:"COMPETITION NOT FOUND."},404);
+  const participants=(await env.CROWN_DB.prepare("SELECT a.id,a.artist_slug,a.display_name,cp.side,cp.display_order FROM competition_participants cp JOIN artists a ON a.id=cp.artist_id WHERE cp.competition_id=? ORDER BY cp.side,cp.display_order").bind(c.id).all()).results||[];
+  const criteria=(await env.CROWN_DB.prepare("SELECT id,criterion_key,label,max_score,weight,display_order FROM judging_criteria WHERE competition_id=? AND active=1 ORDER BY display_order,id").bind(c.id).all()).results||[];
+  const mine=await env.CROWN_DB.prepare("SELECT id,status,submitted_at FROM judging_ballots WHERE competition_id=? AND member_id=? LIMIT 1").bind(c.id,member.id).first();
+  return json({ok:true,competition:c,participants,criteria,myBallot:mine||null});
+}
+async function submitBallot(request,env){
+  const member=await sessionMember(request,env); if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  const body=await readJson(request),competitionId=Number(body.competitionId),scores=Array.isArray(body.scores)?body.scores:[];
+  if(!Number.isInteger(competitionId)||!scores.length)return json({ok:false,message:"COMPLETE SCORECARD REQUIRED."},400);
+  const c=await env.CROWN_DB.prepare("SELECT id,status,judging_opens_at,judging_closes_at FROM competitions WHERE id=? LIMIT 1").bind(competitionId).first();
+  if(!c||!['scheduled','live'].includes(c.status))return json({ok:false,message:"JUDGING IS CLOSED."},409);
+  const now=Date.now(); if(c.judging_opens_at&&now<Date.parse(c.judging_opens_at))return json({ok:false,message:"JUDGING HAS NOT OPENED."},409);
+  if(c.judging_closes_at&&now>Date.parse(c.judging_closes_at))return json({ok:false,message:"JUDGING IS CLOSED."},409);
+  const existing=await env.CROWN_DB.prepare("SELECT id,status FROM judging_ballots WHERE competition_id=? AND member_id=? LIMIT 1").bind(competitionId,member.id).first();
+  if(existing?.status==="submitted")return json({ok:false,message:"BALLOT ALREADY LOCKED."},409);
+  let ballotId=existing?.id;
+  if(!ballotId){const r=await env.CROWN_DB.prepare("INSERT INTO judging_ballots(competition_id,member_id,status) VALUES(?,?,'draft')").bind(competitionId,member.id).run();ballotId=r.meta.last_row_id;}
+  const participants=(await env.CROWN_DB.prepare("SELECT artist_id FROM competition_participants WHERE competition_id=?").bind(competitionId).all()).results||[];
+  const criteria=(await env.CROWN_DB.prepare("SELECT id,max_score FROM judging_criteria WHERE competition_id=? AND active=1").bind(competitionId).all()).results||[];
+  const pset=new Set(participants.map(x=>Number(x.artist_id))), cmap=new Map(criteria.map(x=>[Number(x.id),Number(x.max_score)]));
+  if(scores.length!==pset.size*cmap.size)return json({ok:false,message:"EVERY ACTIVE CRITERION MUST BE SCORED."},400);
+  const seen=new Set(),stmts=[];
+  for(const x of scores){const a=Number(x.artistId),k=Number(x.criterionId),v=Number(x.score),key=a+":"+k;if(!pset.has(a)||!cmap.has(k)||!Number.isFinite(v)||v<0||v>cmap.get(k)||seen.has(key))return json({ok:false,message:"INVALID SCORECARD."},400);seen.add(key);stmts.push(env.CROWN_DB.prepare("INSERT INTO judging_scores(ballot_id,artist_id,criterion_id,score) VALUES(?,?,?,?) ON CONFLICT(ballot_id,artist_id,criterion_id) DO UPDATE SET score=excluded.score").bind(ballotId,a,k,v));}
+  stmts.push(env.CROWN_DB.prepare("UPDATE judging_ballots SET status='submitted',submitted_at=datetime('now'),updated_at=datetime('now') WHERE id=?").bind(ballotId)); await env.CROWN_DB.batch(stmts);
+  return json({ok:true,message:"CROWD SCORECARD LOCKED."});
+}
 async function logout(request,env){
   const raw=cookieValue(request,"awe_crown_session");
   if(raw&&env.SESSION_PEPPER&&env.CROWN_DB){
@@ -221,6 +256,9 @@ export default {
       if(url.pathname==="/api/crown/player/view"&&request.method==="POST")return await recordMediaView(request,env);
       if(url.pathname==="/api/crown/player/comments"&&request.method==="GET")return await listMediaComments(request,env);
       if(url.pathname==="/api/crown/player/comments"&&request.method==="POST")return await addMediaComment(request,env);
+      if(url.pathname==="/api/crown/competitions"&&request.method==="GET")return await competitionList(request,env);
+      if(url.pathname==="/api/crown/competition"&&request.method==="GET")return await competitionDetail(request,env);
+      if(url.pathname==="/api/crown/judge"&&request.method==="POST")return await submitBallot(request,env);
       if(url.pathname==="/api/crown/logout"&&request.method==="POST")return await logout(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
