@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS media_access_policy (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(media_id) REFERENCES artist_media(id) ON DELETE CASCADE,
-  FOREIGN KEY(house_slug) REFERENCES houses(house_slug)
+  FOREIGN KEY(house_slug) REFERENCES houses(slug)
 );
 
 CREATE INDEX IF NOT EXISTS idx_media_access_state
