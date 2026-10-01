@@ -22,6 +22,7 @@ THE SCRYPTUREZ is the canonical index for product law, system architecture, arti
 | SCRYPT-CROWN-003 | Crown / Identity | PCK Visibility UX | ACTIVE |
 | SCRYPT-CROWN-004 | Crown / Player | Player Access Preview Promotion Runbook | ACTIVE / READY FOR PREVIEW |
 | SCRYPT-CROWN-005 | Crown / Player | Da CROWD Player Character Select UX | ACTIVE / IMPLEMENTING |\n| SCRYPT-CROWN-006 | Crown / Player | Da CROWD Player Qualified View Law | ACTIVE / IMPLEMENTING |
+| SCRYPT-CROWN-007 | Crown / Player | Da CROWD Player Engagement Analytics Law | ACTIVE / IMPLEMENTING |
 | SCRYPT-XTG-001 | Artist Intake | X Tha God Artist 001 Intake Registry | ACTIVE |
 | SCRYPT-CYPHERZ-001 | CYPHERZ | CYPHERZ Product Blueprint | ACTIVE / BUILDING |
 | SCRYPT-INFRA-001 | Infrastructure | Cloudflare Agent Setup & Operating Law | ACTIVE |
