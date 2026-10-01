@@ -13,6 +13,8 @@ on:
       - "migrations/0010_player_access_grants.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
+      - "tests/level-x-seed.test.py"
+      - "tests/preview-security-cleanup.test.mjs"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
@@ -29,6 +31,8 @@ on:
       - "migrations/0010_player_access_grants.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
+      - "tests/level-x-seed.test.py"
+      - "tests/preview-security-cleanup.test.mjs"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -56,3 +60,9 @@ jobs:
 
       - name: Validate Player access migrations
         run: python tests/player-migrations.test.py
+
+      - name: Validate LEVEL X verified battle seed
+        run: npm run test:level-x-seed
+
+      - name: Prevent retired Preview recovery regression
+        run: npm run test:preview-security
