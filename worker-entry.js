@@ -2,6 +2,7 @@ import baseWorker from "./worker.js";
 import {playerCatalogResponse} from "./lib/player-api.js";
 import {buildPlayerViewerContext} from "./lib/player-viewer-context.js";
 import {resolveMediaAccess} from "./lib/player-access.js";
+import {playerAnalyticsSchemaReady,playerAnalyticsAuthorized,recordPlaybackSignal,playerAnalyticsResponse} from "./lib/player-analytics.js";
 
 const json=(data,status=200)=>new Response(JSON.stringify(data),{
   status,
@@ -146,6 +147,61 @@ export default {
           ok:false,
           message:"PLAYER TEMPORARILY UNAVAILABLE.",
           code:"PLAYER_ACCESS_RUNTIME_FAILURE"
+        },503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/player/playback"&&request.method==="POST"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+
+      try{
+        const ready=await playerAnalyticsSchemaReady(env.CROWN_DB);
+        if(!ready){
+          return json({
+            ok:false,
+            message:"PLAYER ANALYTICS SCHEMA NOT READY.",
+            code:"PLAYER_ANALYTICS_SCHEMA_MISSING"
+          },503);
+        }
+
+        const decision=await playerEngagementAuthorized(request,env,identity.member);
+        if(decision.authorized===null)return json({ok:false,message:"INVALID PLAYBACK SIGNAL."},400);
+        if(!decision.authorized)return json({ok:false,message:"MEDIA NOT AVAILABLE."},404);
+
+        return recordPlaybackSignal(request,env,{memberId:Number(identity.member.id)});
+      }catch{
+        return json({
+          ok:false,
+          message:"PLAYER ANALYTICS TEMPORARILY UNAVAILABLE.",
+          code:"PLAYER_ANALYTICS_RUNTIME_FAILURE"
+        },503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/player/analytics"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+
+      try{
+        const ready=await playerAnalyticsSchemaReady(env.CROWN_DB);
+        if(!ready){
+          return json({
+            ok:false,
+            message:"PLAYER ANALYTICS SCHEMA NOT READY.",
+            code:"PLAYER_ANALYTICS_SCHEMA_MISSING"
+          },503);
+        }
+
+        const allowed=await playerAnalyticsAuthorized(env.CROWN_DB,Number(identity.member.id));
+        if(!allowed)return json({ok:false,message:"ANALYTICS ACCESS REQUIRED."},403);
+
+        return playerAnalyticsResponse(request,env);
+      }catch{
+        return json({
+          ok:false,
+          message:"PLAYER ANALYTICS TEMPORARILY UNAVAILABLE.",
+          code:"PLAYER_ANALYTICS_RUNTIME_FAILURE"
         },503);
       }
     }
