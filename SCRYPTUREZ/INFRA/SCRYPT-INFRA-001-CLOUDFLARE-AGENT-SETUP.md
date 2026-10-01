@@ -1,7 +1,7 @@
 # SCRYPT-INFRA-001 — Cloudflare Agent Setup & Operating Law
 
 Status: ACTIVE
-Version: 1.1
+Version: 1.2
 Domain: Infrastructure / Agent Tooling
 Owner: AWE / Echo X Labs
 
@@ -101,3 +101,24 @@ For current Player access work:
 Agents may execute Cloudflare operations only within the scope authorized by the
 governing SCRYPT and current user instruction. When a destructive or production
 operation is not clearly authorized, stop before mutation.
+
+
+### Windows PATH repair
+If the native installer succeeds but PowerShell cannot resolve `claude`, the installation may exist at:
+
+    C:\Users\shaym\.local\bin\claude.exe
+
+Repair both the active shell and persistent User PATH:
+
+    $claudeDir = "$HOME\.local\bin"
+    $env:Path = "$env:Path;$claudeDir"
+    $userPath = [Environment]::GetEnvironmentVariable("Path","User")
+    if (($userPath -split ';') -notcontains $claudeDir) {
+        $newUserPath = if ([string]::IsNullOrWhiteSpace($userPath)) { $claudeDir } else { $userPath.TrimEnd(';') + ';' + $claudeDir }
+        [Environment]::SetEnvironmentVariable("Path",$newUserPath,"User")
+    }
+
+Then verify:
+
+    claude --version
+    claude doctor
