@@ -63,7 +63,7 @@ The 2026-09-30 headshot source is intended specifically for the compact roster b
 DeeJayy image canon:
 - roster/headshot slot uses the user-supplied close-up car selfie;
 - selected/hover preview uses the user-supplied full-body "DEEJAYY — Benton Harbor, Michigan" character artwork;
-- DeeJayy selected-art composition uses moderate full-height overscan (about 118%) with left/center positioning so he carries more visual weight without losing most of the poster composition;
+- DeeJayy selected-art composition uses controlled full-stage scaling at approximately 100% stage width and 118% stage height with left/center positioning so the portrait artwork reads with the same horizontal presence as X while retaining the intended poster composition;
 - DeeJayy remains WORLD // IN DEVELOPMENT until a destination is canonically assigned.
 - Remaining slots stay encrypted until canonically introduced.
 
@@ -86,6 +86,11 @@ DeeJayy image canon:
 - Use contain-style presentation for full artwork, with a dark/blurred backfill when necessary to preserve the Player composition.
 - Identity/status copy may overlay the preview, but should not unnecessarily obscure the artist's face or key artwork.
 - Mobile may reposition the artwork and information panel while preserving the full-art intent.
+
+## Artist-Specific Scaling Law
+- Controlled non-uniform scaling is permitted for selected promotional artwork when needed to achieve comparable visual presence across differently shaped source art.
+- Use this sparingly and per artist; do not globally distort all artwork.
+- The goal is presentation parity inside the Player stage, not literal source-pixel geometry.
 
 ## Accessibility / Responsive Law
 - Hover, keyboard focus, and touch selection must work.
