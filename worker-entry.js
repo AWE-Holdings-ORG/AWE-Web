@@ -1,5 +1,7 @@
 import baseWorker from "./worker.js";
 import {playerCatalogResponse} from "./lib/player-api.js";
+import {buildPlayerViewerContext} from "./lib/player-viewer-context.js";
+import {resolveMediaAccess} from "./lib/player-access.js";
 
 const json=(data,status=200)=>new Response(JSON.stringify(data),{
   status,
@@ -56,6 +58,47 @@ async function playerAccessSchema(env){
   };
 }
 
+async function engagementMediaId(request){
+  if(request.method==="GET"){
+    const value=Number(new URL(request.url).searchParams.get("mediaId"));
+    return Number.isInteger(value)&&value>0?value:null;
+  }
+
+  const body=await request.clone().json().catch(()=>null);
+  const value=Number(body?.mediaId);
+  return Number.isInteger(value)&&value>0?value:null;
+}
+
+async function playerEngagementAuthorized(request,env,member){
+  const mediaId=await engagementMediaId(request);
+  if(!mediaId)return {authorized:null};
+
+  const viewer=await buildPlayerViewerContext(env.CROWN_DB,{
+    crownMemberId:Number(member.id),
+    crownAuthenticated:true
+  });
+
+  if(viewer.identityConflict)return {authorized:false};
+
+  const media=await env.CROWN_DB.prepare(`
+    SELECT
+      m.id,
+      COALESCE(p.access_state,'unknown') AS access_state,
+      p.house_slug,
+      p.unlock_slug,
+      COALESCE(p.teaser_mode,'concealed') AS teaser_mode
+    FROM artist_media m
+    LEFT JOIN media_access_policy p ON p.media_id=m.id AND p.active=1
+    WHERE m.id=? AND m.active=1
+    LIMIT 1
+  `).bind(mediaId).first();
+
+  if(!media)return {authorized:false};
+
+  const decision=resolveMediaAccess(media,viewer);
+  return {authorized:decision.authorized===true};
+}
+
 export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);
@@ -98,6 +141,36 @@ export default {
           crownAuthenticated:true,
           surface:"crown"
         });
+      }catch{
+        return json({
+          ok:false,
+          message:"PLAYER TEMPORARILY UNAVAILABLE.",
+          code:"PLAYER_ACCESS_RUNTIME_FAILURE"
+        },503);
+      }
+    }
+
+    const isPlayerEngagement=
+      (url.pathname==="/api/crown/player/view"&&request.method==="POST")||
+      (url.pathname==="/api/crown/player/comments"&&(request.method==="GET"||request.method==="POST"));
+
+    if(isPlayerEngagement){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+
+      try{
+        const schema=await playerAccessSchema(env);
+        if(!schema.ready)return baseWorker.fetch(request,env,ctx);
+
+        const decision=await playerEngagementAuthorized(request,env,identity.member);
+
+        // Preserve the legacy endpoint's own 400 validation for malformed IDs.
+        if(decision.authorized===null)return baseWorker.fetch(request,env,ctx);
+
+        // Fail closed without confirming protected/concealed media details.
+        if(!decision.authorized)return json({ok:false,message:"MEDIA NOT AVAILABLE."},404);
+
+        return baseWorker.fetch(request,env,ctx);
       }catch{
         return json({
           ok:false,
