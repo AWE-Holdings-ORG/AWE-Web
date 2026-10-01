@@ -61,3 +61,12 @@ The pure resolver is not sufficient by itself. Worker/API integration must suppl
    - mode=SCRYPT-CROWN-002
    - required Player access tables present.
 4. Run LEVEL X regression QA for catalog rendering, playback, qualified views, comments, and protected-source redaction.
+
+
+## User 01 Preview Rekey
+- User 01 / AWE-000001 / Nitti_Bo was re-keyed successfully in the feature Preview.
+- The temporary recovery token workflow completed successfully.
+- Cleanup completed successfully.
+- PREVIEW_RECOVERY_TOKEN was removed after use.
+- Normal Preview runtime secrets remain limited to PCK_PEPPER and SESSION_PEPPER.
+- Next gate: authenticated Crown login, access-health verification, then removal of the temporary recovery endpoint from worker.js before merge.
