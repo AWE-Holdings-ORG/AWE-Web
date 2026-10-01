@@ -23,7 +23,7 @@ button,a{font:inherit}
 .stage-art{position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at 35% 28%,#3a2911,#090705 58%,#020202 92%);transition:opacity .18s ease}
 .stage-art.has-image{background-size:contain;background-repeat:no-repeat;background-position:left center;background-color:#030302}
 .stage-art.has-image:before{content:"";position:absolute;inset:-5%;background-image:inherit;background-size:cover;background-position:center;filter:blur(22px) saturate(.65);opacity:.16;transform:scale(1.05);z-index:-1}
-.stage-art:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.01) 0,rgba(0,0,0,.08) 42%,rgba(0,0,0,.78) 72%,#020202 100%),linear-gradient(transparent 58%,rgba(0,0,0,.22) 76%,#020202 100%)}
+.stage-art:after{content:none}
 .stage-silhouette{position:absolute;left:29%;top:50%;width:36%;height:70%;transform:translate(-50%,-48%);opacity:.72}
 .stage-silhouette:before{content:"";position:absolute;left:50%;top:0;width:40%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:#000}
 .stage-silhouette:after{content:"";position:absolute;left:50%;bottom:0;width:100%;height:72%;border-radius:48% 48% 10% 10%;transform:translateX(-50%);background:#000}
@@ -58,7 +58,7 @@ button,a{font:inherit}
 .control-note{margin-top:auto;padding:14px 2px 2px;color:#5f584d;font:800 8px/1.5 ui-monospace,monospace;letter-spacing:.12em}
 .note{margin:22px 0 0;text-align:center;color:#5e574c;font:800 8px ui-monospace,monospace;letter-spacing:.16em}
 @media(max-width:1050px){.selector{grid-template-columns:1fr}.stage{min-height:560px}.roster{grid-template-columns:repeat(6,minmax(0,1fr))}.stage-copy{width:min(410px,46%)}}
-@media(max-width:720px){.sig{display:none}.hero{padding-top:30px}.stage{min-height:620px}.stage-art.has-image{background-position:center top;background-size:contain}.stage-art:after{background:linear-gradient(transparent 34%,rgba(0,0,0,.18) 52%,#020202 78%)}.stage-copy{left:14px;right:14px;bottom:14px;width:auto}.roster{grid-template-columns:repeat(4,minmax(0,1fr))}.slot-name{font-size:12px}}
+@media(max-width:720px){.sig{display:none}.hero{padding-top:30px}.stage{min-height:620px}.stage-art.has-image{background-position:center top;background-size:contain}.stage-copy{left:14px;right:14px;bottom:14px;width:auto}.roster{grid-template-columns:repeat(4,minmax(0,1fr))}.slot-name{font-size:12px}}
 @media(max-width:440px){.roster{grid-template-columns:repeat(3,minmax(0,1fr))}.stage{min-height:590px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
@@ -103,8 +103,8 @@ button,a{font:inherit}
     <button class="slot" type="button" aria-selected="false"
       data-index="03" data-signal="ACTIVE SIGNAL" data-name="DEEJAYY"
       data-rep="GBE" data-world="IN DEVELOPMENT" data-status="IDENTITY RECOGNIZED"
-      data-initials="DJ" data-message="SIGNAL FOUND // WORLD BUILDING">
-      <span class="initials">DJ</span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">03 // ACTIVE</span><span class="slot-name">DEEJAYY</span></span>
+      data-image-b64="/assets/deejayy-character.b64" data-message="SIGNAL FOUND // WORLD BUILDING">
+      <img class="headshot" data-b64-src="/assets/deejayy-headshot.b64" alt="DeeJayy headshot"><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">03 // ACTIVE</span><span class="slot-name">DEEJAYY</span></span>
     </button>
 
     <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 04 locked" data-index="04" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">04 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
@@ -178,11 +178,29 @@ button,a{font:inherit}
     counter.textContent=`${slot.dataset.index} / 12`;
   }
 
+  async function b64DataUrl(path){
+    const response=await fetch(path,{cache:'force-cache'});
+    if(!response.ok) throw new Error('PLAYER_IMAGE_LOAD_FAILED');
+    const value=(await response.text()).trim();
+    return 'data:image/jpeg;base64,'+value;
+  }
+
+  async function hydrateArtistImages(){
+    const headshots=[...document.querySelectorAll('[data-b64-src]')];
+    const imageSlots=slots.filter(slot=>slot.dataset.imageB64);
+    await Promise.all([
+      ...headshots.map(async img=>{img.src=await b64DataUrl(img.dataset.b64Src)}),
+      ...imageSlots.map(async slot=>{slot.dataset.image=await b64DataUrl(slot.dataset.imageB64)})
+    ]);
+  }
+
   slots.forEach(slot=>{
     slot.addEventListener('mouseenter',()=>select(slot));
     slot.addEventListener('focus',()=>select(slot));
     slot.addEventListener('click',()=>select(slot));
   });
+
+  hydrateArtistImages().catch(()=>{});
 })();
 </script>
 </body>
