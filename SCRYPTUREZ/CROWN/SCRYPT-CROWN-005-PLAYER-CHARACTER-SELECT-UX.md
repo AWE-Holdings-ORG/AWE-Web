@@ -59,6 +59,11 @@ The 2026-09-30 headshot source is intended specifically for the compact roster b
 - 01 — X Tha God — world available.
 - 02 — Big Tali / Big Taliban — identity recognized; world in development.
 - 03 — DeeJayy — identity recognized; GBE; no automatic CROWD affiliation; world in development.
+
+DeeJayy image canon:
+- roster/headshot slot uses the user-supplied close-up car selfie;
+- selected/hover preview uses the user-supplied full-body "DEEJAYY — Benton Harbor, Michigan" character artwork;
+- DeeJayy remains WORLD // IN DEVELOPMENT until a destination is canonically assigned.
 - Remaining slots stay encrypted until canonically introduced.
 
 ## Visual Law
@@ -72,6 +77,7 @@ The 2026-09-30 headshot source is intended specifically for the compact roster b
 ## Selected Preview Image Law
 - The compact roster box may crop a headshot to fill its square.
 - The large selected-artist preview should preserve the full canonical artwork by default rather than aggressively crop it.
+- Do not place a dark directional fade over selected artwork; artist artwork should remain visibly readable across the frame. The information card provides its own opaque/translucent contrast.
 - Use contain-style presentation for full artwork, with a dark/blurred backfill when necessary to preserve the Player composition.
 - Identity/status copy may overlay the preview, but should not unnecessarily obscure the artist's face or key artwork.
 - Mobile may reposition the artwork and information panel while preserving the full-art intent.
