@@ -1,7 +1,7 @@
 # SCRYPT-INFRA-001 — Cloudflare Agent Setup & Operating Law
 
 Status: ACTIVE
-Version: 1.0
+Version: 1.1
 Domain: Infrastructure / Agent Tooling
 Owner: AWE / Echo X Labs
 
@@ -26,6 +26,19 @@ Windows note: Cloudflare's current Codex CLI guide recommends WSL2 for the CLI.
 The Codex desktop app can install the Cloudflare plugin through its Plugins UI.
 
 ## Claude Code
+On native Windows PowerShell, if Claude Code is not installed:
+
+    irm https://claude.ai/install.ps1 | iex
+
+Then open a new PowerShell window and verify:
+
+    claude --version
+    claude doctor
+
+WinGet alternative:
+
+    winget install Anthropic.ClaudeCode
+
 Cloudflare's official Claude Code setup:
 1. Run Claude Code from the project root containing wrangler.jsonc.
 2. Inside Claude Code:
