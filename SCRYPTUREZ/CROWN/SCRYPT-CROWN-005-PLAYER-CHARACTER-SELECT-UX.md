@@ -69,6 +69,13 @@ The 2026-09-30 headshot source is intended specifically for the compact roster b
 - Large preview may use fuller artwork.
 - A VS composition is not required.
 
+## Selected Preview Image Law
+- The compact roster box may crop a headshot to fill its square.
+- The large selected-artist preview should preserve the full canonical artwork by default rather than aggressively crop it.
+- Use contain-style presentation for full artwork, with a dark/blurred backfill when necessary to preserve the Player composition.
+- Identity/status copy may overlay the preview, but should not unnecessarily obscure the artist's face or key artwork.
+- Mobile may reposition the artwork and information panel while preserving the full-art intent.
+
 ## Accessibility / Responsive Law
 - Hover, keyboard focus, and touch selection must work.
 - Selected artist uses aria-selected.
