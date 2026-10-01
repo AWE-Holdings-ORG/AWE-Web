@@ -1,10 +1,10 @@
 # SCRYPT-CROWN-002 — QA Record 001
 
-Status: PASS (pure resolver)
+Status: PASS (resolver + schema + Preview identity health); AUTHENTICATED RUNTIME QA PENDING
 Date: 2026-09-30
 Scope: lib/player-access.js
-Runtime Integration: NOT YET COMPLETE
-Preview D1 Migrations 0009/0010: NOT YET RECORDED AS APPLIED
+Runtime Integration: DEPLOYED TO FEATURE PREVIEW; AUTHENTICATED CHECK PENDING
+Preview D1 Migrations 0009/0010: APPLIED
 
 ## Checks Passed
 - PUBLIC returns authorized media.
@@ -33,3 +33,31 @@ This was caught before recording 0009 as applied.
 
 ## Remaining Gate
 The pure resolver is not sufficient by itself. Worker/API integration must supply verified viewer context and use the resolver/redaction result before protected media is returned. Runtime QA is required after migration application and integration.
+
+
+## Preview Promotion Results
+- Preview branch recreated so it inherited Preview Base secrets.
+- Preview secret names present:
+  - PCK_PEPPER
+  - SESSION_PEPPER
+- PREVIEW_RECOVERY_TOKEN is absent.
+- Preview D1 migrations 0009 and 0010 remain applied.
+- Required tables confirmed:
+  - media_access_policy
+  - cypherz_house_access
+  - media_unlock_grants
+- /api/crown/health returns HTTP 200 with:
+  - ok=true
+  - db=true
+  - pckPepper=true
+  - sessionPepper=true
+
+## Remaining Authenticated Runtime Gate
+1. Sign in through the Crown terminal on the active Preview host.
+2. On the same hostname/session, request /api/crown/player/access-health.
+3. Require:
+   - ok=true
+   - schemaReady=true
+   - mode=SCRYPT-CROWN-002
+   - required Player access tables present.
+4. Run LEVEL X regression QA for catalog rendering, playback, qualified views, comments, and protected-source redaction.
