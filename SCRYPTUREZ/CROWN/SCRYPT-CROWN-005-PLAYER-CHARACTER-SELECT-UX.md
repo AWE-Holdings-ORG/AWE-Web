@@ -76,7 +76,9 @@ DeeJayy image canon:
 
 ## Selected Preview Image Law
 - The compact roster box may crop a headshot to fill its square.
-- The large selected-artist preview should preserve the full canonical artwork by default rather than aggressively crop it.
+- The large selected-artist preview should preserve artwork proportions and should touch the top and bottom edges of the selected-art stage by default.
+- Selected artwork uses full-height scaling with proportional width; horizontal overflow/cropping is acceptable before distorting the artwork.
+- It is acceptable for the identity / PRESS START panel to overlap part of the artist artwork.
 - Do not place a dark directional fade over selected artwork; artist artwork should remain visibly readable across the frame. The information card provides its own opaque/translucent contrast.
 - Use contain-style presentation for full artwork, with a dark/blurred backfill when necessary to preserve the Player composition.
 - Identity/status copy may overlay the preview, but should not unnecessarily obscure the artist's face or key artwork.
