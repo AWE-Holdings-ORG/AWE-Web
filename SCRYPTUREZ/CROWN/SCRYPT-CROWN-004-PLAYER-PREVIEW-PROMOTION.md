@@ -128,9 +128,27 @@ Confirmed on feature-crown-door-v1 Preview:
 - Temporary runtime recovery code was removed from worker.js in commit 950561a3923efe5ae5d573e116e81be14e3bdc9a.
 
 Remaining promotion work:
-- deploy and verify the recovery-endpoint removal in Preview;
-- verify the removed endpoint no longer performs recovery;
-- re-confirm normal Crown login and access-health after cleanup;
-- complete LEVEL X regression QA;
-- complete access/redaction QA;
+- from an authenticated Preview browser, POST the retired /api/crown/preview-recover-user01 path and confirm it returns only a non-recovery/static-miss response;
+- re-confirm normal Crown/PCK login and /api/crown/player/access-health against the latest Preview deployment;
+- confirm LEVEL X renders the full 18-battle X Tha God queue and each intended embed starts playback;
+- execute SCRYPT-CROWN-006 qualified-view QA against real playback;
+- verify Crown comments load and post against an authorized battle;
+- execute one runtime unauthorized-media engagement/redaction test using an already-existing restricted Preview record if one exists; do not mutate Preview D1 solely to fabricate a test case;
 - do not merge to main until all promotion gates pass.
+
+## Continuation Verification — 2026-10-01
+
+Code/build facts verified on feature-crown-door-v1:
+- The current executable branch source contains no occurrence of the retired route string `preview-recover-user01`.
+- The current executable branch source contains no occurrence of `PREVIEW_RECOVERY_TOKEN`.
+- The recovery mechanism therefore has no executable handler/token reference in the branch source. A direct HTTP smoke request remains required only to record the final runtime response behavior.
+- Player media engagement authorization was extended to qualified-view and comment GET/POST routes in commit `6014c08bd52feb2709e1ba08ef72eae07756c9f5`.
+- The `6014c08` SCRYPT-CROWN-002 GitHub access gate passed and the Cloudflare Workers Preview build completed successfully.
+- SCRYPT-CROWN-006 defines qualified CROWD VIEW as 10 cumulative seconds of actual playback rather than idle selection.
+- LEVEL X playback qualification was implemented in `e8059a8fbec6ffc330a021d14a9a33fdc82c9a36`.
+- Duplicate same-media/session qualification POST attempts were suppressed in `76243283f01b38cecdc162b1e91ed4d1b3a374e2`.
+- The `7624328` SCRYPT-CROWN-002 GitHub access gate passed and the Cloudflare Workers Preview build completed successfully.
+- The LEVEL X inline Player script parses successfully after the qualification changes.
+- Migration 0008 contains exactly 18 X Tha God battle seed INSERTs with 18 distinct YouTube external IDs; all remain CROWN visibility records.
+- No repository migration seeds a disposable VAULT/locked QA media record. Preview D1 must not be mutated merely to manufacture one.
+
