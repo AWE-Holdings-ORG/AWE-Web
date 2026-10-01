@@ -153,3 +153,38 @@ Code/build facts verified on feature-crown-door-v1:
 - Migration 0008 contains exactly 18 X Tha God battle seed INSERTs with 18 distinct YouTube external IDs; all remain CROWN visibility records.
 - No repository migration seeds a disposable VAULT/locked QA media record. Preview D1 must not be mutated merely to manufacture one.
 
+
+
+## Engagement Analytics Preview Rollout
+
+SCRYPT-CROWN-007 adds migration `0011_player_engagement_analytics.sql`.
+
+This migration creates:
+- `media_playback_sessions` — one monotonic first-party playback ledger row per media/session key;
+- `player_analytics_access` — explicit operator/viewer grants for aggregate analytics reporting.
+
+It also grants the founding operator identity `AWE-000001` analytics operator access when that member exists.
+
+Apply to Preview D1 only:
+
+    npx wrangler d1 migrations apply awe-crown-identity-preview --remote --config wrangler.preview-migrations.jsonc
+
+Expected new pending migration for this phase:
+- 0011_player_engagement_analytics.sql
+
+Do not run this command against production D1.
+
+Before 0011 is applied, the Player remains usable: playback telemetry fails closed with `PLAYER_ANALYTICS_SCHEMA_MISSING` and the client does not interrupt media playback.
+
+After applying 0011, verify:
+1. normal Crown/PCK login still passes;
+2. LEVEL X loads normally;
+3. first actual PLAYING state creates one playback ledger row;
+4. active playback time grows while PLAYING and not while paused/buffering;
+5. a BATTLE still requires 120 cumulative seconds for CROWD VIEW;
+6. duration produces completion percentage;
+7. `/api/crown/player/analytics?artist=x-tha-god&days=30` succeeds for an explicitly granted operator;
+8. the same endpoint returns 403 for a Crown member without an analytics grant;
+9. `/crown/crowd/level-x/analytics/` renders aggregate metrics without member-level/raw-IP/PCK data.
+
+Production D1 remains untouched until a separate approved promotion step.
