@@ -11,13 +11,212 @@
 <div class="rail"><article class="module"><b>01 // WATCH</b><h3>Battle Archive</h3><p>Verified battles, event artifacts and performance footage.</p></article><article class="module"><b>02 // LISTEN</b><h3>Music</h3><p>Official releases and GBE material live beside the visual archive.</p></article><article class="module"><b>03 // DISCOVER</b><h3>Fragm3ntz</h3><p>Historic moments become persistent Crown artifacts.</p></article></div>
 <p class="foot">LEVEL X // THE CROWD × GBE · ARTIST 001</p></section></main>
 <script>
-const state={media:[],active:null,filter:"ALL",viewTimer:null,sessionKey:(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random()).replace(/-/g,"")};
+const QUALIFIED_VIEW_MS=10000;
+const state={
+  media:[],
+  active:null,
+  filter:"ALL",
+  sessionKey:(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random()).replace(/-/g,""),
+  viewTimer:null,
+  viewElapsed:0,
+  viewStartedAt:0,
+  qualifiedMediaId:null,
+  ytPlayer:null,
+  ytPromise:null
+};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function api(url,opt){const r=await fetch(url,opt);if(r.status===401){location.href="/";throw Error("session")};return r.json()}
-function embed(item){const type=String(item.media_type||"").toLowerCase(),url=item.source_url||item.media_url||"";if(item.provider==="youtube"&&item.external_id)return '<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(item.external_id)+'" title="'+esc(item.title)+'" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';if(type==="video"&&url)return '<video controls playsinline preload="metadata" src="'+esc(url)+'"></video>';if(type==="audio"&&url)return '<div><div class="x">X</div><audio controls preload="metadata" src="'+esc(url)+'"></audio></div>';if(["image","artwork","photo"].includes(type)&&url)return '<img src="'+esc(url)+'" alt="'+esc(item.title)+'">';if(url)return '<div><div class="x">X</div><small>EXTERNAL MEDIA // SOURCE AVAILABLE BELOW</small></div>';return '<div><div class="x">X</div><small>'+esc(item.media_type||"ARCHIVE").toUpperCase()+' // '+esc(item.title)+'</small></div>'}
-async function selectMedia(id){const item=state.media.find(x=>x.id===id);if(!item)return;state.active=item;document.querySelectorAll(".queue button").forEach(b=>b.classList.toggle("active",Number(b.dataset.id)===id));document.getElementById("screen").innerHTML=embed(item);document.getElementById("views").textContent=(item.view_count||0)+" CROWD VIEWS";document.getElementById("commentsCount").textContent=(item.comment_count||0)+" COMMENTS";const src=document.getElementById("source"),label=(item.source_name||item.provider||"AWE ARCHIVE").toUpperCase();src.innerHTML=item.source_url?'<a class="source-link" target="_blank" rel="noopener noreferrer" href="'+esc(item.source_url)+'">'+esc(label)+' ↗</a>':esc(label);clearTimeout(state.viewTimer);state.viewTimer=setTimeout(async()=>{const d=await api("/api/crown/player/view",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:item.id,sessionKey:state.sessionKey})});if(d.ok){item.view_count=d.views;document.getElementById("views").textContent=d.views+" CROWD VIEWS"}},10000);await loadComments()}
-async function loadComments(){if(!state.active)return;const d=await api("/api/crown/player/comments?mediaId="+state.active.id);const box=document.getElementById("comments");box.innerHTML=(d.comments||[]).map(c=>'<div class="comment"><b>'+esc(c.crown_name)+' // '+esc(c.aw_id)+'</b><br>'+esc(c.body)+'</div>').join("")||'<div class="comment">NO COMMENTS YET // START THE CYPHER.</div>'}
-function category(x){if(String(x.visibility).toLowerCase()==="vault")return "FROM DA VAULT";const t=String(x.media_type||"MEDIA").toUpperCase();if(t.includes("BATTLE"))return "BATTLES";if(t.includes("MUSIC")||t==="AUDIO")return "MUSIC";if(t.includes("FREESTYLE"))return "FREESTYLES";if(t.includes("INTERVIEW"))return "INTERVIEWS";return "ARCHIVE"}function renderQueue(){const items=state.filter==="ALL"?state.media:state.media.filter(x=>category(x)===state.filter);const q=document.getElementById("queue");q.innerHTML=items.map(x=>'<button data-id="'+x.id+'"><b class="'+(category(x)==="FROM DA VAULT"?"vault":"")+'">'+esc(category(x))+' // '+esc((x.media_type||"MEDIA").toUpperCase())+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.event_date||x.published_at||"DATE VERIFYING")+'</small></button>').join("")||'<button><b>ARCHIVE</b><strong>No media in this lane yet.</strong></button>';q.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>selectMedia(Number(b.dataset.id)))}async function load(){const d=await api("/api/crown/player/catalog?artist=x-tha-god");state.media=d.media||[];if(!state.media.length)return;const cats=["ALL",...new Set(state.media.map(category))],f=document.getElementById("filters");f.innerHTML=cats.map(c=>'<button data-filter="'+esc(c)+'" class="'+(c==="ALL"?"active":"")+'">'+esc(c)+'</button>').join("");f.querySelectorAll("button").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;f.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));renderQueue()});renderQueue();selectMedia(state.media[0].id)}
-document.getElementById("commentForm").addEventListener("submit",async e=>{e.preventDefault();if(!state.active)return;const input=document.getElementById("commentInput"),body=input.value.trim();if(!body)return;const d=await api("/api/crown/player/comments",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:state.active.id,body})});if(d.ok){input.value="";state.active.comment_count=(state.active.comment_count||0)+1;document.getElementById("commentsCount").textContent=state.active.comment_count+" COMMENTS";loadComments()}});
+
+function ensureYouTubeApi(){
+  if(window.YT?.Player)return Promise.resolve();
+  if(state.ytPromise)return state.ytPromise;
+  state.ytPromise=new Promise(resolve=>{
+    const prior=window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady=()=>{if(typeof prior==="function")prior();resolve()};
+    const s=document.createElement("script");
+    s.src="https://www.youtube.com/iframe_api";
+    s.async=true;
+    document.head.appendChild(s);
+  });
+  return state.ytPromise;
+}
+
+function suspendQualification(){
+  if(state.viewStartedAt){
+    state.viewElapsed+=performance.now()-state.viewStartedAt;
+    state.viewStartedAt=0;
+  }
+  clearTimeout(state.viewTimer);
+  state.viewTimer=null;
+}
+
+function resetQualification(){
+  suspendQualification();
+  state.viewElapsed=0;
+  state.qualifiedMediaId=null;
+  if(state.ytPlayer?.destroy){
+    try{state.ytPlayer.destroy()}catch{}
+  }
+  state.ytPlayer=null;
+}
+
+async function qualifyView(mediaId){
+  if(!state.active||state.active.id!==mediaId||state.qualifiedMediaId===mediaId)return;
+  suspendQualification();
+  state.viewElapsed=QUALIFIED_VIEW_MS;
+  state.qualifiedMediaId=mediaId;
+  const d=await api("/api/crown/player/view",{
+    method:"POST",
+    headers:{"content-type":"application/json"},
+    body:JSON.stringify({mediaId,sessionKey:state.sessionKey})
+  }).catch(()=>null);
+  if(d?.ok){
+    state.active.view_count=d.views;
+    document.getElementById("views").textContent=d.views+" CROWD VIEWS";
+  }else{
+    state.qualifiedMediaId=null;
+  }
+}
+
+function startQualification(mediaId){
+  if(!state.active||state.active.id!==mediaId||state.qualifiedMediaId===mediaId||state.viewStartedAt)return;
+  const remaining=Math.max(0,QUALIFIED_VIEW_MS-state.viewElapsed);
+  if(remaining===0){qualifyView(mediaId);return}
+  state.viewStartedAt=performance.now();
+  clearTimeout(state.viewTimer);
+  state.viewTimer=setTimeout(()=>{
+    if(state.viewStartedAt){
+      state.viewElapsed+=performance.now()-state.viewStartedAt;
+      state.viewStartedAt=0;
+    }
+    qualifyView(mediaId);
+  },remaining);
+}
+
+function embed(item){
+  const type=String(item.media_type||"").toLowerCase(),url=item.source_url||item.media_url||"";
+  if(item.provider==="youtube"&&item.external_id){
+    const origin=encodeURIComponent(location.origin);
+    return '<iframe id="ytPlayerFrame" src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(item.external_id)+'?enablejsapi=1&origin='+origin+'" title="'+esc(item.title)+'" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  }
+  if(type==="video"&&url)return '<video controls playsinline preload="metadata" src="'+esc(url)+'"></video>';
+  if(type==="audio"&&url)return '<div><div class="x">X</div><audio controls preload="metadata" src="'+esc(url)+'"></audio></div>';
+  if(["image","artwork","photo"].includes(type)&&url)return '<img src="'+esc(url)+'" alt="'+esc(item.title)+'">';
+  if(url)return '<div><div class="x">X</div><small>EXTERNAL MEDIA // SOURCE AVAILABLE BELOW</small></div>';
+  return '<div><div class="x">X</div><small>'+esc(item.media_type||"ARCHIVE").toUpperCase()+' // '+esc(item.title)+'</small></div>';
+}
+
+async function mountPlaybackTracking(item){
+  if(item.authorized===false)return;
+  const mediaId=Number(item.id);
+  const type=String(item.media_type||"").toLowerCase();
+
+  if(item.provider==="youtube"&&item.external_id){
+    await ensureYouTubeApi();
+    if(!state.active||state.active.id!==mediaId||!document.getElementById("ytPlayerFrame"))return;
+    state.ytPlayer=new YT.Player("ytPlayerFrame",{
+      events:{
+        onStateChange:e=>{
+          if(!state.active||state.active.id!==mediaId)return;
+          if(e.data===YT.PlayerState.PLAYING)startQualification(mediaId);
+          else suspendQualification();
+        }
+      }
+    });
+    return;
+  }
+
+  if(type==="video"||type==="audio"){
+    const el=document.querySelector("#screen "+type);
+    if(!el)return;
+    el.addEventListener("playing",()=>startQualification(mediaId));
+    for(const event of ["pause","waiting","stalled","ended","emptied"]){
+      el.addEventListener(event,()=>suspendQualification());
+    }
+  }
+}
+
+function setCommentAccess(enabled){
+  const input=document.getElementById("commentInput");
+  const button=document.querySelector("#commentForm button");
+  input.disabled=!enabled;
+  button.disabled=!enabled;
+  input.placeholder=enabled?"Add to the CROWD…":"LOCKED SIGNAL // COMMENTS UNAVAILABLE";
+}
+
+async function selectMedia(id){
+  const item=state.media.find(x=>x.id===id);
+  if(!item)return;
+  resetQualification();
+  state.active=item;
+  document.querySelectorAll(".queue button").forEach(b=>b.classList.toggle("active",Number(b.dataset.id)===id));
+  document.getElementById("screen").innerHTML=embed(item);
+  mountPlaybackTracking(item);
+  document.getElementById("views").textContent=(item.view_count??0)+" CROWD VIEWS";
+  document.getElementById("commentsCount").textContent=(item.comment_count??0)+" COMMENTS";
+  const src=document.getElementById("source"),label=(item.source_name||item.provider||"AWE ARCHIVE").toUpperCase();
+  src.innerHTML=item.source_url?'<a class="source-link" target="_blank" rel="noopener noreferrer" href="'+esc(item.source_url)+'">'+esc(label)+' ↗</a>':esc(label);
+  const canEngage=item.authorized!==false;
+  setCommentAccess(canEngage);
+  if(canEngage)await loadComments();
+  else document.getElementById("comments").innerHTML='<div class="comment">LOCKED SIGNAL // ENGAGEMENT UNAVAILABLE.</div>';
+}
+
+async function loadComments(){
+  if(!state.active||state.active.authorized===false)return;
+  const d=await api("/api/crown/player/comments?mediaId="+state.active.id);
+  const box=document.getElementById("comments");
+  box.innerHTML=(d.comments||[]).map(c=>'<div class="comment"><b>'+esc(c.crown_name)+' // '+esc(c.aw_id)+'</b><br>'+esc(c.body)+'</div>').join("")||'<div class="comment">NO COMMENTS YET // START THE CYPHER.</div>';
+}
+
+function category(x){
+  if(String(x.access_state||x.visibility).toLowerCase()==="vault")return "FROM DA VAULT";
+  const t=String(x.media_type||"MEDIA").toUpperCase();
+  if(t.includes("BATTLE"))return "BATTLES";
+  if(t.includes("MUSIC")||t==="AUDIO")return "MUSIC";
+  if(t.includes("FREESTYLE"))return "FREESTYLES";
+  if(t.includes("INTERVIEW"))return "INTERVIEWS";
+  return "ARCHIVE";
+}
+
+function renderQueue(){
+  const items=state.filter==="ALL"?state.media:state.media.filter(x=>category(x)===state.filter);
+  const q=document.getElementById("queue");
+  q.innerHTML=items.map(x=>'<button data-id="'+x.id+'"><b class="'+(category(x)==="FROM DA VAULT"?"vault":"")+'">'+esc(category(x))+' // '+esc((x.media_type||"MEDIA").toUpperCase())+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.event_date||x.published_at||"DATE VERIFYING")+'</small></button>').join("")||'<button><b>ARCHIVE</b><strong>No media in this lane yet.</strong></button>';
+  q.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>selectMedia(Number(b.dataset.id)));
+}
+
+async function load(){
+  const d=await api("/api/crown/player/catalog?artist=x-tha-god");
+  state.media=d.media||[];
+  if(!state.media.length)return;
+  const cats=["ALL",...new Set(state.media.map(category))],f=document.getElementById("filters");
+  f.innerHTML=cats.map(c=>'<button data-filter="'+esc(c)+'" class="'+(c==="ALL"?"active":"")+'">'+esc(c)+'</button>').join("");
+  f.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    state.filter=b.dataset.filter;
+    f.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+    renderQueue();
+  });
+  renderQueue();
+  selectMedia(state.media[0].id);
+}
+
+document.getElementById("commentForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!state.active||state.active.authorized===false)return;
+  const input=document.getElementById("commentInput"),body=input.value.trim();
+  if(!body)return;
+  const d=await api("/api/crown/player/comments",{
+    method:"POST",
+    headers:{"content-type":"application/json"},
+    body:JSON.stringify({mediaId:state.active.id,body})
+  });
+  if(d.ok){
+    input.value="";
+    state.active.comment_count=(state.active.comment_count||0)+1;
+    document.getElementById("commentsCount").textContent=state.active.comment_count+" COMMENTS";
+    loadComments();
+  }
+});
 load();
 </script></body></html>
