@@ -8,6 +8,7 @@ on:
       - "lib/player-catalog-service.js"
       - "lib/player-api.js"
       - "worker-entry.js"
+      - "public/crown/crowd/level-x/index.html"
       - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
@@ -15,9 +16,11 @@ on:
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
       - "tests/preview-security-cleanup.test.mjs"
+      - "tests/level-x-client.test.mjs"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-006-PLAYER-QUALIFIED-VIEWS.md"
       - ".github/workflows/player-access-tests.yml"
   pull_request:
     paths:
@@ -26,6 +29,7 @@ on:
       - "lib/player-catalog-service.js"
       - "lib/player-api.js"
       - "worker-entry.js"
+      - "public/crown/crowd/level-x/index.html"
       - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
@@ -33,6 +37,7 @@ on:
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
       - "tests/preview-security-cleanup.test.mjs"
+      - "tests/level-x-client.test.mjs"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -63,6 +68,9 @@ jobs:
 
       - name: Validate LEVEL X verified battle seed
         run: npm run test:level-x-seed
+
+      - name: Validate LEVEL X client playback wiring
+        run: npm run test:level-x-client
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
