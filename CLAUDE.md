@@ -66,3 +66,32 @@ For Player access work, read:
 - SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md
 - SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md
 - SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md
+
+
+## PATH Repair
+
+If Claude Code installs to:
+
+`C:\Users\shaym\.local\bin\claude.exe`
+
+but `claude` is not recognized, repair the current PowerShell session and the persistent User PATH:
+
+```powershell
+$claudeDir = "$HOME\.local\bin"
+$env:Path = "$env:Path;$claudeDir"
+
+$userPath = [Environment]::GetEnvironmentVariable("Path","User")
+if (($userPath -split ';') -notcontains $claudeDir) {
+    $newUserPath = if ([string]::IsNullOrWhiteSpace($userPath)) { $claudeDir } else { $userPath.TrimEnd(';') + ';' + $claudeDir }
+    [Environment]::SetEnvironmentVariable("Path",$newUserPath,"User")
+}
+```
+
+Verify immediately in the same terminal:
+
+```powershell
+claude --version
+claude doctor
+```
+
+Opening a new terminal after the persistent PATH write is still recommended.
