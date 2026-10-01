@@ -144,8 +144,9 @@ Code/build facts verified on feature-crown-door-v1:
 - The recovery mechanism therefore has no executable handler/token reference in the branch source. A direct HTTP smoke request remains required only to record the final runtime response behavior.
 - Player media engagement authorization was extended to qualified-view and comment GET/POST routes in commit `6014c08bd52feb2709e1ba08ef72eae07756c9f5`.
 - The `6014c08` SCRYPT-CROWN-002 GitHub access gate passed and the Cloudflare Workers Preview build completed successfully.
-- SCRYPT-CROWN-006 defines qualified CROWD VIEW as 10 cumulative seconds of actual playback rather than idle selection.
+- SCRYPT-CROWN-006 now defines BATTLE qualified CROWD VIEW as 120 cumulative seconds (2:00) of actual playback rather than idle selection; non-battle media retains a provisional 10-second default.
 - LEVEL X playback qualification was implemented in `e8059a8fbec6ffc330a021d14a9a33fdc82c9a36`.
+- YouTube public views and CROWD VIEW are intentionally separate metrics; Crown never treats a provider play-start alone as a qualified CROWD VIEW.
 - Duplicate same-media/session qualification POST attempts were suppressed in `76243283f01b38cecdc162b1e91ed4d1b3a374e2`.
 - The `7624328` SCRYPT-CROWN-002 GitHub access gate passed and the Cloudflare Workers Preview build completed successfully.
 - The LEVEL X inline Player script parses successfully after the qualification changes.
