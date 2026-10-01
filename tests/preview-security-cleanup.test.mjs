@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 
 const ROOT=fileURLToPath(new URL("../",import.meta.url));
 const EXECUTABLE_EXTENSIONS=new Set([".js",".mjs",".html"]);
-const RETIRED=["preview-recover-user01","PREVIEW_RECOVERY_TOKEN"];
+const RETIRED=["preview-"+"recover-user01","PREVIEW_"+"RECOVERY_TOKEN"];
 
 function executableFiles(path){
   const out=[];
