@@ -73,3 +73,40 @@ Do not merge to main until:
 - LEVEL X regression QA passes;
 - SCRYPT-CROWN-002 access/redaction checks pass;
 - temporary User 01 recovery functionality has been removed through the approved cleanup workflow.
+
+
+## Preview Secret Verification
+
+Worker Previews have Preview-specific secrets. A healthy Wrangler login and a healthy
+Preview D1 binding do not prove the active Preview deployment has its required secrets.
+
+Before authenticated Crown runtime QA, check the current branch Preview:
+
+    npx wrangler preview secret list --name feature-crown-door-v1 --json
+
+Required Preview secret names for Crown identity runtime:
+- PCK_PEPPER
+- SESSION_PEPPER
+
+Do not print or commit secret values.
+
+If either secret is missing, restore both together to the branch Preview before runtime QA.
+Prefer a bulk operation containing both required secrets so the Preview deployment is
+created with a complete set:
+
+    npx wrangler preview secret bulk <LOCAL_SECRET_FILE> --name feature-crown-door-v1
+
+The local secret file must not be committed and should be deleted after use if it is only
+a temporary staging file.
+
+Do not restore PREVIEW_RECOVERY_TOKEN as part of normal runtime recovery. That token belongs
+to the temporary User 01 recovery mechanism and remains scheduled for removal.
+
+After restoring Preview secrets:
+1. confirm both names with preview secret list;
+2. confirm /api/crown/health reports pckPepper=true and sessionPepper=true;
+3. authenticate through the Crown terminal;
+4. confirm /api/crown/player/access-health reports schemaReady=true and mode=SCRYPT-CROWN-002.
+
+A plain code upload is not considered a secret repair. Runtime QA does not proceed until
+the active Preview deployment reports both required identity secrets.
