@@ -101,3 +101,15 @@ DeeJayy image canon:
 
 ## Authority
 This SCRYPT governs the Da CROWD Player artist-selection lobby presentation. Access authorization remains governed by SCRYPT-CROWN-001 and SCRYPT-CROWN-002.
+
+
+## Canonical Asset Pipeline
+Player character artwork and roster headshots use direct files under /public/assets.
+
+Canonical current assets:
+- /assets/x-tha-god-character.jpeg
+- /assets/x-tha-god-headshot.jpg
+- /assets/deejayy-character.png
+- /assets/deejayy-headshot.jpg
+
+Temporary Base64 text assets and embedded headshot data URIs are not part of the production Player asset pipeline and must be removed once direct assets are available.
