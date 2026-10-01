@@ -1,7 +1,7 @@
 # SCRYPT-INFRA-001 — Cloudflare Agent Setup & Operating Law
 
 Status: ACTIVE
-Version: 1.2
+Version: 1.3
 Domain: Infrastructure / Agent Tooling
 Owner: AWE / Echo X Labs
 
@@ -122,3 +122,24 @@ Then verify:
 
     claude --version
     claude doctor
+
+
+## Worker Preview Secret Law
+Cloudflare Worker Previews have their own secret state. Preview D1 access and Wrangler OAuth
+can be healthy while the active Preview deployment still lacks Crown identity secrets.
+
+For the current feature Preview, verify:
+
+    npx wrangler preview secret list --name feature-crown-door-v1 --json
+
+Required names:
+- PCK_PEPPER
+- SESSION_PEPPER
+
+Use Preview secret commands for branch runtime secrets. Never record values in SCRYPTUREZ.
+When restoring a complete Preview identity secret set, prefer a bulk write of all required
+names together rather than piecemeal mutation.
+
+Cloudflare Preview base-config secrets may be used for secrets that should be inherited by
+newly created Previews. Changes to Preview base-config secrets are not treated as retroactive
+repair of an already active Preview; verify the specific branch Preview separately.
