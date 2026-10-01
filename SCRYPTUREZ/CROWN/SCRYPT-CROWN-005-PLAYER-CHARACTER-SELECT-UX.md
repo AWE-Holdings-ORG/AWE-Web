@@ -63,6 +63,7 @@ The 2026-09-30 headshot source is intended specifically for the compact roster b
 DeeJayy image canon:
 - roster/headshot slot uses the user-supplied close-up car selfie;
 - selected/hover preview uses the user-supplied full-body "DEEJAYY — Benton Harbor, Michigan" character artwork;
+- DeeJayy selected-art composition uses a full-stage cover treatment with top-biased positioning so his portrait artwork carries comparable visual weight to X's landscape artwork;
 - DeeJayy remains WORLD // IN DEVELOPMENT until a destination is canonically assigned.
 - Remaining slots stay encrypted until canonically introduced.
 
@@ -76,8 +77,10 @@ DeeJayy image canon:
 
 ## Selected Preview Image Law
 - The compact roster box may crop a headshot to fill its square.
-- The large selected-artist preview should preserve artwork proportions and should touch the top and bottom edges of the selected-art stage by default.
-- Selected artwork uses full-height scaling with proportional width; horizontal overflow/cropping is acceptable before distorting the artwork.
+- The large selected-artist preview should preserve artwork proportions while giving each selected artist a comparable visual footprint.
+- Landscape artwork may use full-height scaling when that fills the stage naturally.
+- Portrait promotional artwork may use a full-stage cover treatment so the artist does not read materially smaller than landscape artwork; vertical cropping is acceptable before distorting the artwork.
+- Per-artist focal positioning is allowed to protect important faces, titles, and composition.
 - It is acceptable for the identity / PRESS START panel to overlap part of the artist artwork.
 - Do not place a dark directional fade over selected artwork; artist artwork should remain visibly readable across the frame. The information card provides its own opaque/translucent contrast.
 - Use contain-style presentation for full artwork, with a dark/blurred backfill when necessary to preserve the Player composition.
