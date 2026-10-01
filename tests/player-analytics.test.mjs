@@ -38,3 +38,11 @@ test("LEVEL X analytics dashboard script parses",()=>{
   assert.doesNotThrow(()=>new Function(match[1]));
   assert.match(match[1],/\/api\/crown\/player\/analytics/);
 });
+
+
+test("CROWD VIEW funnel is scoped to tracked playback session keys",()=>{
+  const path=fileURLToPath(new URL("../lib/player-analytics.js",import.meta.url));
+  const source=readFileSync(path,"utf8");
+  assert.match(source,/ps\.session_key=mv\.session_key/);
+  assert.match(source,/ps\.media_id=mv\.media_id/);
+});
