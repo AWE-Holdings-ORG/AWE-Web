@@ -188,3 +188,31 @@ After applying 0011, verify:
 9. `/crown/crowd/level-x/analytics/` renders aggregate metrics without member-level/raw-IP/PCK data.
 
 Production D1 remains untouched until a separate approved promotion step.
+
+
+## Analytics Preview Activation — 2026-10-01
+
+Verified continuation state:
+- Local branch was fast-forwarded to `be4a7ca961c016c94cb1c973c58c9a45a4d05408`.
+- Preview D1 migration `0011_player_engagement_analytics.sql` was reviewed as additive-only and applied to `awe-crown-identity-preview`.
+- No Preview migrations remain pending after 0011.
+- `media_playback_sessions` and `player_analytics_access` exist in Preview D1.
+- `AWE-000001` holds the analytics operator grant.
+- The playback ledger was empty immediately after migration, providing a clean analytics launch baseline.
+- Pre-apply local QA passed for runtime syntax, Player access, Preview security, LEVEL X client wiring, Player analytics, LEVEL X seed integrity, analytics migration, and Player access migrations.
+- GitHub `SCRYPT-CROWN-002 access gate` passed at `be4a7ca`.
+- Cloudflare Workers Preview build `b1c9f7e1-2ab3-4454-99d4-c6fe2b63d7c4` completed successfully for `be4a7ca`.
+- A separate manual Preview deploy is therefore not required for this SHA.
+- Production D1, main, DNS, nameservers, and secrets remain untouched.
+
+The next required phase is authenticated browser/runtime QA against the latest Preview:
+1. normal PCK login;
+2. read-only Crown/access-health/recovery smoke;
+3. LEVEL X 18-battle embed pass;
+4. 120-second qualified CROWD VIEW;
+5. SCRYPT-CROWN-007 PLAY START / active-watch / pause / resume / completion telemetry;
+6. operator analytics dashboard;
+7. comments persistence;
+8. restricted-media runtime redaction when a legitimate restricted record exists.
+
+Do not merge to main until those runtime gates pass.
