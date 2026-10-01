@@ -1,7 +1,7 @@
 # SCRYPT-CROWN-002 — Player Access Resolver Contract
 
 Status: ACTIVE / IMPLEMENTING
-Version: 1.0
+Version: 1.1
 Depends On: SCRYPT-CROWN-001
 
 ## Purpose
@@ -58,6 +58,18 @@ CONCEALED: return no record before authorization.
 Client UI is presentation only.
 The server/API is the authority for access decisions.
 CSS, JavaScript hiding, disabled buttons, obscured URLs, or route secrecy are never authorization.
+
+## Engagement Authorization
+Access resolution applies to every server-side media interaction, not only catalog delivery.
+
+For any endpoint that reads or mutates media-specific state — including qualified CROWD VIEW recording, comment listing, comment posting, reactions, judging attachments, or future engagement signals — the runtime must re-resolve the viewer against that media record before the action proceeds.
+
+Rules:
+- an authenticated Crown/CYPHERZ session alone is not sufficient;
+- the media item must be authorized for that viewer under the same PUBLIC/HOUSE/UNLOCK/CROWN/VAULT resolver used by catalog delivery;
+- locked, encrypted, concealed, malformed, missing-policy, or otherwise unauthorized media must not record views or expose/accept engagement data;
+- unauthorized engagement requests must fail without returning protected source fields or confirming concealed media details;
+- client-side hiding never substitutes for this server-side check.
 
 ## CYPHERZ Contract
 CYPHERZ may render PUBLIC/HOUSE/UNLOCK normally when authorized.
