@@ -14,7 +14,10 @@ test("LEVEL X inline Player script parses",()=>{
 
 test("LEVEL X qualified-view wiring requires real playback signals",()=>{
   const script=match?.[1]||"";
-  assert.match(script,/QUALIFIED_VIEW_MS\s*=\s*10000/);
+  assert.match(script,/BATTLE_QUALIFIED_VIEW_MS\s*=\s*120000/);
+  assert.match(script,/DEFAULT_QUALIFIED_VIEW_MS\s*=\s*10000/);
+  assert.match(script,/qualifiedViewMs\(item\)/);
+  assert.match(script,/media_type\|\|""\)\.toLowerCase\(\)===["']battle["']/);
   assert.match(script,/YT\.PlayerState\.PLAYING/);
   assert.match(script,/addEventListener\("playing"/);
   assert.match(script,/qualifiedMediaIds\.has\(mediaId\)/);
