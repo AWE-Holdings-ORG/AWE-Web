@@ -29,3 +29,15 @@ test("LEVEL X comments honor catalog authorization state",()=>{
   assert.match(script,/state\.active\.authorized===false/);
   assert.match(script,/LOCKED SIGNAL \/\/ ENGAGEMENT UNAVAILABLE/);
 });
+
+
+test("LEVEL X first-party playback analytics use real playback heartbeats",()=>{
+  const script=match?.[1]||"";
+  assert.match(script,/ANALYTICS_REPORT_MS\s*=\s*15000/);
+  assert.match(script,/\/api\/crown\/player\/playback/);
+  assert.match(script,/startPlaybackAnalytics\(mediaId\)/);
+  assert.match(script,/suspendPlaybackAnalytics\(mediaId/);
+  assert.match(script,/activeMs/);
+  assert.match(script,/durationMs/);
+  assert.match(script,/pagehide/);
+});
