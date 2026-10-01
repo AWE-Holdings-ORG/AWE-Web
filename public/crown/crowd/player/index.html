@@ -21,7 +21,7 @@ button,a{font:inherit}
 .selector{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(360px,.78fr);gap:14px;align-items:stretch}
 .stage{position:relative;min-height:590px;border:1px solid var(--line);background:#050403;overflow:hidden;isolation:isolate}
 .stage-art{position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at 35% 28%,#3a2911,#090705 58%,#020202 92%);transition:opacity .18s ease}
-.stage-art.has-image{background-size:contain;background-repeat:no-repeat;background-position:left center;background-color:#030302}
+.stage-art.has-image{background-size:auto 100%;background-repeat:no-repeat;background-position:left center;background-color:#030302}
 .stage-art.has-image:before{content:"";position:absolute;inset:-5%;background-image:inherit;background-size:cover;background-position:center;filter:blur(22px) saturate(.65);opacity:.16;transform:scale(1.05);z-index:-1}
 .stage-art:after{content:none}
 .stage-silhouette{position:absolute;left:29%;top:50%;width:36%;height:70%;transform:translate(-50%,-48%);opacity:.72}
@@ -58,7 +58,7 @@ button,a{font:inherit}
 .control-note{margin-top:auto;padding:14px 2px 2px;color:#5f584d;font:800 8px/1.5 ui-monospace,monospace;letter-spacing:.12em}
 .note{margin:22px 0 0;text-align:center;color:#5e574c;font:800 8px ui-monospace,monospace;letter-spacing:.16em}
 @media(max-width:1050px){.selector{grid-template-columns:1fr}.stage{min-height:560px}.roster{grid-template-columns:repeat(6,minmax(0,1fr))}.stage-copy{width:min(410px,46%)}}
-@media(max-width:720px){.sig{display:none}.hero{padding-top:30px}.stage{min-height:620px}.stage-art.has-image{background-position:center top;background-size:contain}.stage-copy{left:14px;right:14px;bottom:14px;width:auto}.roster{grid-template-columns:repeat(4,minmax(0,1fr))}.slot-name{font-size:12px}}
+@media(max-width:720px){.sig{display:none}.hero{padding-top:30px}.stage{min-height:620px}.stage-art.has-image{background-position:left center;background-size:auto 100%}.stage-copy{left:14px;right:14px;bottom:14px;width:auto}.roster{grid-template-columns:repeat(4,minmax(0,1fr))}.slot-name{font-size:12px}}
 @media(max-width:440px){.roster{grid-template-columns:repeat(3,minmax(0,1fr))}.stage{min-height:590px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
