@@ -20,7 +20,7 @@ const state={
   viewTimer:null,
   viewElapsed:0,
   viewStartedAt:0,
-  qualifiedMediaId:null,
+  qualifiedMediaIds:new Set(),
   ytPlayer:null,
   ytPromise:null
 };
@@ -53,7 +53,6 @@ function suspendQualification(){
 function resetQualification(){
   suspendQualification();
   state.viewElapsed=0;
-  state.qualifiedMediaId=null;
   if(state.ytPlayer?.destroy){
     try{state.ytPlayer.destroy()}catch{}
   }
@@ -61,10 +60,10 @@ function resetQualification(){
 }
 
 async function qualifyView(mediaId){
-  if(!state.active||state.active.id!==mediaId||state.qualifiedMediaId===mediaId)return;
+  if(!state.active||state.active.id!==mediaId||state.qualifiedMediaIds.has(mediaId))return;
   suspendQualification();
   state.viewElapsed=QUALIFIED_VIEW_MS;
-  state.qualifiedMediaId=mediaId;
+  state.qualifiedMediaIds.add(mediaId);
   const d=await api("/api/crown/player/view",{
     method:"POST",
     headers:{"content-type":"application/json"},
@@ -74,12 +73,12 @@ async function qualifyView(mediaId){
     state.active.view_count=d.views;
     document.getElementById("views").textContent=d.views+" CROWD VIEWS";
   }else{
-    state.qualifiedMediaId=null;
+    state.qualifiedMediaIds.delete(mediaId);
   }
 }
 
 function startQualification(mediaId){
-  if(!state.active||state.active.id!==mediaId||state.qualifiedMediaId===mediaId||state.viewStartedAt)return;
+  if(!state.active||state.active.id!==mediaId||state.qualifiedMediaIds.has(mediaId)||state.viewStartedAt)return;
   const remaining=Math.max(0,QUALIFIED_VIEW_MS-state.viewElapsed);
   if(remaining===0){qualifyView(mediaId);return}
   state.viewStartedAt=performance.now();
