@@ -139,20 +139,20 @@ Open:
 
 Use one authorized battle and note its starting CROWD VIEW count.
 
-1. Select the battle but do not press Play for at least 12 seconds.
+1. Select the battle but do not press Play for at least 125 seconds.
    - PASS: view count does not change.
-2. Play for about 5 seconds, then pause.
+2. Play for about 60 seconds, then pause.
    - PASS: view count does not change.
-3. Resume playback until cumulative active playback exceeds 10 seconds.
+3. Resume playback until cumulative active PLAYING-state time exceeds 120 seconds.
    - PASS: view count increments exactly once.
-4. Continue playing for at least another 12 seconds.
+4. Continue playing for at least another 15 seconds.
    - PASS: no second increment occurs.
-5. Switch to another battle, then return to the already-qualified battle and play another 10+ seconds in the same Player page session.
+5. Switch to another battle, then return to the already-qualified battle and play another 120+ seconds in the same Player page session.
    - PASS: no second POST/count increment occurs for that media/session key.
-6. Select a different battle and switch away before 10 active seconds.
+6. Select a different battle and switch away before 120 active seconds.
    - PASS: the abandoned battle does not increment.
 
-Buffering/waiting time must not count toward qualification.
+Buffering/waiting time must not count toward qualification. The battle threshold is 120 cumulative seconds of actual playback; merely starting a YouTube video may count as provider exposure but does not qualify as a CROWD VIEW.
 
 ## 18-Battle Embed Pass
 
