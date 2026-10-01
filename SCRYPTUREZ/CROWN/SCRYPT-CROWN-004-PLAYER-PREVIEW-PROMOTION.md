@@ -110,3 +110,27 @@ After restoring Preview secrets:
 
 A plain code upload is not considered a secret repair. Runtime QA does not proceed until
 the active Preview deployment reports both required identity secrets.
+
+
+## Verified Preview Milestones — 2026-10-01
+Confirmed on feature-crown-door-v1 Preview:
+- D1 migrations 0009 and 0010 are applied.
+- /api/crown/health reports ok=true, db=true, pckPepper=true, sessionPepper=true.
+- Authenticated /api/crown/player/access-health reports:
+  - ok=true
+  - schemaReady=true
+  - mode=SCRYPT-CROWN-002
+  - media_access_policy present
+  - cypherz_house_access present
+  - media_unlock_grants present
+- User 01 re-key is complete and normal PCK authentication is working.
+- PREVIEW_RECOVERY_TOKEN is absent from the Preview secrets.
+- Temporary runtime recovery code was removed from worker.js in commit 950561a3923efe5ae5d573e116e81be14e3bdc9a.
+
+Remaining promotion work:
+- deploy and verify the recovery-endpoint removal in Preview;
+- verify the removed endpoint no longer performs recovery;
+- re-confirm normal Crown login and access-health after cleanup;
+- complete LEVEL X regression QA;
+- complete access/redaction QA;
+- do not merge to main until all promotion gates pass.
