@@ -51,7 +51,8 @@ Locked slots must not reveal a normal route into the artist or Crown architectur
 - State: ACTIVE // UNLOCKED
 - PRESS START destination: /crown/crowd/level-x/
 - Roster slot uses the user-supplied close headshot.
-- Selected preview may use the larger canonical X character artwork.
+- Selected preview uses the canonical X character artwork.
+- X selected-art composition uses a slight zoom-out at approximately 94% stage height to reduce unnecessary enlargement of the current provisional JPEG while preserving the approved composition.
 
 The 2026-09-30 headshot source is intended specifically for the compact roster box and does not replace the larger canonical character artwork.
 
