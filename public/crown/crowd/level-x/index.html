@@ -11,7 +11,13 @@
 <div class="rail"><article class="module"><b>01 // WATCH</b><h3>Battle Archive</h3><p>Verified battles, event artifacts and performance footage.</p></article><article class="module"><b>02 // LISTEN</b><h3>Music</h3><p>Official releases and GBE material live beside the visual archive.</p></article><article class="module"><b>03 // DISCOVER</b><h3>Fragm3ntz</h3><p>Historic moments become persistent Crown artifacts.</p></article></div>
 <p class="foot">LEVEL X // THE CROWD × GBE · ARTIST 001</p></section></main>
 <script>
-const QUALIFIED_VIEW_MS=10000;
+const BATTLE_QUALIFIED_VIEW_MS=120000;
+const DEFAULT_QUALIFIED_VIEW_MS=10000;
+function qualifiedViewMs(item){
+  return String(item?.media_type||"").toLowerCase()==="battle"
+    ? BATTLE_QUALIFIED_VIEW_MS
+    : DEFAULT_QUALIFIED_VIEW_MS;
+}
 const state={
   media:[],
   active:null,
@@ -62,7 +68,7 @@ function resetQualification(){
 async function qualifyView(mediaId){
   if(!state.active||state.active.id!==mediaId||state.qualifiedMediaIds.has(mediaId))return;
   suspendQualification();
-  state.viewElapsed=QUALIFIED_VIEW_MS;
+  state.viewElapsed=qualifiedViewMs(state.active);
   state.qualifiedMediaIds.add(mediaId);
   const d=await api("/api/crown/player/view",{
     method:"POST",
@@ -79,7 +85,8 @@ async function qualifyView(mediaId){
 
 function startQualification(mediaId){
   if(!state.active||state.active.id!==mediaId||state.qualifiedMediaIds.has(mediaId)||state.viewStartedAt)return;
-  const remaining=Math.max(0,QUALIFIED_VIEW_MS-state.viewElapsed);
+  const threshold=qualifiedViewMs(state.active);
+  const remaining=Math.max(0,threshold-state.viewElapsed);
   if(remaining===0){qualifyView(mediaId);return}
   state.viewStartedAt=performance.now();
   clearTimeout(state.viewTimer);
