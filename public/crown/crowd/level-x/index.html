@@ -13,6 +13,7 @@
 <script>
 const BATTLE_QUALIFIED_VIEW_MS=120000;
 const DEFAULT_QUALIFIED_VIEW_MS=10000;
+const ANALYTICS_REPORT_MS=15000;
 function qualifiedViewMs(item){
   return String(item?.media_type||"").toLowerCase()==="battle"
     ? BATTLE_QUALIFIED_VIEW_MS
@@ -27,6 +28,7 @@ const state={
   viewElapsed:0,
   viewStartedAt:0,
   qualifiedMediaIds:new Set(),
+  playbackAnalytics:new Map(),
   ytPlayer:null,
   ytPromise:null
 };
@@ -99,6 +101,85 @@ function startQualification(mediaId){
   },remaining);
 }
 
+function playbackTracker(mediaId){
+  if(!state.playbackAnalytics.has(mediaId)){
+    state.playbackAnalytics.set(mediaId,{
+      started:false,
+      playingAt:0,
+      activeMs:0,
+      durationMs:null,
+      heartbeat:null
+    });
+  }
+  return state.playbackAnalytics.get(mediaId);
+}
+
+function currentDurationMs(item){
+  if(!item)return null;
+  if(item.provider==="youtube"&&state.active?.id===item.id&&state.ytPlayer?.getDuration){
+    try{
+      const seconds=Number(state.ytPlayer.getDuration());
+      if(Number.isFinite(seconds)&&seconds>0)return Math.round(seconds*1000);
+    }catch{}
+  }
+  const type=String(item.media_type||"").toLowerCase();
+  if(state.active?.id===item.id&&(type==="video"||type==="audio")){
+    const el=document.querySelector("#screen "+type);
+    const seconds=Number(el?.duration);
+    if(Number.isFinite(seconds)&&seconds>0)return Math.round(seconds*1000);
+  }
+  const seeded=Number(item.duration_seconds);
+  return Number.isFinite(seeded)&&seeded>0?Math.round(seeded*1000):null;
+}
+
+function playbackActiveMs(mediaId){
+  const tracker=playbackTracker(mediaId);
+  return tracker.activeMs+(tracker.playingAt?Math.max(0,performance.now()-tracker.playingAt):0);
+}
+
+function sendPlaybackAnalytics(mediaId,event="progress",keepalive=false){
+  const item=state.media.find(x=>Number(x.id)===Number(mediaId));
+  if(!item||item.authorized===false)return;
+  const tracker=playbackTracker(mediaId);
+  const duration=currentDurationMs(item);
+  if(duration)tracker.durationMs=duration;
+  const payload={
+    mediaId:Number(mediaId),
+    sessionKey:state.sessionKey,
+    activeMs:Math.round(playbackActiveMs(mediaId)),
+    durationMs:tracker.durationMs,
+    event
+  };
+  fetch("/api/crown/player/playback",{
+    method:"POST",
+    headers:{"content-type":"application/json"},
+    body:JSON.stringify(payload),
+    keepalive
+  }).catch(()=>{});
+}
+
+function startPlaybackAnalytics(mediaId){
+  const tracker=playbackTracker(mediaId);
+  if(tracker.playingAt)return;
+  tracker.playingAt=performance.now();
+  if(!tracker.started){
+    tracker.started=true;
+    sendPlaybackAnalytics(mediaId,"start");
+  }
+  clearInterval(tracker.heartbeat);
+  tracker.heartbeat=setInterval(()=>sendPlaybackAnalytics(mediaId,"progress"),ANALYTICS_REPORT_MS);
+}
+
+function suspendPlaybackAnalytics(mediaId,event="pause",keepalive=false){
+  const tracker=state.playbackAnalytics.get(mediaId);
+  if(!tracker||!tracker.playingAt)return;
+  tracker.activeMs+=Math.max(0,performance.now()-tracker.playingAt);
+  tracker.playingAt=0;
+  clearInterval(tracker.heartbeat);
+  tracker.heartbeat=null;
+  sendPlaybackAnalytics(mediaId,event,keepalive);
+}
+
 function embed(item){
   const type=String(item.media_type||"").toLowerCase(),url=item.source_url||item.media_url||"";
   if(item.provider==="youtube"&&item.external_id){
@@ -124,8 +205,18 @@ async function mountPlaybackTracking(item){
       events:{
         onStateChange:e=>{
           if(!state.active||state.active.id!==mediaId)return;
-          if(e.data===YT.PlayerState.PLAYING)startQualification(mediaId);
-          else suspendQualification();
+          if(e.data===YT.PlayerState.PLAYING){
+            startQualification(mediaId);
+            startPlaybackAnalytics(mediaId);
+          }else{
+            suspendQualification();
+            const event=e.data===YT.PlayerState.ENDED
+              ?"ended"
+              :e.data===YT.PlayerState.BUFFERING
+                ?"waiting"
+                :"pause";
+            suspendPlaybackAnalytics(mediaId,event);
+          }
         }
       }
     });
@@ -135,9 +226,15 @@ async function mountPlaybackTracking(item){
   if(type==="video"||type==="audio"){
     const el=document.querySelector("#screen "+type);
     if(!el)return;
-    el.addEventListener("playing",()=>startQualification(mediaId));
+    el.addEventListener("playing",()=>{
+      startQualification(mediaId);
+      startPlaybackAnalytics(mediaId);
+    });
     for(const event of ["pause","waiting","stalled","ended","emptied"]){
-      el.addEventListener(event,()=>suspendQualification());
+      el.addEventListener(event,()=>{
+        suspendQualification();
+        suspendPlaybackAnalytics(mediaId,event==="emptied"?"switch":event);
+      });
     }
   }
 }
@@ -153,6 +250,7 @@ function setCommentAccess(enabled){
 async function selectMedia(id){
   const item=state.media.find(x=>x.id===id);
   if(!item)return;
+  if(state.active)suspendPlaybackAnalytics(Number(state.active.id),"switch");
   resetQualification();
   state.active=item;
   document.querySelectorAll(".queue button").forEach(b=>b.classList.toggle("active",Number(b.dataset.id)===id));
@@ -206,6 +304,12 @@ async function load(){
   renderQueue();
   selectMedia(state.media[0].id);
 }
+
+window.addEventListener("pagehide",()=>{
+  for(const [mediaId,tracker] of state.playbackAnalytics){
+    if(tracker.playingAt)suspendPlaybackAnalytics(mediaId,"pagehide",true);
+  }
+});
 
 document.getElementById("commentForm").addEventListener("submit",async e=>{
   e.preventDefault();
