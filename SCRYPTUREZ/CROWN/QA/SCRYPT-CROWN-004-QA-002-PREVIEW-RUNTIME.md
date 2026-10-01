@@ -186,3 +186,57 @@ The Preview promotion gate remains open until:
 - locked-media runtime redaction passes when a legitimate restricted test record is available.
 
 A SKIP for locked-media runtime redaction is acceptable only while no legitimate restricted Preview item exists. Resolver tests and server enforcement remain mandatory in CI regardless.
+
+
+## SCRYPT-CROWN-007 Engagement Analytics Pass
+
+Run only after Preview migration 0011 is applied.
+
+### PLAY START / Watch-Time QA
+Using one authorized battle:
+1. Select the battle and idle without pressing Play.
+   - PASS: no playback ledger row / PLAY START is created.
+2. Press Play.
+   - PASS: one PLAY START is created for the media/session key.
+3. Let the battle play for at least 20 seconds.
+   - PASS: active playback time grows through the 15-second heartbeat.
+4. Pause for at least 15 seconds.
+   - PASS: active playback time does not grow during the pause.
+5. Resume playback.
+   - PASS: active playback time continues from the prior cumulative value.
+6. Switch to another battle.
+   - PASS: prior media progress is flushed and preserved.
+7. Return to the original battle in the same Player page session.
+   - PASS: no second PLAY START row is created for the same media/session key.
+
+### Completion QA
+For media whose duration is returned by the player:
+- confirm `completionPct` tracks cumulative active playback divided by duration;
+- confirm it never exceeds 100%;
+- confirm seeking forward does not itself create consumed watch time;
+- confirm 25/50/75/90/100 milestone counts are derived from consumption, not timeline position.
+
+### CROWD VIEW Separation
+For BATTLE media:
+- PLAY START occurs at actual playback start;
+- CROWD VIEW remains zero before 120 cumulative qualifying seconds;
+- CROWD VIEW increments exactly once after 120 cumulative qualifying seconds;
+- provider/YouTube play-start behavior does not change the Crown threshold.
+
+### Operator Analytics
+While authenticated as an explicitly granted analytics operator, open:
+
+`/crown/crowd/level-x/analytics/`
+
+PASS requires:
+- 7/30/90/365-day windows load;
+- top-line PLAY STARTS, CROWD VIEWS, conversion rate, active watch hours, average watch time, average completion, 90% and 100% counts render;
+- per-battle rows render;
+- daily trend rows render;
+- no member-level identity, raw IP, PCK, credential hash, salt, pepper, or provider credential data is exposed.
+
+The aggregate endpoint is:
+
+`/api/crown/player/analytics?artist=x-tha-god&days=30`
+
+A Crown member without a `player_analytics_access` grant must receive HTTP 403.
