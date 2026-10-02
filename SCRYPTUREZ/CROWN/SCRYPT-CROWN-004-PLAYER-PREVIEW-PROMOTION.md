@@ -130,7 +130,7 @@ Confirmed on feature-crown-door-v1 Preview:
 Remaining promotion work:
 - from an authenticated Preview browser, POST the retired /api/crown/preview-recover-user01 path and confirm it returns only a non-recovery/static-miss response;
 - re-confirm normal Crown/PCK login and /api/crown/player/access-health against the latest Preview deployment;
-- confirm LEVEL X renders the full 18-battle X Tha God queue and each intended embed starts playback;
+- confirm LEVEL X renders the full 31-battle X Tha God queue (13 CROWD-owned + 18 external) and each intended embed starts playback;
 - execute SCRYPT-CROWN-006 qualified-view QA against real playback;
 - verify Crown comments load and post against an authorized battle;
 - execute one runtime unauthorized-media engagement/redaction test using an already-existing restricted Preview record if one exists; do not mutate Preview D1 solely to fabricate a test case;
@@ -208,7 +208,7 @@ Verified continuation state:
 The next required phase is authenticated browser/runtime QA against the latest Preview:
 1. normal PCK login;
 2. read-only Crown/access-health/recovery smoke;
-3. LEVEL X 18-battle embed pass;
+3. LEVEL X 31-battle embed pass;
 4. 120-second qualified CROWD VIEW;
 5. SCRYPT-CROWN-007 PLAY START / active-watch / pause / resume / completion telemetry;
 6. operator analytics dashboard;
@@ -216,3 +216,14 @@ The next required phase is authenticated browser/runtime QA against the latest P
 8. restricted-media runtime redaction when a legitimate restricted record exists.
 
 Do not merge to main until those runtime gates pass.
+
+
+## X Tha God CROWD-Owned Battle Expansion
+Migration `0012_x_tha_god_crowd_owned_battles.sql` adds the 13 GBE / The CROWD-owned battles recovered from the official @CrowdShyt tracker source and reorders the existing 18 external embeds behind them.
+
+Expected LEVEL X battle total after 0012:
+- 13 CROWD-owned / GBE source battles;
+- 18 previously seeded external league battles;
+- 31 total authorized battle records.
+
+Historical YouTube/provider view counts from the old tracker are not imported into Da CROWD Player first-party `media_views`.
