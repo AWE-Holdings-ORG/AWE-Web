@@ -129,3 +129,10 @@ Canonical first-party event reconciliation lives in:
 This registry binds X's CROWD-era battles to flyers/cards, event dates/times, X/Twitter Spaces evidence, YouTube uploads, Drive artifacts, and rights provenance.
 
 Approximate historical tracker years must not override stronger first-party flyer/event evidence.
+
+
+## Battle Catalog Reconciliation
+Canonical completeness/deduplication work lives in:
+- `XTG-BATTLE-CATALOG-RECONCILIATION.md`
+
+Do not treat the old 27-row tracker, migration 0008, migration 0012, or a public provider index as independently complete.
