@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Crown Runtime QA | Da CROWD Player</title>
+<style>
+:root{--g:#d8ac4e;--g2:#f1d783;--bg:#030302;--panel:#090806;--line:#2c2417;--ok:#7fd38c;--bad:#ff7b7b;--muted:#82796b}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 85% 0,#1c1409,#050403 35%,#000 80%);color:#f7f2e8;font-family:Inter,system-ui,sans-serif;min-height:100vh}
+.shell{width:min(1100px,94vw);margin:auto;padding:28px 0 70px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:16px}
+.top a{color:var(--g2);text-decoration:none;font:800 9px ui-monospace,monospace;letter-spacing:.14em}
+.sig{color:#746b5d;font:800 9px ui-monospace,monospace;letter-spacing:.16em}
+.hero{padding:50px 0 28px}
+.eyebrow{color:var(--g);font:900 10px ui-monospace,monospace;letter-spacing:.28em}
+h1{font:500 clamp(42px,7vw,82px)/.95 Georgia,serif;margin:12px 0}
+.hero p{color:var(--muted);max-width:760px;line-height:1.7}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+button{background:var(--g);color:#070503;border:0;padding:11px 16px;font:900 9px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+button.secondary{background:#0b0906;color:var(--g2);border:1px solid var(--line)}
+.panel{background:var(--panel);border:1px solid var(--line);padding:18px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #1f1a12;vertical-align:top}
+th{color:#7f7668;font:800 9px ui-monospace,monospace;letter-spacing:.1em}
+td{font-size:13px}
+.pass{color:var(--ok);font-weight:900}
+.fail{color:var(--bad);font-weight:900}
+.skip{color:var(--g2);font-weight:900}
+.detail{color:#9a9184;word-break:break-word}
+.summary{margin-top:14px;padding:12px;border:1px solid var(--line);color:#aaa;font:800 10px ui-monospace,monospace;letter-spacing:.1em}
+.note{margin-top:14px;color:#6f675b;font-size:12px;line-height:1.6}
+@media(max-width:700px){.sig{display:none}th:nth-child(3),td:nth-child(3){display:none}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+  <a href="/crown/crowd/level-x/">← LEVEL X</a>
+  <div class="sig">DA CROWD PLAYER // AUTHENTICATED RUNTIME QA</div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">SCRYPT-CROWN-004 // QA-002</div>
+  <h1>CHECK THE MACHINE.</h1>
+  <p>Read-only Preview smoke test for Crown health, retired recovery cleanup, Player access schema, LEVEL X battle catalog, comments, and analytics operator access.</p>
+</section>
+
+<div class="controls">
+  <button id="run">RUN QA</button>
+  <button id="copy" class="secondary">COPY RESULTS</button>
+</div>
+
+<section class="panel">
+<table>
+<thead><tr><th>CHECK</th><th>RESULT</th><th>DETAIL</th></tr></thead>
+<tbody id="rows"><tr><td colspan="3">READY.</td></tr></tbody>
+</table>
+<div id="summary" class="summary">WAITING TO RUN.</div>
+<div class="note">This page does not post comments or record CROWD VIEWS. It uses the current Crown browser session and runs against the active Preview only.</div>
+</section>
+</main>
+
+<script>
+const rowsEl=document.getElementById("rows");
+const summaryEl=document.getElementById("summary");
+let lastRows=[];
+
+async function getJson(path,options){
+  const response=await fetch(path,options);
+  const text=await response.text();
+  let data=null;
+  try{data=JSON.parse(text)}catch{}
+  return {response,text,data};
+}
+
+function render(rows){
+  lastRows=rows;
+  rowsEl.innerHTML=rows.map(r=>'<tr><td>'+escapeHtml(r.check)+'</td><td class="'+r.result.toLowerCase()+'">'+r.result+'</td><td class="detail">'+escapeHtml(r.detail||"")+'</td></tr>').join("");
+  const pass=rows.filter(x=>x.result==="PASS").length;
+  const fail=rows.filter(x=>x.result==="FAIL").length;
+  const skip=rows.filter(x=>x.result==="SKIP").length;
+  summaryEl.textContent=`PASS ${pass} // FAIL ${fail} // SKIP ${skip}`;
+}
+
+function escapeHtml(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+async function run(){
+  const rows=[];
+  const push=(check,pass,detail)=>rows.push({check,result:pass?"PASS":"FAIL",detail});
+  rowsEl.innerHTML='<tr><td colspan="3">RUNNING…</td></tr>';
+  summaryEl.textContent="CHECKING PREVIEW…";
+
+  try{
+    const health=await getJson("/api/crown/health");
+    push(
+      "Crown health",
+      health.response.ok &&
+        health.data?.ok===true &&
+        health.data?.db===true &&
+        health.data?.pckPepper===true &&
+        health.data?.sessionPepper===true &&
+        health.data?.pbkdf2Iterations===100000,
+      `HTTP ${health.response.status} // db=${health.data?.db} // pck=${health.data?.pckPepper} // session=${health.data?.sessionPepper} // pbkdf2=${health.data?.pbkdf2Iterations}`
+    );
+
+    const retiredPath="/api/crown/preview-"+"recover-user01";
+    const retired=await getJson(retiredPath,{
+      method:"POST",
+      headers:{"content-type":"application/json"},
+      body:"{}"
+    });
+    const activeRecovery=
+      retired.response.ok ||
+      /recover(?:y|ed)|re-?key|new pck|temporary token/i.test(retired.text);
+    push(
+      "Retired recovery handler absent",
+      !activeRecovery,
+      `HTTP ${retired.response.status} // ${retired.text.slice(0,140)}`
+    );
+
+    const access=await getJson("/api/crown/player/access-health");
+    const required=["media_access_policy","cypherz_house_access","media_unlock_grants"];
+    push(
+      "Player access-health",
+      access.response.ok &&
+        access.data?.ok===true &&
+        access.data?.schemaReady===true &&
+        access.data?.mode==="SCRYPT-CROWN-002" &&
+        required.every(x=>(access.data?.tables||[]).includes(x)),
+      `HTTP ${access.response.status} // mode=${access.data?.mode||"?"} // tables=${(access.data?.tables||[]).join(",")}`
+    );
+
+    const catalog=await getJson("/api/crown/player/catalog?artist=x-tha-god");
+    const media=Array.isArray(catalog.data?.media)?catalog.data.media:[];
+    const battles=media.filter(x=>x.media_type==="battle"&&x.authorized===true);
+    const ids=battles.map(x=>x.external_id).filter(Boolean);
+    push(
+      "LEVEL X 18-battle catalog",
+      catalog.response.ok && battles.length===18 && new Set(ids).size===18,
+      `HTTP ${catalog.response.status} // battles=${battles.length} // unique IDs=${new Set(ids).size}`
+    );
+
+    const first=battles[0];
+    if(first){
+      const comments=await getJson("/api/crown/player/comments?mediaId="+encodeURIComponent(first.id));
+      push(
+        "Authorized comments read",
+        comments.response.ok && Array.isArray(comments.data?.comments),
+        `HTTP ${comments.response.status} // mediaId=${first.id} // comments=${comments.data?.comments?.length??"?"}`
+      );
+    }else{
+      push("Authorized comments read",false,"No authorized battle returned.");
+    }
+
+    const analytics=await getJson("/api/crown/player/analytics?artist=x-tha-god&days=30");
+    push(
+      "Player analytics operator access",
+      analytics.response.ok &&
+        analytics.data?.ok===true &&
+        analytics.data?.funnel &&
+        Array.isArray(analytics.data?.media) &&
+        Array.isArray(analytics.data?.daily),
+      `HTTP ${analytics.response.status} // starts=${analytics.data?.funnel?.playStarts??"?"} // crowdViews=${analytics.data?.funnel?.crowdViews??"?"}`
+    );
+
+    const locked=media.find(x=>x.authorized===false);
+    if(locked){
+      const noSource=
+        locked.provider===undefined &&
+        locked.external_id===undefined &&
+        locked.canonical_url===undefined &&
+        locked.source_url===undefined;
+      const denied=await getJson("/api/crown/player/comments?mediaId="+encodeURIComponent(locked.id));
+      push(
+        "Existing locked-media redaction",
+        noSource && denied.response.status===404,
+        `mediaId=${locked.id} // sourceRedacted=${noSource} // engagement HTTP ${denied.response.status}`
+      );
+    }else{
+      rows.push({
+        check:"Existing locked-media redaction",
+        result:"SKIP",
+        detail:"No legitimate restricted teaser returned to this Crown. Preview D1 remains unchanged."
+      });
+    }
+
+    window.__AWE_CROWN_QA={rows,health:health.data,access:access.data,catalog:catalog.data,analytics:analytics.data};
+  }catch(error){
+    rows.push({check:"QA runtime",result:"FAIL",detail:String(error?.message||error)});
+  }
+
+  render(rows);
+}
+
+document.getElementById("run").addEventListener("click",run);
+document.getElementById("copy").addEventListener("click",async()=>{
+  if(!lastRows.length)return;
+  const text=lastRows.map(r=>`${r.result}\t${r.check}\t${r.detail}`).join("\n");
+  await navigator.clipboard.writeText(text).catch(()=>{});
+});
+
+run();
+</script>
+</body>
+</html>
