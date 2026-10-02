@@ -10,6 +10,7 @@
     "test:level-x-client": "node --test tests/level-x-client.test.mjs",
     "test:player-analytics": "node --test tests/player-analytics.test.mjs",
     "test:player-analytics-migration": "python tests/player-analytics-migration.test.py",
-    "test:player-event-context-migration": "python tests/player-event-context-migration.test.py"
+    "test:player-event-context-migration": "python tests/player-event-context-migration.test.py",
+    "test:x-external-event-context-migration": "python tests/x-external-event-context-migration.test.py"
   }
 }
