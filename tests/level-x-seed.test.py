@@ -19,6 +19,12 @@ CROWD_EXPECTED=[
     ("CyNwV5ir91A","X Tha God vs Luxry — Unforeseen Circumstances",None),
 ]
 
+RECONCILED_EXTERNAL_EXPECTED=[
+    ("xgupv_oiIQ8","Chuck Lucci vs X Tha God — Insidious","2023-09-30"),
+    ("jKl0NU9K8hE","DEEJAYY vs X THA GOD - iBattleTV","2024-06-15"),
+    ("twjhGe-nJCw","Tino vs X Tha God — Back 2 Business","2024-11-02"),
+]
+
 EXTERNAL_EXPECTED=[
     ("PbPnUWeZnEQ","Dapper Zay vs X Tha God - Earn Your Keep"),
     ("yFZVNjyiZag","TGE-VERSE THE EMCEE vs X THA GOD-#TSB2"),
@@ -80,12 +86,15 @@ INSERT INTO artists(id,artist_slug) VALUES(1,'x-tha-god');
 
 seed_external=(ROOT/"migrations/0008_x_tha_god_verified_media_seed.sql").read_text()
 seed_crowd=(ROOT/"migrations/0012_x_tha_god_crowd_owned_battles.sql").read_text()
+seed_reconciled=(ROOT/"migrations/0014_x_tha_god_verified_external_reconciliation.sql").read_text()
 
 # Apply each twice to enforce idempotence.
 db.executescript(seed_external)
 db.executescript(seed_crowd)
+db.executescript(seed_reconciled)
 db.executescript(seed_external)
 db.executescript(seed_crowd)
+db.executescript(seed_reconciled)
 
 rows=db.execute("""
 SELECT external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,
@@ -94,11 +103,12 @@ FROM artist_media
 ORDER BY sort_order,id
 """).fetchall()
 
-assert len(rows)==31, len(rows)
-assert len({row[0] for row in rows})==31
+assert len(rows)==34, len(rows)
+assert len({row[0] for row in rows})==34
 
 crowd_rows=rows[:13]
-external_rows=rows[13:]
+external_rows=rows[13:31]
+reconciled_rows=rows[31:]
 
 assert [row[0] for row in crowd_rows]==[item[0] for item in CROWD_EXPECTED]
 assert [row[1] for row in crowd_rows]==[item[1] for item in CROWD_EXPECTED]
@@ -128,6 +138,19 @@ for external_id,title,event_date,era_slug,media_type,provider,visibility,sort_or
     assert source_url==f"https://youtu.be/{external_id}"
     assert rights_status=="embed-source"
 
+assert {row[0] for row in reconciled_rows}=={item[0] for item in RECONCILED_EXTERNAL_EXPECTED}
+expected_reconciled={item[0]:(item[1],item[2]) for item in RECONCILED_EXTERNAL_EXPECTED}
+for external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in reconciled_rows:
+    assert (title,event_date)==expected_reconciled[external_id]
+    assert era_slug=="external-reconciled"
+    assert media_type=="battle"
+    assert provider=="youtube"
+    assert visibility=="crown"
+    assert active==1
+    assert source_name=="YouTube"
+    assert source_url==f"https://youtu.be/{external_id}"
+    assert rights_status=="embed-source"
+
 policies=db.execute("""
 SELECT m.external_id,p.access_state,p.teaser_mode,p.cypherz_visible,p.active
 FROM media_access_policy p
@@ -136,16 +159,17 @@ WHERE m.external_id IN (
   'TmwYVT_gI0Q','7s82HgWmML0','6JSDWKTBPxw','ms4r261sQ9c',
   'aCyK8W8y5v0','dIENORIk-lU','ViOv-hJ4uOs','2InJIUKuoZY',
   '4kHtN7my50A','xo-TQJUhzJs','bDgH8kdPbEA','-RHWE4oHcFc',
-  'CyNwV5ir91A'
+  'CyNwV5ir91A',
+  'jKl0NU9K8hE','twjhGe-nJCw','xgupv_oiIQ8'
 )
 ORDER BY m.sort_order
 """).fetchall()
 
-assert len(policies)==13, len(policies)
+assert len(policies)==16, len(policies)
 for external_id,access_state,teaser_mode,cypherz_visible,active in policies:
     assert access_state=="crown"
     assert teaser_mode=="locked"
     assert cypherz_visible==1
     assert active==1
 
-print("PASS: LEVEL X battle catalog is 31/31 = 13 CROWD-owned + 18 external; CROWD dates are verified-only, ordered, CROWN, and idempotent")
+print("PASS: LEVEL X staged migration set is 34 unique battles = 13 CROWD-owned + 18 original external + 3 reconciled external; this is not asserted as catalog completeness")
