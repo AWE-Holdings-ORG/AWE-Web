@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "awe-web-preview-migrations",
+  "compatibility_date": "2026-09-27",
+  "d1_databases": [
+    {
+      "binding": "CROWN_DB",
+      "database_name": "awe-crown-identity-preview",
+      "database_id": "d93128c2-d34d-4372-be01-72ae772a9230",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

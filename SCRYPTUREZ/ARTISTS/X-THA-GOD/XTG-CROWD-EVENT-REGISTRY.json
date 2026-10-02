@@ -1,0 +1,215 @@
+{
+  "version": "0.1",
+  "status": "RECONCILIATION",
+  "updated_at": "2026-10-01",
+  "artist_slug": "x-tha-god",
+  "source_scope": "The CROWD / @CrowdShyt first-party era",
+  "rules": {
+    "event_date": "exact first-party evidence only; historical approximate years do not qualify",
+    "youtube_publish_date": "tracked separately from event_date",
+    "spaces": "must have public post/Space URL or first-party evidence before binding",
+    "player_analytics": "historical provider counts never seed first-party CROWD VIEW analytics"
+  },
+  "battles": [
+    {
+      "opponent": "Geminii",
+      "event": "Members Only",
+      "youtube_id": "TmwYVT_gI0Q",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Geminii (Da Rematch)",
+      "event": "The Shootout",
+      "youtube_id": "7s82HgWmML0",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "public-matchup-and-full-card-recovered",
+      "matchup_on_flyer": true,
+      "confidence": "flyer-high"
+    },
+    {
+      "opponent": "Whytboy",
+      "event": "Unforeseen Circumstances",
+      "youtube_id": "6JSDWKTBPxw",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Jace",
+      "event": "Lost In Space",
+      "youtube_id": "ms4r261sQ9c",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Tieso",
+      "event": "Crowd Control Vol. 2",
+      "youtube_id": "aCyK8W8y5v0",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Fuzhjin",
+      "event": "Unforeseen Circumstances 7",
+      "youtube_id": "dIENORIk-lU",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Rari Lauren",
+      "event": "Whyt Noise",
+      "youtube_id": "ViOv-hJ4uOs",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Troiyt",
+      "event": "Elements",
+      "youtube_id": "2InJIUKuoZY",
+      "event_date": "2022-10-15",
+      "event_time": {
+        "eastern": "21:00"
+      },
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "verified",
+      "matchup_on_flyer": true,
+      "drive": {
+        "folder_id": "1-0u9pb5T6ITNgugcN0ZT9bkjNHMpi06-",
+        "flyer_file_id": "1kzpnev6I6YY7DJWbVpbwYkKrbI9jL7qq",
+        "flyer_name": "ElementsPoster.heic"
+      },
+      "confidence": "verified"
+    },
+    {
+      "opponent": "Rahmir Henry",
+      "event": "Post Elements",
+      "youtube_id": "4kHtN7my50A",
+      "event_date": "2022-10-16",
+      "event_time": {
+        "pacific": "17:00",
+        "eastern": "20:00"
+      },
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "verified",
+      "matchup_on_flyer": true,
+      "drive": {
+        "folder_id": "1-0u9pb5T6ITNgugcN0ZT9bkjNHMpi06-",
+        "flyer_file_id": "1fyAeYhvDZ6hwWg5eSViQt8wFDXiXqfgT",
+        "flyer_name": "IMG_3817.JPG"
+      },
+      "confidence": "verified"
+    },
+    {
+      "opponent": "MDK",
+      "event": "Unforeseen Circumstances X",
+      "youtube_id": "xo-TQJUhzJs",
+      "event_date": "2022-10-20",
+      "event_time": {
+        "pacific": "18:00",
+        "eastern": "21:00"
+      },
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "event-card-verified",
+      "matchup_on_flyer": false,
+      "drive": {
+        "folder_id": "1-14YrDY6COwym4UkR7uLnomziEhrTO8x",
+        "flyer_file_id": "1SjQXLlghCHmCOfCMkuzGTsq0TwjrSGLF",
+        "flyer_name": "IMG_3863.JPG",
+        "battle_asset_id": "1haau5t7eoN_YwsH5iIwGu0PCig_5SHQe",
+        "battle_asset_name": "xVmdk.mp4"
+      },
+      "confidence": "high"
+    },
+    {
+      "opponent": "Bearvan",
+      "event": "Hostility Vol. 1",
+      "youtube_id": "bDgH8kdPbEA",
+      "event_date": "2022-11-05",
+      "event_time": {
+        "eastern": "21:00"
+      },
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "verified",
+      "matchup_on_flyer": true,
+      "drive": {
+        "folder_id": "1-D26Z_M6sJLVuWTq6P7-ZiYmr_n--eCM",
+        "flyer_file_id": "1EDyEmLfHwy-XeTWCcFCWTDyAyL0ILWN6",
+        "flyer_name": "IMG_3822.JPG",
+        "battle_asset_id": "1tk8to-vUEA9REsZsMRn3RTmSVxap5SEL",
+        "battle_asset_name": "xVbear.mp4"
+      },
+      "confidence": "verified"
+    },
+    {
+      "opponent": "King TR",
+      "event": "Don't Die Vol. 1",
+      "youtube_id": "-RHWE4oHcFc",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    },
+    {
+      "opponent": "Luxry",
+      "event": "Unforeseen Circumstances",
+      "youtube_id": "CyNwV5ir91A",
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "pending",
+      "confidence": "battle-high"
+    }
+  ],
+  "recovered_leads": [
+    {
+      "opponent": "Big Kannon",
+      "event": "Training Day",
+      "youtube_id": null,
+      "event_date": null,
+      "event_time": null,
+      "space_url": null,
+      "rights": "crowd-related-pending-final-provenance",
+      "flyer_status": "public-full-card-recovered",
+      "matchup_on_flyer": true,
+      "drive": {
+        "battle_asset_id": "1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks",
+        "battle_asset_name": "XVSKannon.mp4"
+      },
+      "confidence": "matchup-event-verified-date-pending"
+    }
+  ]
+}
