@@ -62,6 +62,35 @@ Metadata, relationships, provenance, access policy, unlock state, and Player beh
 ## Current Intake Rule
 No Dropbox original is renamed, moved, deleted, reorganized, or otherwise mutated during the initial intake pass.
 
+## Intake Priority Order
+LEVEL X intake proceeds by product value, not filename chronology:
+
+1. **Battle footage / battle clips**
+   - identify known matches and event context;
+   - link clips to existing battle records when they belong to the same matchup;
+   - avoid creating duplicate battle entries for alternate clips without a reason.
+
+2. **Flyers / matchup art / event artifacts**
+   - connect promotional art to the matching battle/event when provenance is clear;
+   - standalone event artifacts may remain separate archive records.
+
+3. **Photo / visual archive**
+   - portraits, crowd shots, travel, event-day photos and culture/history imagery;
+   - preserve date/context when verified.
+
+4. **Behind-the-scenes**
+   - preparation, travel, backstage, off-stage and contextual material;
+   - do not infer private context from imagery alone.
+
+5. **Historical Archive / Fragm3ntz candidates**
+   - select moments with enough context to become persistent Crown artifacts.
+
+6. **From Da Vault candidates**
+   - explicit review required before VAULT assignment;
+   - no file becomes VAULT merely because it is old, rare, personal-looking or unpublished.
+
+Filename discovery is only a routing aid. Generic timestamp filenames require visual inspection before classification.
+
 
 ## Active Intake Batches
 - Batch 001: `INTAKE-BATCH-001-SEP29-PROMO-CLUSTER.md`
