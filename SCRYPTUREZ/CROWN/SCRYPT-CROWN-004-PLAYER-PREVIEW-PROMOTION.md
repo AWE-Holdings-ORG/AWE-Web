@@ -130,7 +130,7 @@ Confirmed on feature-crown-door-v1 Preview:
 Remaining promotion work:
 - from an authenticated Preview browser, POST the retired /api/crown/preview-recover-user01 path and confirm it returns only a non-recovery/static-miss response;
 - re-confirm normal Crown/PCK login and /api/crown/player/access-health against the latest Preview deployment;
-- confirm LEVEL X renders the full 31-battle X Tha God queue (13 CROWD-owned + 18 external) and each intended embed starts playback;
+- confirm LEVEL X renders the current reconciled X battle set and each intended embed starts playback; catalog completeness remains under active reconciliation;
 - execute SCRYPT-CROWN-006 qualified-view QA against real playback;
 - verify Crown comments load and post against an authorized battle;
 - execute one runtime unauthorized-media engagement/redaction test using an already-existing restricted Preview record if one exists; do not mutate Preview D1 solely to fabricate a test case;
@@ -208,7 +208,7 @@ Verified continuation state:
 The next required phase is authenticated browser/runtime QA against the latest Preview:
 1. normal PCK login;
 2. read-only Crown/access-health/recovery smoke;
-3. LEVEL X 31-battle embed pass;
+3. LEVEL X reconciled battle embed pass;
 4. 120-second qualified CROWD VIEW;
 5. SCRYPT-CROWN-007 PLAY START / active-watch / pause / resume / completion telemetry;
 6. operator analytics dashboard;
@@ -229,7 +229,7 @@ Migration `0012_x_tha_god_crowd_owned_battles.sql` adds the 13 GBE / The CROWD-o
 Expected LEVEL X battle total after 0012:
 - 13 CROWD-owned / GBE source battles;
 - 18 previously seeded external league battles;
-- 31 total authorized battle records.
+- 31 base records after 0012 (13 CROWD-owned + 18 original external); additional verified reconciled records are additive and the total is not a completeness claim.
 
 Historical YouTube/provider view counts from the old tracker are not imported into Da CROWD Player first-party `media_views`.
 
@@ -259,8 +259,30 @@ Do not apply 0013 before 0012 because its initial media links depend on the CROW
 When reconciliation is complete, Preview rollout order is:
 1. apply 0012 to `awe-crown-identity-preview`;
 2. apply 0013 to `awe-crown-identity-preview`;
-3. verify 31 X battle records;
+3. verify the currently staged X battle migration set without treating its count as final catalog completeness;
 4. verify the four seeded event-context links and artifacts;
 5. keep unresolved event dates/Spaces absent until evidenced.
+
+Production D1 remains untouched.
+
+
+## Verified External Reconciliation Rollout
+
+Migration `0014_x_tha_god_verified_external_reconciliation.sql` stages three independently verified external battles missing from the original 0008 seed:
+- Chuck Lucci vs X Tha God — Insidious — event 2023-09-30 — YouTube `xgupv_oiIQ8`;
+- DeeJayy vs X Tha God — Sunfall — event 2024-06-15 — YouTube `jKl0NU9K8hE`;
+- Tino vs X Tha God — Back 2 Business — event 2024-11-02 — YouTube `twjhGe-nJCw`.
+
+Migration `0015_x_tha_god_external_event_context.sql` links those records to the reusable Player event-context schema.
+
+**0014/0015 STATUS: HOLD WITH 0012/0013 WHILE FULL X CATALOG RECONCILIATION CONTINUES.**
+
+The currently staged migration set becomes 34 records after 0012 + 0014, but 34 is explicitly not the final catalog total. The reconciliation ledger already contains additional pending leads.
+
+When approved for Preview, migration order is:
+1. 0012 CROWD-owned base expansion;
+2. 0013 first-party event context;
+3. 0014 verified external reconciliation;
+4. 0015 external event context.
 
 Production D1 remains untouched.
