@@ -139,8 +139,8 @@ async function run(){
     const battles=media.filter(x=>x.media_type==="battle"&&x.authorized===true);
     const ids=battles.map(x=>x.external_id).filter(Boolean);
     push(
-      "LEVEL X 18-battle catalog",
-      catalog.response.ok && battles.length===18 && new Set(ids).size===18,
+      "LEVEL X 31-battle catalog",
+      catalog.response.ok && battles.length===31 && new Set(ids).size===31,
       `HTTP ${catalog.response.status} // battles=${battles.length} // unique IDs=${new Set(ids).size}`
     );
 
