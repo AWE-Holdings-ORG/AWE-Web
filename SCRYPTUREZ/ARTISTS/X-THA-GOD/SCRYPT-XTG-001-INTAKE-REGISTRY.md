@@ -1,7 +1,7 @@
 # SCRYPT-XTG-001 — X Tha God Artist 001 Intake Registry
 
 Status: ACTIVE
-Version: 1.1
+Version: 1.2
 Artist: X Tha God
 Role: Artist 001 / first official artist intake reference implementation
 
@@ -38,7 +38,8 @@ Never classify an asset from a generic filename alone.
 - Character / Portrait
 - Photo / Visual Archive
 - Battle / Event
-- Battle Clip / Video
+- Battle Clip / Promo Clip
+- Battle Round
 - Flyers / Artwork
 - Behind-the-Scenes
 - Event Artifact
@@ -61,6 +62,22 @@ Metadata, relationships, provenance, access policy, unlock state, and Player beh
 
 ## Current Intake Rule
 No Dropbox original is renamed, moved, deleted, reorganized, or otherwise mutated during the initial intake pass.
+
+## X Video Duration Classification Law
+For X Tha God archive video files in MOV/MP4 format, duration is authoritative for the first-pass content type:
+
+- **120 seconds or less** → `Battle Clip / Promo Clip`
+- **greater than 120 seconds** → `Battle Round`
+
+This rule identifies the content form, not the matchup/event identity.
+
+After duration classification:
+1. visually inspect enough of the file to identify the battle/event when possible;
+2. link the asset to an existing verified battle record when it belongs to one of the known matchups;
+3. preserve alternate clips/rounds as related assets rather than creating duplicate battle identities;
+4. if the specific matchup cannot yet be verified, keep the battle/event relationship pending while retaining the duration-derived type.
+
+Do not infer a specific opponent, event, round number, or chronology from filename or duration alone.
 
 ## Intake Priority Order
 LEVEL X intake proceeds by product value, not filename chronology:
