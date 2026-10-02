@@ -179,6 +179,20 @@ export default {
       }
     }
 
+    if(url.pathname==="/api/crown/player/analytics-access"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+
+      try{
+        const ready=await playerAnalyticsSchemaReady(env.CROWN_DB);
+        if(!ready)return json({ok:true,granted:false,schemaReady:false});
+        const granted=await playerAnalyticsAuthorized(env.CROWN_DB,Number(identity.member.id));
+        return json({ok:true,granted,schemaReady:true});
+      }catch{
+        return json({ok:true,granted:false,schemaReady:false});
+      }
+    }
+
     if(url.pathname==="/api/crown/player/analytics"&&request.method==="GET"){
       const identity=await crownIdentity(request,env);
       if(!identity.ok)return identity.response;
