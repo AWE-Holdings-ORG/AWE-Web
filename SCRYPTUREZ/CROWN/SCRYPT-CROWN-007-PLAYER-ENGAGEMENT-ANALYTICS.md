@@ -94,6 +94,18 @@ Unauthorized, concealed, malformed-policy, or inactive media must not create ana
 
 Analytics reporting is an internal/operator surface. Access requires an explicit Player analytics grant; Crown authentication alone is insufficient.
 
+## Operator Surface Discovery
+The customer-facing Player must not expose the internal 120-second qualification threshold or teach viewers how to manufacture a CROWD VIEW.
+
+An analytics operator may receive a discreet internal ANALYTICS control only after the server confirms an active `player_analytics_access` grant.
+
+Rules:
+- Crown authentication alone does not reveal the control;
+- denied/non-granted viewers receive no analytics route hint in the Player UI;
+- the access probe returns only whether analytics access is granted, not grant internals;
+- direct analytics API requests remain independently authorized server-side;
+- the CROWD VIEW qualification threshold remains internal operator law, not customer-facing copy.
+
 ## Operator Analytics
 The V1 operator response should support a bounded date window and expose aggregate—not member-level—reporting:
 
