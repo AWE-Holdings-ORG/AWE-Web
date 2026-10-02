@@ -1,7 +1,7 @@
 # SCRYPT-XTG-001 — X Tha God Artist 001 Intake Registry
 
 Status: ACTIVE
-Version: 1.0
+Version: 1.1
 Artist: X Tha God
 Role: Artist 001 / first official artist intake reference implementation
 
@@ -22,6 +22,13 @@ Dropbox master archive: /X Tha God
 Current inventory: 1,012 files
 Archive posture: read-only source of truth during intake.
 
+## Content Canon
+- X Tha God is not a recording-music artist.
+- LEVEL X must not create or imply a personal MUSIC / LISTEN lane for X.
+- The archive is expected to be primarily battles/battle clips, photos, event material, promotional artwork, behind-the-scenes material, and historical artifacts.
+- Music heard incidentally inside a battle/event/video does not convert that asset into an X music record.
+- A GBE music artifact involving other artists may be historically relevant, but it must be classified as a GBE/event/historical artifact rather than "X Tha God music" unless canon later establishes otherwise.
+
 ## Intake Law
 Dropbox original → exact file identity/path → visual inspection → classification → provenance → access state → Player usage.
 
@@ -29,13 +36,14 @@ Never classify an asset from a generic filename alone.
 
 ## Classification Set
 - Character / Portrait
+- Photo / Visual Archive
 - Battle / Event
+- Battle Clip / Video
 - Flyers / Artwork
-- Performance
-- Music
 - Behind-the-Scenes
-- Video
+- Event Artifact
 - Historical Archive
+- Fragm3ntz candidate
 - From Da Vault candidate
 - Unknown / Needs Review
 
