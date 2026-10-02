@@ -39,7 +39,7 @@ Rules:
 | # | Opponent | Event | YouTube ID | Event date | Event time | Flyer / first-party evidence | Matchup printed on inspected flyer? | X Space | Rights | Confidence |
 |---:|---|---|---|---|---|---|---|---|---|---|
 | 1 | Geminii | Members Only | TmwYVT_gI0Q | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
-| 2 | Geminii — Da Rematch | The Shootout | 7s82HgWmML0 | PENDING | PENDING | Public @CrowdShyt matchup flyer: SATURDAY SHOOTOUT / X THA GOD VS GEMINII; full-card public flyer also recovered | YES | PENDING | GBE / The CROWD | Flyer HIGH; date pending |
+| 2 | Geminii — Da Rematch | The Shootout | 7s82HgWmML0 | PENDING | PENDING | Public @CrowdShyt matchup flyer: SATURDAY SHOOTOUT / X THA GOD VS GEMINII; full-card public flyer also recovered; promo status posted 2022-06-07 22:05:55 UTC | YES | PENDING | GBE / The CROWD | Flyer HIGH; event date pending |
 | 3 | Whytboy | Unforeseen Circumstances | 6JSDWKTBPxw | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
 | 4 | Jace | Lost In Space | ms4r261sQ9c | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
 | 5 | Tieso | Crowd Control Vol. 2 | aCyK8W8y5v0 | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
@@ -97,7 +97,15 @@ Drive folder: `Hostility Vol 1` — ID `1-D26Z_M6sJLVuWTq6P7-ZiYmr_n--eCM`
 Public @CrowdShyt flyer evidence recovered:
 - matchup graphic: SATURDAY SHOOTOUT / X THA GOD VS GEMINII
 - full card: FU & THE CROWD PRESENTS THE SHOOTOUT and includes X THA GOD VS GEMINII
-- exact date/time remains pending
+- exact event date/time remains pending
+
+### The Shootout Promo Chronology
+- @CrowdShyt status: `https://x.com/CrowdShyt/status/1534295615756062720`
+- status Snowflake timestamp: 2022-06-07 22:05:55.287 UTC
+- classification: PROMO POSTED AT, not EVENT DATE
+- the flyer itself says SATURDAY SHOOTOUT but the currently recovered image does not establish the calendar date.
+
+Do not convert the post timestamp into the event date.
 
 ## Spaces Evidence
 
