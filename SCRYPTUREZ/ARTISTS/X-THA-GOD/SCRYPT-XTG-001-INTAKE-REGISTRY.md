@@ -53,3 +53,11 @@ Metadata, relationships, provenance, access policy, unlock state, and Player beh
 
 ## Current Intake Rule
 No Dropbox original is renamed, moved, deleted, reorganized, or otherwise mutated during the initial intake pass.
+
+
+## Active Intake Batches
+- Batch 001: `INTAKE-BATCH-001-SEP29-PROMO-CLUSTER.md`
+  - targeted September 29, 2026 PNG/promotional cluster;
+  - Dropbox remains read-only;
+  - generic timestamp files remain `Unknown / Needs Review` until visually inspected;
+  - known `Photo Sep 29 2026, 9 49 11 PM (10).png` is Power Play 2 / X vs NXT promotional artwork and is not Player character art.
