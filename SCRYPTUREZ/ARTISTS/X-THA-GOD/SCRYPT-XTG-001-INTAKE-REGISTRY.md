@@ -120,3 +120,12 @@ Filename discovery is only a routing aid. Generic timestamp filenames require vi
   - runtime drives Battle Clip / Promo Clip vs Battle Round classification;
   - matchup/event identity remains visual/provenance review;
   - Dropbox remains read-only.
+
+
+## CROWD Event Evidence Registry
+Canonical first-party event reconciliation lives in:
+- `XTG-CROWD-EVENT-REGISTRY.md`
+
+This registry binds X's CROWD-era battles to flyers/cards, event dates/times, X/Twitter Spaces evidence, YouTube uploads, Drive artifacts, and rights provenance.
+
+Approximate historical tracker years must not override stronger first-party flyer/event evidence.
