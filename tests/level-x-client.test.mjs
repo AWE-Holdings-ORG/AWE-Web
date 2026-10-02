@@ -50,3 +50,13 @@ test("LEVEL X analytics control is grant-gated and threshold stays internal",()=
   assert.match(script,/d\?\.granted===true/);
   assert.doesNotMatch(html,/120 cumulative seconds|120-second|2:00 active playback/i);
 });
+
+
+test("LEVEL X does not invent a personal music lane for X",()=>{
+  assert.doesNotMatch(html,/02\s*\/\/\s*LISTEN/i);
+  assert.doesNotMatch(html,/<h3>Music<\/h3>/i);
+  assert.match(html,/Photo Archive/);
+  assert.match(html,/Behind the Scenes/);
+  assert.match(html,/Flyers \+ Events/);
+  assert.match(html,/From Da Vault/);
+});
