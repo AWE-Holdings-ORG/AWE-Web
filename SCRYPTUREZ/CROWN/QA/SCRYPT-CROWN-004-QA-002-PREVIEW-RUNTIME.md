@@ -85,9 +85,9 @@ It:
   const externalIds=media.map(x=>x.external_id).filter(Boolean);
   const authorizedBattles=media.filter(x=>x.media_type==="battle"&&x.authorized===true);
   push(
-    "LEVEL X 18-battle catalog",
+    "LEVEL X 31-battle catalog",
     catalog.response.ok &&
-      authorizedBattles.length===18 &&
+      authorizedBattles.length===31 &&
       new Set(externalIds).size===18,
     `HTTP ${catalog.response.status} // media=${media.length} // authorized battles=${authorizedBattles.length} // unique source IDs=${new Set(externalIds).size}`
   );
@@ -154,11 +154,11 @@ Use one authorized battle and note its starting CROWD VIEW count.
 
 Buffering/waiting time must not count toward qualification. The battle threshold is 120 cumulative seconds of actual playback; merely starting a YouTube video may count as provider exposure but does not qualify as a CROWD VIEW.
 
-## 18-Battle Embed Pass
+## 31-Battle Embed Pass
 
-The repository/CI gate verifies all 18 seeded records, IDs, order, CROWN state, and idempotence. The browser pass verifies the embeds themselves.
+The repository/CI gate verifies all 31 seeded records (13 CROWD-owned + 18 external), IDs, order, CROWN state, and idempotence. The browser pass verifies the embeds themselves.
 
-In the BATTLES filter, step through all 18 queue entries:
+In the BATTLES filter, step through all 31 queue entries:
 - confirm each selected title matches the queue item;
 - confirm the YouTube player loads rather than showing an embed restriction/error;
 - start each battle briefly to confirm playback can begin.
@@ -180,7 +180,7 @@ Do not post a disposable comment that would require direct D1 cleanup.
 The Preview promotion gate remains open until:
 - normal PCK login passes on the latest Preview;
 - Read-Only Console Smoke has no FAIL rows;
-- all 18 battle embeds load/start;
+- all 31 battle embeds load/start;
 - SCRYPT-CROWN-006 qualified-view sequence passes;
 - comment write persistence passes;
 - locked-media runtime redaction passes when a legitimate restricted test record is available.
