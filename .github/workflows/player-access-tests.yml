@@ -17,6 +17,8 @@ on:
       - "migrations/0011_player_engagement_analytics.sql"
       - "migrations/0012_x_tha_god_crowd_owned_battles.sql"
       - "migrations/0013_player_event_context.sql"
+      - "migrations/0015_x_tha_god_external_event_context.sql"
+      - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -25,6 +27,7 @@ on:
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
       - "tests/player-event-context-migration.test.py"
+      - "tests/x-external-event-context-migration.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
@@ -48,6 +51,8 @@ on:
       - "migrations/0011_player_engagement_analytics.sql"
       - "migrations/0012_x_tha_god_crowd_owned_battles.sql"
       - "migrations/0013_player_event_context.sql"
+      - "migrations/0015_x_tha_god_external_event_context.sql"
+      - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -56,6 +61,7 @@ on:
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
       - "tests/player-event-context-migration.test.py"
+      - "tests/x-external-event-context-migration.test.py"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -98,6 +104,9 @@ jobs:
 
       - name: Validate Player event context migration
         run: npm run test:player-event-context-migration
+
+      - name: Validate reconciled X external event context
+        run: npm run test:x-external-event-context-migration
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
