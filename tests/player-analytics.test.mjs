@@ -46,3 +46,12 @@ test("CROWD VIEW funnel is scoped to tracked playback session keys",()=>{
   assert.match(source,/ps\.session_key=mv\.session_key/);
   assert.match(source,/ps\.media_id=mv\.media_id/);
 });
+
+
+test("analytics access probe is grant-gated before exposing operator UI",()=>{
+  const workerPath=fileURLToPath(new URL("../worker-entry.js",import.meta.url));
+  const worker=readFileSync(workerPath,"utf8");
+  assert.match(worker,/\/api\/crown\/player\/analytics-access/);
+  assert.match(worker,/playerAnalyticsAuthorized\(env\.CROWN_DB,Number\(identity\.member\.id\)\)/);
+  assert.match(worker,/granted/);
+});
