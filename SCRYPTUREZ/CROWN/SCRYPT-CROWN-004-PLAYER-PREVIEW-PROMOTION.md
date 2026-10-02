@@ -219,6 +219,11 @@ Do not merge to main until those runtime gates pass.
 
 
 ## X Tha God CROWD-Owned Battle Expansion
+
+**0012 STATUS: HOLD FOR EVENT RECONCILIATION.**
+
+Do not apply migration 0012 to Preview D1 until the CROWD event evidence registry has reconciled the known flyer-derived event dates and removed approximate historical year assumptions. Pending dates may remain NULL; they must not be guessed.
+
 Migration `0012_x_tha_god_crowd_owned_battles.sql` adds the 13 GBE / The CROWD-owned battles recovered from the official @CrowdShyt tracker source and reorders the existing 18 external embeds behind them.
 
 Expected LEVEL X battle total after 0012:
