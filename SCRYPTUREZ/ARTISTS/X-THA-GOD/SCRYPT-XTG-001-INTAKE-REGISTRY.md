@@ -115,3 +115,8 @@ Filename discovery is only a routing aid. Generic timestamp filenames require vi
   - Dropbox remains read-only;
   - generic timestamp files remain `Unknown / Needs Review` until visually inspected;
   - known `Photo Sep 29 2026, 9 49 11 PM (10).png` is Power Play 2 / X vs NXT promotional artwork and is not Player character art.
+- Batch 002: `INTAKE-BATCH-002-VIDEO-DURATION.md`
+  - first 25 exact MOV records;
+  - runtime drives Battle Clip / Promo Clip vs Battle Round classification;
+  - matchup/event identity remains visual/provenance review;
+  - Dropbox remains read-only.
