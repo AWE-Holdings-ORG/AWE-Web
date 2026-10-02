@@ -232,3 +232,35 @@ Expected LEVEL X battle total after 0012:
 - 31 total authorized battle records.
 
 Historical YouTube/provider view counts from the old tracker are not imported into Da CROWD Player first-party `media_views`.
+
+
+## Player Event Context Rollout
+
+SCRYPT-CROWN-008 adds migration `0013_player_event_context.sql`.
+
+**0013 STATUS: HOLD WITH 0012 UNTIL CROWD EVENT RECONCILIATION IS READY.**
+
+Migration 0013 is additive and creates:
+- `player_events`;
+- `player_event_media`;
+- `player_event_artifacts`;
+- `player_event_spaces`.
+
+The initial seed includes only first-party X Tha God CROWD event evidence already verified from Drive artifacts:
+- Elements — 2022-10-15 — 9 PM EST as printed;
+- Post Elements — 2022-10-16 — 5 PM PST / 8 PM EST as printed;
+- Unforeseen Circumstances X — 2022-10-20 — 6 PM PST / 9 PM EST as printed;
+- Hostility Vol. 1 — 2022-11-05 — 9 PM EST as printed.
+
+Do not use rough historical tracker years as exact event dates.
+Do not infer Space IDs/URLs.
+Do not apply 0013 before 0012 because its initial media links depend on the CROWD-owned battle records added by 0012.
+
+When reconciliation is complete, Preview rollout order is:
+1. apply 0012 to `awe-crown-identity-preview`;
+2. apply 0013 to `awe-crown-identity-preview`;
+3. verify 31 X battle records;
+4. verify the four seeded event-context links and artifacts;
+5. keep unresolved event dates/Spaces absent until evidenced.
+
+Production D1 remains untouched.
