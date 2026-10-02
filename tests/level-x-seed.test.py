@@ -4,19 +4,19 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 
 CROWD_EXPECTED=[
-    ("TmwYVT_gI0Q","X Tha God vs Geminii — Members Only","2022"),
-    ("7s82HgWmML0","X Tha God vs Geminii (Da Rematch) — The Shootout","2022"),
-    ("6JSDWKTBPxw","X Tha God vs Whytboy — Unforeseen Circumstances","2022"),
-    ("ms4r261sQ9c","X Tha God vs Jace — Lost In Space","2022"),
-    ("aCyK8W8y5v0","X Tha God vs Tieso — Crowd Control Vol. 2","2022"),
-    ("dIENORIk-lU","X Tha God vs Fuzhjin — Unforeseen Circumstances 7","2022"),
-    ("ViOv-hJ4uOs","X Tha God vs Rari Lauren — Whyt Noise","2023"),
-    ("2InJIUKuoZY","X Tha God vs Troiyt — Elements","2023"),
-    ("4kHtN7my50A","X Tha God vs Rahmir Henry — Post Elements","2023"),
-    ("xo-TQJUhzJs","X Tha God vs MDK — Unforeseen Circumstances X","2023"),
-    ("bDgH8kdPbEA","X Tha God vs Bearvan — Hostility","2023"),
-    ("-RHWE4oHcFc","X Tha God vs King TR — Don't Die Vol. 1","2023"),
-    ("CyNwV5ir91A","X Tha God vs Luxry — Unforeseen Circumstances","2023"),
+    ("TmwYVT_gI0Q","X Tha God vs Geminii — Members Only",None),
+    ("7s82HgWmML0","X Tha God vs Geminii (Da Rematch) — The Shootout",None),
+    ("6JSDWKTBPxw","X Tha God vs Whytboy — Unforeseen Circumstances",None),
+    ("ms4r261sQ9c","X Tha God vs Jace — Lost In Space",None),
+    ("aCyK8W8y5v0","X Tha God vs Tieso — Crowd Control Vol. 2",None),
+    ("dIENORIk-lU","X Tha God vs Fuzhjin — Unforeseen Circumstances 7",None),
+    ("ViOv-hJ4uOs","X Tha God vs Rari Lauren — Whyt Noise",None),
+    ("2InJIUKuoZY","X Tha God vs Troiyt — Elements","2022-10-15"),
+    ("4kHtN7my50A","X Tha God vs Rahmir Henry — Post Elements","2022-10-16"),
+    ("xo-TQJUhzJs","X Tha God vs MDK — Unforeseen Circumstances X","2022-10-20"),
+    ("bDgH8kdPbEA","X Tha God vs Bearvan — Hostility","2022-11-05"),
+    ("-RHWE4oHcFc","X Tha God vs King TR — Don't Die Vol. 1",None),
+    ("CyNwV5ir91A","X Tha God vs Luxry — Unforeseen Circumstances",None),
 ]
 
 EXTERNAL_EXPECTED=[
@@ -88,7 +88,7 @@ db.executescript(seed_external)
 db.executescript(seed_crowd)
 
 rows=db.execute("""
-SELECT external_id,title,event_date,media_type,provider,visibility,sort_order,active,
+SELECT external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,
        source_name,source_url,rights_status
 FROM artist_media
 ORDER BY sort_order,id
@@ -103,9 +103,10 @@ external_rows=rows[13:]
 assert [row[0] for row in crowd_rows]==[item[0] for item in CROWD_EXPECTED]
 assert [row[1] for row in crowd_rows]==[item[1] for item in CROWD_EXPECTED]
 assert [row[2] for row in crowd_rows]==[item[2] for item in CROWD_EXPECTED]
-assert [row[6] for row in crowd_rows]==list(range(1,14))
+assert [row[7] for row in crowd_rows]==list(range(1,14))
+assert all(row[3]=="crowdshyt-era" for row in crowd_rows)
 
-for external_id,title,event_date,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in crowd_rows:
+for external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in crowd_rows:
     assert media_type=="battle"
     assert provider=="youtube"
     assert visibility=="crown"
@@ -116,9 +117,9 @@ for external_id,title,event_date,media_type,provider,visibility,sort_order,activ
 
 assert [row[0] for row in external_rows]==[item[0] for item in EXTERNAL_EXPECTED]
 assert [row[1] for row in external_rows]==[item[1] for item in EXTERNAL_EXPECTED]
-assert [row[6] for row in external_rows]==list(range(20,38))
+assert [row[7] for row in external_rows]==list(range(20,38))
 
-for external_id,title,event_date,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in external_rows:
+for external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in external_rows:
     assert media_type=="battle"
     assert provider=="youtube"
     assert visibility=="crown"
@@ -147,4 +148,4 @@ for external_id,access_state,teaser_mode,cypherz_visible,active in policies:
     assert cypherz_visible==1
     assert active==1
 
-print("PASS: LEVEL X battle catalog is 31/31 = 13 CROWD-owned + 18 external, unique, ordered, CROWN, and idempotent")
+print("PASS: LEVEL X battle catalog is 31/31 = 13 CROWD-owned + 18 external; CROWD dates are verified-only, ordered, CROWN, and idempotent")
