@@ -41,3 +41,12 @@ test("LEVEL X first-party playback analytics use real playback heartbeats",()=>{
   assert.match(script,/durationMs/);
   assert.match(script,/pagehide/);
 });
+
+
+test("LEVEL X analytics control is grant-gated and threshold stays internal",()=>{
+  const script=match?.[1]||"";
+  assert.match(html,/id="analyticsLink"[^>]*hidden/);
+  assert.match(script,/\/api\/crown\/player\/analytics-access/);
+  assert.match(script,/d\?\.granted===true/);
+  assert.doesNotMatch(html,/120 cumulative seconds|120-second|2:00 active playback/i);
+});
