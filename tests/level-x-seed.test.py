@@ -2,7 +2,24 @@ import sqlite3
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED=[
+
+CROWD_EXPECTED=[
+    ("TmwYVT_gI0Q","X Tha God vs Geminii — Members Only","2022"),
+    ("7s82HgWmML0","X Tha God vs Geminii (Da Rematch) — The Shootout","2022"),
+    ("6JSDWKTBPxw","X Tha God vs Whytboy — Unforeseen Circumstances","2022"),
+    ("ms4r261sQ9c","X Tha God vs Jace — Lost In Space","2022"),
+    ("aCyK8W8y5v0","X Tha God vs Tieso — Crowd Control Vol. 2","2022"),
+    ("dIENORIk-lU","X Tha God vs Fuzhjin — Unforeseen Circumstances 7","2022"),
+    ("ViOv-hJ4uOs","X Tha God vs Rari Lauren — Whyt Noise","2023"),
+    ("2InJIUKuoZY","X Tha God vs Troiyt — Elements","2023"),
+    ("4kHtN7my50A","X Tha God vs Rahmir Henry — Post Elements","2023"),
+    ("xo-TQJUhzJs","X Tha God vs MDK — Unforeseen Circumstances X","2023"),
+    ("bDgH8kdPbEA","X Tha God vs Bearvan — Hostility","2023"),
+    ("-RHWE4oHcFc","X Tha God vs King TR — Don't Die Vol. 1","2023"),
+    ("CyNwV5ir91A","X Tha God vs Luxry — Unforeseen Circumstances","2023"),
+]
+
+EXTERNAL_EXPECTED=[
     ("PbPnUWeZnEQ","Dapper Zay vs X Tha God - Earn Your Keep"),
     ("yFZVNjyiZag","TGE-VERSE THE EMCEE vs X THA GOD-#TSB2"),
     ("lmKO9edF-tw","TGE-SAINT VIC vs X THA GOD-#TSB3"),
@@ -48,26 +65,60 @@ CREATE TABLE artist_media(
   rights_status TEXT NOT NULL DEFAULT 'unverified',
   FOREIGN KEY(artist_id) REFERENCES artists(id)
 );
+CREATE TABLE media_access_policy(
+  media_id INTEGER PRIMARY KEY,
+  access_state TEXT NOT NULL,
+  house_slug TEXT,
+  unlock_slug TEXT,
+  teaser_mode TEXT NOT NULL,
+  cypherz_visible INTEGER NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
+  FOREIGN KEY(media_id) REFERENCES artist_media(id) ON DELETE CASCADE
+);
 INSERT INTO artists(id,artist_slug) VALUES(1,'x-tha-god');
 """)
 
-seed=(ROOT/"migrations/0008_x_tha_god_verified_media_seed.sql").read_text()
-db.executescript(seed)
-db.executescript(seed)
+seed_external=(ROOT/"migrations/0008_x_tha_god_verified_media_seed.sql").read_text()
+seed_crowd=(ROOT/"migrations/0012_x_tha_god_crowd_owned_battles.sql").read_text()
+
+# Apply each twice to enforce idempotence.
+db.executescript(seed_external)
+db.executescript(seed_crowd)
+db.executescript(seed_external)
+db.executescript(seed_crowd)
 
 rows=db.execute("""
-SELECT external_id,title,media_type,provider,visibility,sort_order,active,
+SELECT external_id,title,event_date,media_type,provider,visibility,sort_order,active,
        source_name,source_url,rights_status
 FROM artist_media
 ORDER BY sort_order,id
 """).fetchall()
 
-assert len(rows)==18, len(rows)
-assert len({row[0] for row in rows})==18
-assert [row[0] for row in rows]==[item[0] for item in EXPECTED]
-assert [row[1] for row in rows]==[item[1] for item in EXPECTED]
-assert [row[5] for row in rows]==list(range(10,28))
-for external_id,title,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in rows:
+assert len(rows)==31, len(rows)
+assert len({row[0] for row in rows})==31
+
+crowd_rows=rows[:13]
+external_rows=rows[13:]
+
+assert [row[0] for row in crowd_rows]==[item[0] for item in CROWD_EXPECTED]
+assert [row[1] for row in crowd_rows]==[item[1] for item in CROWD_EXPECTED]
+assert [row[2] for row in crowd_rows]==[item[2] for item in CROWD_EXPECTED]
+assert [row[6] for row in crowd_rows]==list(range(1,14))
+
+for external_id,title,event_date,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in crowd_rows:
+    assert media_type=="battle"
+    assert provider=="youtube"
+    assert visibility=="crown"
+    assert active==1
+    assert source_name=="The CROWD @CrowdShyt"
+    assert source_url==f"https://youtu.be/{external_id}"
+    assert rights_status=="gbe-crowd-owned"
+
+assert [row[0] for row in external_rows]==[item[0] for item in EXTERNAL_EXPECTED]
+assert [row[1] for row in external_rows]==[item[1] for item in EXTERNAL_EXPECTED]
+assert [row[6] for row in external_rows]==list(range(20,38))
+
+for external_id,title,event_date,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in external_rows:
     assert media_type=="battle"
     assert provider=="youtube"
     assert visibility=="crown"
@@ -76,4 +127,24 @@ for external_id,title,media_type,provider,visibility,sort_order,active,source_na
     assert source_url==f"https://youtu.be/{external_id}"
     assert rights_status=="embed-source"
 
-print("PASS: LEVEL X verified battle seed is 18/18, ordered, unique, CROWN, and idempotent")
+policies=db.execute("""
+SELECT m.external_id,p.access_state,p.teaser_mode,p.cypherz_visible,p.active
+FROM media_access_policy p
+JOIN artist_media m ON m.id=p.media_id
+WHERE m.external_id IN (
+  'TmwYVT_gI0Q','7s82HgWmML0','6JSDWKTBPxw','ms4r261sQ9c',
+  'aCyK8W8y5v0','dIENORIk-lU','ViOv-hJ4uOs','2InJIUKuoZY',
+  '4kHtN7my50A','xo-TQJUhzJs','bDgH8kdPbEA','-RHWE4oHcFc',
+  'CyNwV5ir91A'
+)
+ORDER BY m.sort_order
+""").fetchall()
+
+assert len(policies)==13, len(policies)
+for external_id,access_state,teaser_mode,cypherz_visible,active in policies:
+    assert access_state=="crown"
+    assert teaser_mode=="locked"
+    assert cypherz_visible==1
+    assert active==1
+
+print("PASS: LEVEL X battle catalog is 31/31 = 13 CROWD-owned + 18 external, unique, ordered, CROWN, and idempotent")
