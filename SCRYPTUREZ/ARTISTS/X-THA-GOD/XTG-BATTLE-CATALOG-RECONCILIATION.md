@@ -81,20 +81,22 @@ These are distinct records, not duplicates of current seed rows.
 | ID | Opponent | League / Event | YouTube ID | Why distinct |
 |---|---|---|---|---|
 | R01 | OG Duggie | Demon Time/Stardom — Super Readers | B3h9fKRPimI | distinct from seeded OG Duggie championship battle `AeoEDYdnJzk` |
-| R02 | DeeJayy | iBattleTV — Sun Fall | jKl0NU9K8hE | solo battle; distinct from seeded tag battle `QuJEFuUBGCk` |
-| R03 | Tino | The Grizz Exam — Back 2 Business | twjhGe-nJCw | absent from migration 0008 |
+| R02 | DeeJayy | iBattleTV — Sunfall | jKl0NU9K8hE | solo battle; distinct from seeded tag battle `QuJEFuUBGCk`; event index dates Sunfall 2024-06-15; provider release 2024-07-24 |
+| R03 | Tino | The Grizz Exam — Back 2 Business | twjhGe-nJCw | absent from migration 0008; event 2024-11-02; provider release 2024-12-02 |
 
 ## D — Public Index Battle Missing From Both Current Seed and Old 27 Tracker — 1
 
 ### Chuck Lucci vs X Tha God
 - league: Demon Time Battle League;
-- public battle-index date: 2023-10-04;
-- VerseTracker currently lists it as a distinct X battle;
-- provider/watch URL: PENDING direct-provider verification;
-- event name: PENDING;
-- first-party/rights relationship: PENDING.
+- event: Insidious;
+- event date: 2023-09-30;
+- provider release date: 2023-10-04;
+- YouTube ID: `xgupv_oiIQ8`;
+- provider embed URL recovered through public battle index: `https://www.youtube.com/embed/xgupv_oiIQ8`;
+- VerseTracker independently lists it as a distinct X battle on 2023-10-04;
+- rights relationship: external / Demon Time, pending any separate first-party agreement evidence.
 
-Do not seed until the underlying provider/source URL is verified.
+Status: PROVIDER + EVENT VERIFIED / READY FOR ADDITIVE EXTERNAL SEED REVIEW.
 
 ## E — First-Party CROWD Battle Lead Missing From Historical Tracker — 1
 
@@ -136,9 +138,9 @@ Migration 0012 is **not** the final X catalog migration.
 
 ## Reconciliation Queue
 
-1. Verify direct provider/source URL for Chuck Lucci vs X.
-2. Verify provider/publication source for Big Kannon / Training Day.
-3. Add the three old-tracker omissions only after checking current provider availability.
+1. Verify provider/publication source for Big Kannon / Training Day.
+2. Verify current provider availability for OG Duggie / Super Readers `B3h9fKRPimI`.
+3. Stage the verified DeeJayy, Tino, and Chuck Lucci omissions as an additive external migration.
 4. Search first-party CROWD Drive for additional `xV*`, `XV*`, matchup-named, and event-folder battle assets.
 5. Search public indexes for X battles outside the old tracker/current migration.
 6. Deduplicate by matchup + event + source evidence, not opponent name alone.
