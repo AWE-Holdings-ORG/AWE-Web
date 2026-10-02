@@ -24,6 +24,7 @@ on:
       - "tests/level-x-client.test.mjs"
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
+      - "tests/player-event-context-migration.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
@@ -54,6 +55,7 @@ on:
       - "tests/level-x-client.test.mjs"
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
+      - "tests/player-event-context-migration.test.py"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
