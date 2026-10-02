@@ -16,6 +16,7 @@ on:
       - "migrations/0010_player_access_grants.sql"
       - "migrations/0011_player_engagement_analytics.sql"
       - "migrations/0012_x_tha_god_crowd_owned_battles.sql"
+      - "migrations/0013_player_event_context.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -28,6 +29,7 @@ on:
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-006-PLAYER-QUALIFIED-VIEWS.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-007-PLAYER-ENGAGEMENT-ANALYTICS.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-008-PLAYER-EVENT-CONTEXT.md"
       - ".github/workflows/player-access-tests.yml"
   pull_request:
     paths:
@@ -44,6 +46,7 @@ on:
       - "migrations/0010_player_access_grants.sql"
       - "migrations/0011_player_engagement_analytics.sql"
       - "migrations/0012_x_tha_god_crowd_owned_battles.sql"
+      - "migrations/0013_player_event_context.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -90,6 +93,9 @@ jobs:
 
       - name: Validate Player analytics migration
         run: npm run test:player-analytics-migration
+
+      - name: Validate Player event context migration
+        run: npm run test:player-event-context-migration
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
