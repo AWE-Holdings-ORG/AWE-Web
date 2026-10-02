@@ -63,7 +63,9 @@ Evidence recovered:
 - A public flyer states `WE THE FANS BATTLE LEAGUE & THE CROWD PRESENTS: TRAINING DAY` and lists `X THA GOD vs BIG KANNON`.
 - Public CROWD-network posts show Training Day activity using X/Twitter Spaces, including a separately confirmed 11/24/23 9 PM ET Spaces matchup. That date must NOT be assigned to X vs Big Kannon without a direct matchup/date source.
 
-Status: VERIFIED MATCHUP / EVENT; exact event date, Space URL and publication relationship PENDING.
+Status: VERIFIED MATCHUP / EVENT; exact battle date, Space URL and publication relationship PENDING.
+
+Historical project evidence also records a `WE THE FANS x THE CROWD — Training Day` X/Twitter Space hosted by Jayblac on 2024-01-07 with 2,479 participants. That establishes a Training Day program/Space anchor but the recovered excerpt does not explicitly bind X vs Big Kannon to that specific Space. Therefore 2024-01-07 is NOT yet promoted as the X/Kannon battle date.
 
 ## First-Party Flyer Assets Recovered
 
@@ -124,6 +126,16 @@ For each X event above, collect when available:
 - matchup promo post;
 - replay/recording status;
 - relation to later YouTube upload.
+
+### Training Day Historical Space Anchor
+- program: WE THE FANS x THE CROWD — Training Day
+- historical Space date: 2024-01-07
+- host: Jayblac
+- recorded participants: 2,479
+- historical source: prior SpacesDashboard research preserved in the project archive
+- relation to X: historical note says the community touchpoint featured management and X
+- relation to X vs Big Kannon: NOT YET DIRECTLY PROVEN
+- battle event_date remains PENDING until a direct matchup/date or Space-card relationship is recovered.
 
 ## Outstanding Research Queue
 
