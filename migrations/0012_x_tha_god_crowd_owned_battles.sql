@@ -2,7 +2,7 @@ PRAGMA foreign_keys=ON;
 
 -- X Tha God: CROWD-owned battle catalog recovered from the official
 -- @CrowdShyt battle tracker/source. Years are preserved exactly as supplied;
--- exact event dates remain unresolved.
+-- exact event dates are populated only when first-party flyer/event evidence resolves them; approximate tracker years remain NULL.
 --
 -- These are first-party GBE / The CROWD source records. Historical provider
 -- view counts from the old tracker are intentionally NOT imported into
@@ -45,7 +45,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','TmwYVT_gI0Q','https://youtu.be/TmwYVT_gI0Q',
-       'X Tha God vs Geminii — Members Only','2022','crowdshyt-2022','crown',1,1,
+       'X Tha God vs Geminii — Members Only',NULL,'crowdshyt-2022','crown',1,1,
        'The CROWD @CrowdShyt','https://youtu.be/TmwYVT_gI0Q','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='TmwYVT_gI0Q');
@@ -55,7 +55,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','7s82HgWmML0','https://youtu.be/7s82HgWmML0',
-       'X Tha God vs Geminii (Da Rematch) — The Shootout','2022','crowdshyt-2022','crown',2,1,
+       'X Tha God vs Geminii (Da Rematch) — The Shootout',NULL,'crowdshyt-2022','crown',2,1,
        'The CROWD @CrowdShyt','https://youtu.be/7s82HgWmML0','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='7s82HgWmML0');
@@ -65,7 +65,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','6JSDWKTBPxw','https://youtu.be/6JSDWKTBPxw',
-       'X Tha God vs Whytboy — Unforeseen Circumstances','2022','crowdshyt-2022','crown',3,1,
+       'X Tha God vs Whytboy — Unforeseen Circumstances',NULL,'crowdshyt-2022','crown',3,1,
        'The CROWD @CrowdShyt','https://youtu.be/6JSDWKTBPxw','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='6JSDWKTBPxw');
@@ -75,7 +75,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','ms4r261sQ9c','https://youtu.be/ms4r261sQ9c',
-       'X Tha God vs Jace — Lost In Space','2022','crowdshyt-2022','crown',4,1,
+       'X Tha God vs Jace — Lost In Space',NULL,'crowdshyt-2022','crown',4,1,
        'The CROWD @CrowdShyt','https://youtu.be/ms4r261sQ9c','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='ms4r261sQ9c');
@@ -85,7 +85,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','aCyK8W8y5v0','https://youtu.be/aCyK8W8y5v0',
-       'X Tha God vs Tieso — Crowd Control Vol. 2','2022','crowdshyt-2022','crown',5,1,
+       'X Tha God vs Tieso — Crowd Control Vol. 2',NULL,'crowdshyt-2022','crown',5,1,
        'The CROWD @CrowdShyt','https://youtu.be/aCyK8W8y5v0','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='aCyK8W8y5v0');
@@ -95,7 +95,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','dIENORIk-lU','https://youtu.be/dIENORIk-lU',
-       'X Tha God vs Fuzhjin — Unforeseen Circumstances 7','2022','crowdshyt-2022','crown',6,1,
+       'X Tha God vs Fuzhjin — Unforeseen Circumstances 7',NULL,'crowdshyt-2022','crown',6,1,
        'The CROWD @CrowdShyt','https://youtu.be/dIENORIk-lU','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='dIENORIk-lU');
@@ -105,7 +105,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','ViOv-hJ4uOs','https://youtu.be/ViOv-hJ4uOs',
-       'X Tha God vs Rari Lauren — Whyt Noise','2023','crowdshyt-2023','crown',7,1,
+       'X Tha God vs Rari Lauren — Whyt Noise',NULL,'crowdshyt-2023','crown',7,1,
        'The CROWD @CrowdShyt','https://youtu.be/ViOv-hJ4uOs','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='ViOv-hJ4uOs');
@@ -115,7 +115,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','2InJIUKuoZY','https://youtu.be/2InJIUKuoZY',
-       'X Tha God vs Troiyt — Elements','2023','crowdshyt-2023','crown',8,1,
+       'X Tha God vs Troiyt — Elements','2022-10-15','crowdshyt-2023','crown',8,1,
        'The CROWD @CrowdShyt','https://youtu.be/2InJIUKuoZY','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='2InJIUKuoZY');
@@ -125,7 +125,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','4kHtN7my50A','https://youtu.be/4kHtN7my50A',
-       'X Tha God vs Rahmir Henry — Post Elements','2023','crowdshyt-2023','crown',9,1,
+       'X Tha God vs Rahmir Henry — Post Elements','2022-10-16','crowdshyt-2023','crown',9,1,
        'The CROWD @CrowdShyt','https://youtu.be/4kHtN7my50A','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='4kHtN7my50A');
@@ -135,7 +135,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','xo-TQJUhzJs','https://youtu.be/xo-TQJUhzJs',
-       'X Tha God vs MDK — Unforeseen Circumstances X','2023','crowdshyt-2023','crown',10,1,
+       'X Tha God vs MDK — Unforeseen Circumstances X','2022-10-20','crowdshyt-2023','crown',10,1,
        'The CROWD @CrowdShyt','https://youtu.be/xo-TQJUhzJs','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='xo-TQJUhzJs');
@@ -145,7 +145,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','bDgH8kdPbEA','https://youtu.be/bDgH8kdPbEA',
-       'X Tha God vs Bearvan — Hostility','2023','crowdshyt-2023','crown',11,1,
+       'X Tha God vs Bearvan — Hostility','2022-11-05','crowdshyt-2023','crown',11,1,
        'The CROWD @CrowdShyt','https://youtu.be/bDgH8kdPbEA','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='bDgH8kdPbEA');
@@ -155,7 +155,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','-RHWE4oHcFc','https://youtu.be/-RHWE4oHcFc',
-       'X Tha God vs King TR — Don''t Die Vol. 1','2023','crowdshyt-2023','crown',12,1,
+       'X Tha God vs King TR — Don''t Die Vol. 1',NULL,'crowdshyt-2023','crown',12,1,
        'The CROWD @CrowdShyt','https://youtu.be/-RHWE4oHcFc','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='-RHWE4oHcFc');
@@ -165,7 +165,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','CyNwV5ir91A','https://youtu.be/CyNwV5ir91A',
-       'X Tha God vs Luxry — Unforeseen Circumstances','2023','crowdshyt-2023','crown',13,1,
+       'X Tha God vs Luxry — Unforeseen Circumstances',NULL,'crowdshyt-2023','crown',13,1,
        'The CROWD @CrowdShyt','https://youtu.be/CyNwV5ir91A','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='CyNwV5ir91A');
