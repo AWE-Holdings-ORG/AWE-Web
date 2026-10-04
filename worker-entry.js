@@ -227,6 +227,136 @@ async function engagementMediaId(request){
   return Number.isInteger(value)&&value>0?value:null;
 }
 
+async function archiveMediaDecision(env,mediaId,{
+  crownMemberId=null,
+  crownAuthenticated=false,
+  publicOnly=false
+}={}){
+  const media=await env.CROWN_DB.prepare(`
+    SELECT
+      m.id,m.media_type,m.provider,m.external_id,m.canonical_url,m.thumbnail_url,
+      COALESCE(p.access_state,'unknown') AS access_state,
+      p.house_slug,p.unlock_slug,COALESCE(p.teaser_mode,'concealed') AS teaser_mode
+    FROM artist_media m
+    LEFT JOIN media_access_policy p ON p.media_id=m.id AND p.active=1
+    WHERE m.id=? AND m.active=1
+    LIMIT 1
+  `).bind(Number(mediaId)).first();
+
+  if(!media)return {authorized:false,media:null};
+
+  if(publicOnly){
+    if(String(media.access_state||"").toLowerCase()!=="public"){
+      return {authorized:false,media:null};
+    }
+    return {authorized:true,media};
+  }
+
+  const viewer=await buildPlayerViewerContext(env.CROWN_DB,{
+    crownMemberId:Number(crownMemberId),
+    crownAuthenticated:crownAuthenticated===true
+  });
+  if(viewer.identityConflict)return {authorized:false,media:null};
+
+  const decision=resolveMediaAccess(media,viewer);
+  return {authorized:decision.authorized===true,media:decision.authorized===true?media:null};
+}
+
+function dropboxRawUrl(value){
+  try{
+    const url=new URL(String(value||""));
+    if(url.hostname!=="www.dropbox.com"&&url.hostname!=="dropbox.com")return null;
+    url.searchParams.delete("dl");
+    url.searchParams.set("raw","1");
+    return url.toString();
+  }catch{
+    return null;
+  }
+}
+
+function driveThumbnailUrl(media){
+  if(media?.thumbnail_url){
+    try{
+      const url=new URL(media.thumbnail_url);
+      if(url.hostname==="drive.google.com")return url.toString();
+    }catch{}
+  }
+  const id=String(media?.external_id||"").trim();
+  return id?"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w1600":null;
+}
+
+function driveDownloadUrl(media){
+  const id=String(media?.external_id||"").trim();
+  return id?"https://drive.usercontent.google.com/download?id="+encodeURIComponent(id)+"&export=download&confirm=t":null;
+}
+
+async function archiveMediaProxyResponse(request,env,{
+  crownMemberId=null,
+  crownAuthenticated=false,
+  publicOnly=false
+}={}){
+  const url=new URL(request.url);
+  const mediaId=Number(url.searchParams.get("mediaId"));
+  const mode=url.searchParams.get("mode")==="thumbnail"?"thumbnail":"preview";
+  if(!Number.isInteger(mediaId)||mediaId<1){
+    return json({ok:false,message:"INVALID ARCHIVE FILE."},400);
+  }
+
+  const decision=await archiveMediaDecision(env,mediaId,{
+    crownMemberId,
+    crownAuthenticated,
+    publicOnly
+  });
+  if(!decision.authorized||!decision.media){
+    return json({ok:false,message:"ARCHIVE FILE NOT AVAILABLE."},404);
+  }
+
+  const media=decision.media;
+  const type=String(media.media_type||"").toLowerCase();
+  let upstream=null;
+
+  if(media.provider==="google-drive"){
+    if(mode==="thumbnail"||["photo","portrait","image","artwork"].includes(type)){
+      upstream=driveThumbnailUrl(media);
+    }else if(["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)){
+      upstream=driveDownloadUrl(media);
+    }
+  }else if(media.provider==="dropbox"){
+    if(mode==="thumbnail"&&["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)){
+      return new Response(null,{status:204,headers:{"cache-control":"private, no-store"}});
+    }
+    upstream=dropboxRawUrl(media.canonical_url);
+  }
+
+  if(!upstream){
+    return json({ok:false,message:"ARCHIVE PREVIEW NOT AVAILABLE."},404);
+  }
+
+  const headers=new Headers();
+  const range=request.headers.get("range");
+  if(range)headers.set("range",range);
+
+  const remote=await fetch(upstream,{
+    method:"GET",
+    headers,
+    redirect:"follow"
+  });
+
+  if(!remote.ok&&remote.status!==206){
+    return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},502);
+  }
+
+  const outHeaders=new Headers();
+  for(const name of ["content-type","content-length","content-range","accept-ranges","etag","last-modified"]){
+    const value=remote.headers.get(name);
+    if(value)outHeaders.set(name,value);
+  }
+  outHeaders.set("cache-control","private, no-store");
+  outHeaders.set("x-content-type-options","nosniff");
+
+  return new Response(remote.body,{status:remote.status,headers:outHeaders});
+}
+
 async function playerEngagementAuthorized(request,env,member){
   const mediaId=await engagementMediaId(request);
   if(!mediaId)return {authorized:null};
@@ -261,6 +391,16 @@ export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);
 
+    if(url.pathname==="/api/archivez/media"&&request.method==="GET"){
+      try{
+        const schema=await playerAccessSchema(env);
+        if(!schema.ready)return json({ok:false,message:"PUBLIC ARCHIVEZ DATA NOT READY."},503);
+        return archiveMediaProxyResponse(request,env,{publicOnly:true});
+      }catch{
+        return json({ok:false,message:"PUBLIC ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},503);
+      }
+    }
+
     if(url.pathname==="/api/archivez/catalog"&&request.method==="GET"){
       try{
         const schema=await playerAccessSchema(env);
@@ -284,6 +424,22 @@ export default {
           message:"PUBLIC ARCHIVEZ TEMPORARILY UNAVAILABLE.",
           code:"ARCHIVEZ_PUBLIC_RUNTIME_FAILURE"
         },503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/archivez/media"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        const schema=await playerAccessSchema(env);
+        if(!schema.ready)return json({ok:false,message:"ARCHIVEZ DATA NOT READY."},503);
+        return archiveMediaProxyResponse(request,env,{
+          crownMemberId:Number(identity.member.id),
+          crownAuthenticated:true,
+          publicOnly:false
+        });
+      }catch{
+        return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},503);
       }
     }
 
