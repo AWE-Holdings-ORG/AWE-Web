@@ -126,6 +126,21 @@ WHERE c.collection_slug='da-x-filez'
 """).fetchone()[0]
 assert linked==92, linked
 
+codes=db.execute("""
+SELECT i.file_code
+FROM player_media_collection_items i
+JOIN player_media_collections c ON c.id=i.collection_id
+JOIN artist_media m ON m.id=i.media_id
+WHERE c.collection_slug='da-x-filez'
+  AND m.era_slug='da-x-filez'
+ORDER BY i.file_code
+""").fetchall()
+codes=[row[0] for row in codes]
+assert len(codes)==92
+assert len(set(codes))==92
+assert codes[0]=='DXF-0001'
+assert codes[-1]=='DXF-0092'
+
 assert db.execute("""
 SELECT COUNT(*) FROM artist_media
 WHERE era_slug='da-x-filez' AND description LIKE '%.MOV%'
