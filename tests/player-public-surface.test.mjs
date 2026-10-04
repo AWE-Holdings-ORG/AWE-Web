@@ -72,3 +72,10 @@ test("public Archivez descriptions hide storage-provider wording",()=>{
   assert.match(api,/Tha X Filez image\. Artist tier\/category review pending\./);
   assert.match(api,/Tha X Filez video\. Artist tier\/category review pending\./);
 });
+
+test("public Dropbox records never expose storage credentials or raw Dropbox URLs",()=>{
+  const apiPath=fileURLToPath(new URL("../lib/archivez-api.js",import.meta.url));
+  const api=readFileSync(apiPath,"utf8");
+  assert.match(api,/item\.provider!=="dropbox"/);
+  assert.doesNotMatch(html,/DROPBOX_APP_KEY|DROPBOX_APP_SECRET|dropboxapi\.com/);
+});
