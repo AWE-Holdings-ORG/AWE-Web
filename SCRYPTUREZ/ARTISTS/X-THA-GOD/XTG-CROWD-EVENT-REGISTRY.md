@@ -140,13 +140,20 @@ For each X event above, collect when available:
 
 ### Training Day Historical Space Anchor
 - program: WE THE FANS x THE CROWD — Training Day
-- historical Space date: 2024-01-07
-- host: Jayblac
-- recorded participants: 2,479
-- historical source: prior SpacesDashboard research preserved in the project archive
+- Space date: 2024-01-07
+- listed duration: 02:50:18
+- public Spaces index audience: ~2.4k tuned in
+- title: `WE THE FANS x THE CROWD PRESENTS TRAINING DAY HOSTED BY JAYBLAC`
+- host/presenter named in title: Jayblac
+- current public corroboration: XspaceGPT / TwitterSpaceGPT host archive
+- historical project source: prior SpacesDashboard research preserved in the project archive recorded 2,479 participants
 - relation to X: historical note says the community touchpoint featured management and X
 - relation to X vs Big Kannon: NOT YET DIRECTLY PROVEN
 - battle event_date remains PENDING until a direct matchup/date or Space-card relationship is recovered.
+
+Related public program chronology:
+- `TRAINING DAY FACEOFFS HOSTED BY COLA THE BIG SPEAKER` — 2023-12-23 — 01:23:09 — 621 tuned in.
+This supports the Training Day rollout chronology but still does not bind the X/Kannon matchup to a specific date without direct matchup evidence.
 
 ## Outstanding Research Queue
 
