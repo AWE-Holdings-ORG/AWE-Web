@@ -74,6 +74,8 @@ New X images/interviews should be:
 The public review surface is `/crowd/x/`.
 It is intentionally noindex during the initial artist-review phase.
 
+Each imported Da X Filez item receives a stable review code (`DXF-0001`, `DXF-0002`, etc.) so X can curate by code without relying on gallery position or screenshots.
+
 Do not auto-import ambiguous raw video clips as interviews. Classify them first.
 
 ## @CrowdShyt Thumbnail / Flyer Rule
@@ -111,6 +113,7 @@ Migration 0018 stages the first Da X Filez public image batch:
 - Hype3Wear / X Tha God — 5 still images;
 - Grizz Exams / X Tha God — 87 still images;
 - total — 92 still images;
+- stable review codes — `DXF-0001` through `DXF-0092`;
 - raw Grizz Exam `.MOV` files remain unclassified and are not imported as interviews/BTS yet.
 
 ## Runtime
