@@ -64,7 +64,7 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
 <header class="top"><a href="/crown/crowd/archivez/">← DA ARCHIVEZ</a><div class="sig">FILE ROOM 001 // X THA GOD</div></header>
 <section class="hero">
   <div><div class="eyebrow">DA ARCHIVEZ // ARTIST FILE ROOM 001</div><h1>THA X FILEZ</h1><p>X Tha God’s preserved archive inside The CROWD — images, interviews, behind-the-scenes material, promos and history. This room is separate from LEVEL X and Da CROWD Player.</p></div>
-  <aside class="dossier"><b>ARCHIVE STATUS</b><strong id="fileCount">— FILEZ</strong><small>ACCESS IS EVALUATED PER FILE</small></aside>
+  <aside class="dossier"><b>ARCHIVE STATUS</b><strong id="fileCount">— FILEZ</strong><small>ACCESS IS EVALUATED PER FILE</small><small id="bridgeStatus" hidden style="margin-top:10px">DROPBOX BRIDGE // CHECKING</small></aside>
 </section>
 <section class="archive">
   <div class="archive-head"><div><p>ARCHIVE PLAYER // THA X FILEZ</p><h2>Open a file.</h2></div><p id="status">CONNECTING TO ARCHIVE…</p></div>
@@ -161,6 +161,22 @@ function move(step){
   select(state.filtered[i].id);
   document.querySelector('#queue button[data-id="'+state.filtered[i].id+'"]')?.scrollIntoView({block:"nearest"});
 }
+async function loadDropboxHealth(ownerVisible){
+  const el=document.getElementById("bridgeStatus");
+  if(!el||!ownerVisible)return;
+  el.hidden=false;
+  el.textContent="DROPBOX BRIDGE // CHECKING";
+  try{
+    const r=await fetch("/api/crown/archivez/dropbox-health");
+    const data=await r.json();
+    el.textContent=data?.configured
+      ?"DROPBOX BRIDGE // ONLINE"
+      :"DROPBOX BRIDGE // SETUP REQUIRED";
+  }catch{
+    el.textContent="DROPBOX BRIDGE // STATUS UNAVAILABLE";
+  }
+}
+
 async function load(){
   try{
     const r=await fetch("/api/crown/archivez/catalog?artist=x-tha-god&collection=tha-x-filez");
@@ -169,6 +185,7 @@ async function load(){
     state.media=d.media||[];
     document.getElementById("fileCount").textContent=state.media.length+" FILEZ";
     document.getElementById("status").textContent="ARCHIVE SIGNAL // ONLINE";
+    loadDropboxHealth(d?.archive?.provenanceVisible===true);
     const cats=["ALL",...new Set(state.media.map(kind))];
     const f=document.getElementById("filters");
     f.innerHTML=cats.map(c=>'<button data-filter="'+esc(c)+'" class="'+(c==="ALL"?"active":"")+'">'+esc(c)+'</button>').join("");
