@@ -10,6 +10,7 @@ on:
       - "lib/player-analytics.js"
       - "worker-entry.js"
       - "public/crown/crowd/level-x/index.html"
+      - "public/crowd/x/index.html"
       - "public/crown/crowd/level-x/analytics/index.html"
       - "package.json"
       - "migrations/0009_player_access_states.sql"
@@ -21,6 +22,7 @@ on:
       - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
       - "migrations/0016_x_tha_god_reconciled_additions.sql"
       - "migrations/0017_da_x_filez_and_super_readers.sql"
+      - "migrations/0018_da_x_filez_initial_public_images.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -32,6 +34,8 @@ on:
       - "tests/x-external-event-context-migration.test.py"
       - "tests/x-reconciled-additions-migration.test.py"
       - "tests/player-media-collections-migration.test.py"
+      - "tests/player-public-surface.test.mjs"
+      - "tests/da-x-filez-initial-images-migration.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
@@ -49,6 +53,7 @@ on:
       - "lib/player-analytics.js"
       - "worker-entry.js"
       - "public/crown/crowd/level-x/index.html"
+      - "public/crowd/x/index.html"
       - "public/crown/crowd/level-x/analytics/index.html"
       - "package.json"
       - "migrations/0009_player_access_states.sql"
@@ -60,6 +65,7 @@ on:
       - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
       - "migrations/0016_x_tha_god_reconciled_additions.sql"
       - "migrations/0017_da_x_filez_and_super_readers.sql"
+      - "migrations/0018_da_x_filez_initial_public_images.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -71,6 +77,8 @@ on:
       - "tests/x-external-event-context-migration.test.py"
       - "tests/x-reconciled-additions-migration.test.py"
       - "tests/player-media-collections-migration.test.py"
+      - "tests/player-public-surface.test.mjs"
+      - "tests/da-x-filez-initial-images-migration.test.py"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -122,6 +130,12 @@ jobs:
 
       - name: Validate Da X Filez collection migration
         run: npm run test:player-media-collections-migration
+
+      - name: Validate public Da X Filez surface
+        run: npm run test:player-public-surface
+
+      - name: Validate initial Da X Filez image seed
+        run: npm run test:da-x-filez-images-migration
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
