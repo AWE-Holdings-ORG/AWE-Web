@@ -67,7 +67,7 @@ ORDER BY e.event_date
 """).fetchall()
 
 expected=[
-  ('insidious-2023-09-30','Insidious','2023-09-30','Demon Time Battle League','xgupv_oiIQ8'),
+  ('insidious-2023-09-30','Insidious','2023-09-30','Stardom (formerly Demon Time Battle League)','xgupv_oiIQ8'),
   ('sunfall-2024-06-15','Sunfall','2024-06-15','iBattleTV','jKl0NU9K8hE'),
   ('back-2-business-2024-11-02','Back 2 Business','2024-11-02','The Grizz Exam Battles','twjhGe-nJCw'),
 ]
