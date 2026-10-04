@@ -31,7 +31,10 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
 .stage{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,.75fr);gap:12px}
 .screen-wrap{min-width:0}
 .screen{aspect-ratio:16/10;border:1px solid #211b11;background:radial-gradient(circle,#151008,#030303 64%);display:grid;place-items:center;overflow:hidden;position:relative}
-.screen img,.screen video,.screen iframe{width:100%;height:100%;object-fit:contain;border:0}
+.screen.image-mode{aspect-ratio:auto;min-height:420px;max-height:78vh;padding:10px}
+.screen.image-mode img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(78vh - 20px);object-fit:contain;margin:auto}
+.screen.video-mode video,.screen.video-mode iframe{width:100%;height:100%;object-fit:contain;border:0}
+.screen:not(.image-mode) img,.screen:not(.video-mode) video,.screen:not(.video-mode) iframe{max-width:100%;max-height:100%;object-fit:contain;border:0}
 .placeholder{text-align:center;padding:30px}
 .placeholder .x{font:500 clamp(72px,13vw,160px) Georgia,serif;color:var(--g)}
 .placeholder small{display:block;color:#71695d;font:900 9px ui-monospace,monospace;letter-spacing:.18em}
@@ -41,6 +44,28 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
 .detail h3{font:500 28px Georgia,serif;margin:0 0 6px}
 .detail p{margin:0;color:#81786c;line-height:1.65}
 .source{color:var(--g2);text-decoration:none;border:1px solid var(--line);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.1em}
+.admin-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.admin-edit{border:1px solid #5c4624;background:#0b0905;color:var(--g2);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.admin-panel{margin-top:12px;border:1px solid #3b2e1b;background:#060503;padding:14px;display:grid;gap:9px}
+.admin-panel[hidden]{display:none}
+.admin-panel label{display:grid;gap:5px;color:#897e6b;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
+.admin-panel input,.admin-panel textarea,.comment-form textarea{width:100%;border:1px solid #3b301d;background:#020202;color:#f8f4ea;padding:11px;font:500 13px system-ui,sans-serif;outline:none}
+.admin-panel textarea,.comment-form textarea{min-height:74px;resize:vertical}
+.admin-panel input:focus,.admin-panel textarea:focus,.comment-form textarea:focus{border-color:var(--g)}
+.admin-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.admin-buttons button{border:1px solid var(--g);background:#080704;color:var(--g2);padding:9px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.admin-msg,.social-msg{min-height:16px;color:#8a936d;font:800 8px ui-monospace,monospace;letter-spacing:.09em}
+.social{margin-top:16px;border-top:1px solid #2d2416;padding-top:14px}
+.social-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.social-actions button{border:1px solid #3d311e;background:#080704;color:#d6c49c;padding:10px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.11em;cursor:pointer}
+.social-actions button:hover,.social-actions button.liked{border-color:var(--g);color:var(--g2);background:#171006}
+.comments{display:grid;gap:8px;margin-top:13px}
+.comment{border-top:1px solid #211b12;padding-top:9px}
+.comment b{display:block;color:var(--g2);font:900 8px ui-monospace,monospace;letter-spacing:.11em}
+.comment p{margin:5px 0 0;color:#aaa092;line-height:1.45;font-size:12px}
+.comment time{color:#61594e;font:700 7px ui-monospace,monospace;letter-spacing:.08em}
+.comment-form{display:grid;gap:7px;margin-top:11px}
+.comment-form button{justify-self:start;border:1px solid var(--g);background:#0a0804;color:var(--g2);padding:9px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
 .queue{border:1px solid #211b11;max-height:650px;overflow:auto}
 .queue button{width:100%;border:0;border-bottom:1px solid #211b11;background:#070605;color:#eee;padding:9px;text-align:left;display:grid;grid-template-columns:92px minmax(0,1fr);gap:11px;align-items:center;cursor:pointer}
 .queue button:hover,.queue button.active{background:#151008}
@@ -199,7 +224,13 @@ function select(id){
   const x=state.media.find(m=>Number(m.id)===Number(id)); if(!x)return;
   state.activeId=Number(x.id);
   document.querySelectorAll("#queue button").forEach(b=>b.classList.toggle("active",Number(b.dataset.id)===state.activeId));
-  document.getElementById("screen").innerHTML=mediaMarkup(x);
+  const screen=document.getElementById("screen");
+  const selectedType=String(x.media_type||"").toLowerCase();
+  const isImage=["photo","portrait","image","artwork"].includes(selectedType);
+  const isVideo=["video","clip","interview","bts","behind-the-scenes","promo"].includes(selectedType);
+  screen.classList.toggle("image-mode",isImage);
+  screen.classList.toggle("video-mode",isVideo);
+  screen.innerHTML=mediaMarkup(x);
   document.getElementById("code").textContent=x.collection_file_code||"DXF-—";
   document.getElementById("tier").textContent=tier(x)+(x.authorized===false?" // LOCKED":"");
   document.getElementById("type").textContent=kind(x);
@@ -282,8 +313,9 @@ async function load(){
       renderQueue();
     });
     renderQueue();
-  }catch{
+  }catch(err){
     document.getElementById("status").textContent="ARCHIVE SIGNAL // OFFLINE";
+    console.error("Tha X Filez catalog failed",err);
     document.getElementById("queue").innerHTML='<div class="empty">THA X FILEZ IS TEMPORARILY UNAVAILABLE.</div>';
   }
 }
