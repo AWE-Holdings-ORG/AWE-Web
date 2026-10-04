@@ -104,6 +104,32 @@ export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);
 
+    if(url.pathname==="/api/player/catalog"&&request.method==="GET"){
+      try{
+        const schema=await playerAccessSchema(env);
+        if(!schema.ready){
+          return json({
+            ok:false,
+            message:"PUBLIC PLAYER DATA NOT READY.",
+            code:"PLAYER_ACCESS_SCHEMA_MISSING"
+          },503);
+        }
+
+        return playerCatalogResponse(request,env,{
+          crownMemberId:null,
+          cypherzProfileId:null,
+          crownAuthenticated:false,
+          surface:"public"
+        });
+      }catch{
+        return json({
+          ok:false,
+          message:"PUBLIC PLAYER TEMPORARILY UNAVAILABLE.",
+          code:"PLAYER_PUBLIC_RUNTIME_FAILURE"
+        },503);
+      }
+    }
+
     if(url.pathname==="/api/crown/player/access-health"&&request.method==="GET"){
       const identity=await crownIdentity(request,env);
       if(!identity.ok)return identity.response;
