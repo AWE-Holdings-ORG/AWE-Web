@@ -46,11 +46,21 @@ test("Tha X Filez public page has no Crown engagement controls",()=>{
   assert.doesNotMatch(html,/\/api\/crown\/player\/view/);
 });
 
-test("public Tha X Filez paginates large archives and avoids broken Dropbox image embeds",()=>{
+test("public Tha X Filez paginates large archives and uses only same-site delivery URLs",()=>{
   const script=match?.[1]||"";
   assert.match(script,/limit:60/);
   assert.match(script,/LOAD MORE FILEZ/);
-  assert.match(script,/provider==="dropbox"/);
+  assert.match(script,/thumb_url/);
+  assert.match(script,/preview_url/);
   assert.match(script,/return "VIDEO"/);
-  assert.doesNotMatch(script,/const thumb=x\.thumbnail_url\|\|x\.source_url/);
+  assert.doesNotMatch(script,/source_url\|\|x\.canonical_url/);
+  assert.doesNotMatch(script,/provider==="dropbox"/);
+});
+
+test("public Archivez API strips storage provenance",()=>{
+  const apiPath=fileURLToPath(new URL("../lib/archivez-api.js",import.meta.url));
+  const api=readFileSync(apiPath,"utf8");
+  assert.match(api,/delete delivery\.canonical_url/);
+  assert.match(api,/delete delivery\.source_url/);
+  assert.match(api,/delete delivery\.provider/);
 });
