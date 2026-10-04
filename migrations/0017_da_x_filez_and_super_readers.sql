@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS player_media_collections (
 CREATE TABLE IF NOT EXISTS player_media_collection_items (
   collection_id INTEGER NOT NULL,
   media_id INTEGER NOT NULL,
+  file_code TEXT,
   is_primary INTEGER NOT NULL DEFAULT 1 CHECK(is_primary IN (0,1)),
   sort_order INTEGER NOT NULL DEFAULT 100,
   active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)),
@@ -40,6 +41,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS ux_player_media_primary_collection
 
 CREATE INDEX IF NOT EXISTS idx_player_media_collection_items
   ON player_media_collection_items(collection_id,active,sort_order);
+
+CREATE UNIQUE INDEX IF NOT EXISTS ux_player_media_collection_code
+  ON player_media_collection_items(collection_id,file_code)
+  WHERE file_code IS NOT NULL AND active=1;
 
 INSERT OR IGNORE INTO player_media_collections(
   artist_id,collection_slug,display_name,description,default_access_state,sort_order,active
