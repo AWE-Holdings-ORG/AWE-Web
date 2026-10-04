@@ -7,7 +7,7 @@ CROWD_EXPECTED=[
     ("TmwYVT_gI0Q","X Tha God vs Geminii — Members Only",None),
     ("7s82HgWmML0","X Tha God vs Geminii (Da Rematch) — The Shootout",None),
     ("6JSDWKTBPxw","X Tha God vs Whytboy — Unforeseen Circumstances",None),
-    ("ms4r261sQ9c","X Tha God vs Jace — Lost In Space",None),
+    ("ms4r261sQ9c","X Tha God vs Jace — Lost In Space","2022-08-06"),
     ("aCyK8W8y5v0","X Tha God vs Tieso — Crowd Control Vol. 2",None),
     ("dIENORIk-lU","X Tha God vs Fuzhjin — Unforeseen Circumstances 7",None),
     ("ViOv-hJ4uOs","X Tha God vs Rari Lauren — Whyt Noise",None),
