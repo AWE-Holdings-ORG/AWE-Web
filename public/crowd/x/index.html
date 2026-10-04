@@ -88,7 +88,9 @@ const state={files:[],filter:"ALL",limit:60};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function kind(x){
   const t=String(x.media_type||"").toLowerCase();
-  return t==="interview"?"INTERVIEWS":"IMAGES";
+  if(t==="interview")return "INTERVIEWS";
+  if(["video","clip","promo","bts","behind-the-scenes"].includes(t))return "VIDEO";
+  return "IMAGES";
 }
 function render(){
   const all=state.filter==="ALL"?state.files:state.files.filter(x=>kind(x)===state.filter);
