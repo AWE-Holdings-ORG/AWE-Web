@@ -73,3 +73,13 @@ test("Da CROWD Player API excludes Tha X Filez server-side",()=>{
   assert.match(service,/excludeCollectionSlugs=\[\]/);
   assert.match(service,/const excluded=new Set/);
 });
+
+test("Tha X Filez scales its Crown queue and handles Dropbox sources safely",()=>{
+  const script=match?.[1]||"";
+  assert.match(script,/pageSize:60/);
+  assert.match(script,/pagePrev/);
+  assert.match(script,/pageNext/);
+  assert.match(script,/provider==="dropbox"/);
+  assert.match(script,/DROPBOX SOURCE \/\/ USE ORIGINAL FILE/);
+  assert.doesNotMatch(script,/x\.thumbnail_url\|\|x\.source_url\|\|x\.canonical_url/);
+});
