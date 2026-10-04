@@ -78,3 +78,16 @@ Crown session = Crown authentication.
 
 ## Security Law
 Protected media URLs, provider IDs, source URLs, or other usable source data must not be delivered to unauthorized clients merely because the UI hides them.
+
+## Cross-House Artist / Media Law
+An artist's canonical House/Player signal and a media item's House requirement are separate.
+
+A signal may belong canonically to one House while specific media is assigned to another House through `media_access_policy.house_slug`.
+
+Example:
+- X Tha God may remain a CROWD Player signal;
+- later X battles may be assigned to GBE when that content canonically belongs to GBE;
+- a future GBE Cheat Code may reveal X in the GBE Player without changing his CROWD identity.
+
+Roster discovery does not itself authorize protected media.
+
