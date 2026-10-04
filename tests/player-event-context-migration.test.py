@@ -27,8 +27,9 @@ FROM player_events
 ORDER BY event_date,event_slug
 """).fetchall()
 
-assert len(events)==4, events
+assert len(events)==5, events
 expected={
+  "lost-in-space-2022-08-06":("Lost In Space","2022-08-06",None,"gbe-crowd-owned","high"),
   "elements-2022-10-15":("Elements","2022-10-15","9 PM EST (as printed on flyer)","gbe-crowd-owned","verified"),
   "post-elements-2022-10-16":("Post Elements","2022-10-16","5 PM PST / 8 PM EST (as printed on flyer)","gbe-crowd-owned","verified"),
   "unforeseen-circumstances-x-2022-10-20":("Unforeseen Circumstances X","2022-10-20","6 PM PST / 9 PM EST (as printed on event card)","gbe-crowd-owned","high"),
@@ -44,7 +45,7 @@ JOIN player_events e ON e.id=em.event_id
 JOIN artist_media m ON m.id=em.media_id
 ORDER BY e.event_date
 """).fetchall()
-assert len(links)==4, links
+assert len(links)==5, links
 assert all(role=="primary" for _,_,role in links)
 
 artifacts=db.execute("""
