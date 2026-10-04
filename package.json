@@ -23,6 +23,8 @@
     "test:crown-member-admin": "node --test tests/crown-member-admin.test.mjs",
     "test:tha-x-filez-dropbox-flood": "python tests/tha-x-filez-dropbox-flood.test.py",
     "test:player-personal-roster-migration": "python tests/player-personal-roster-migration.test.py",
-    "test:player-personal-roster-api": "node --test tests/player-personal-roster-api.test.mjs"
+    "test:player-personal-roster-api": "node --test tests/player-personal-roster-api.test.mjs",
+    "test:archivez-social-migration": "python tests/archivez-social-migration.test.py",
+    "test:archivez-social-ui-api": "node --test tests/archivez-social-ui-api.test.mjs"
   }
 }
