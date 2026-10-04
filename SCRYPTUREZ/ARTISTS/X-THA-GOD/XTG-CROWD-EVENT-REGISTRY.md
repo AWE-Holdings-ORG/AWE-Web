@@ -50,7 +50,7 @@ Rules:
 | 10 | MDK | Unforeseen Circumstances X | xo-TQJUhzJs | 2022-10-20 | 6:00 PM PT / 9:00 PM ET | UCX Drive folder contains `xVmdk.mp4`; event card `IMG_3863.JPG` says OCT 20TH 6PM PST/9PM EST; official YouTube index names X Tha God vs MDK under Unforeseen Circumstances X | NO — event card establishes event, separate asset/title establishes matchup | PENDING | GBE / The CROWD | HIGH |
 | 11 | Bearvan | Hostility Vol. 1 | bDgH8kdPbEA | 2022-11-05 | 9:00 PM ET | Hostility Vol 1 Drive `IMG_3822.JPG`: The Crowd Presents Hostility volume 1; X Tha God vs Bearvan; Saturday 11/5; 9pm EST; same folder contains `xVbear.mp4` | YES | PENDING | GBE / The CROWD | VERIFIED |
 | 12 | King TR | Don't Die Vol. 1 | -RHWE4oHcFc | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
-| 13 | Luxry | Unforeseen Circumstances | CyNwV5ir91A | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
+| 13 | Luxry | Unforeseen Circumstances | CyNwV5ir91A | PENDING | PENDING | Historical tracker + official @CrowdShyt upload + first-party Battle Drops master `X Tha God Vs Luxry.mp4` (Drive ID `1vjdqstq2tNQxgxRH_LK8Ch1EXuG5VpTu`) | PENDING | PENDING | GBE / The CROWD | FIRST-PARTY SOURCE VERIFIED; event date pending |
 
 ## Newly Recovered X Battle Lead
 
@@ -154,6 +154,19 @@ For each X event above, collect when available:
 Related public program chronology:
 - `TRAINING DAY FACEOFFS HOSTED BY COLA THE BIG SPEAKER` — 2023-12-23 — 01:23:09 — 621 tuned in.
 This supports the Training Day rollout chronology but still does not bind the X/Kannon matchup to a specific date without direct matchup evidence.
+
+### Unforeseen Circumstances — X vs Luxry
+- matchup: X Tha God vs Luxry
+- official @CrowdShyt YouTube ID: `CyNwV5ir91A`
+- first-party battle master: `X Tha God Vs Luxry.mp4`
+- Drive file ID: `1vjdqstq2tNQxgxRH_LK8Ch1EXuG5VpTu`
+- Drive production folder: `Battle Drops / Thursday`
+- asset created: 2023-08-17 03:19:07 UTC
+- asset modified: 2023-08-17 03:19:25 UTC
+- classification: first-party CROWD battle source / drop chronology
+- IMPORTANT: asset timestamp is not promoted to event_date without direct event evidence
+- event date/time: PENDING
+- Space URL / ID: PENDING
 
 ## Outstanding Research Queue
 
