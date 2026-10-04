@@ -48,6 +48,7 @@ on:
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-007-PLAYER-ENGAGEMENT-ANALYTICS.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-008-PLAYER-EVENT-CONTEXT.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-009-THA-X-FILEZ.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-010-DA-ARCHIVEZ.md"
       - ".github/workflows/player-access-tests.yml"
   pull_request:
     paths:
