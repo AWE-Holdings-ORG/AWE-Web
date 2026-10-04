@@ -137,8 +137,10 @@ The staged catalog stack is now:
 - 0012 — 13 historical CROWD-owned uploads;
 - 0014 — DeeJayy, Tino, and Chuck Lucci external reconciliation;
 - 0016 — Big Kannon / Training Day plus OG Duggie / Super Readers battle record;
-- 0017 — Da X Filez collection foundation, YouTube thumbnail presentation metadata, Stardom lineage, and owned Super Readers event context;
-- 0018 — first 92 PUBLIC Da X Filez still images from first-party CROWD Drive folders.
+- 0017 — Tha X Filez collection foundation, YouTube thumbnail presentation metadata, Stardom lineage, and owned Super Readers event context;
+- 0018 — first 92 PUBLIC Tha X Filez still images from first-party CROWD Drive folders.
+
+Tha X Filez is served through **Da Archivez**, not LEVEL X / Da CROWD Player.
 
 The staged result is 36 distinct battles. It is still a minimum, not catalog completeness.
 
