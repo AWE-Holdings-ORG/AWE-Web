@@ -75,7 +75,7 @@ INSERT INTO artist_media(
   era_slug,visibility,sort_order,active,source_name,source_url,rights_status
 )
 SELECT id,'battle','youtube','ms4r261sQ9c','https://youtu.be/ms4r261sQ9c',
-       'X Tha God vs Jace — Lost In Space',NULL,'crowdshyt-era','crown',4,1,
+       'X Tha God vs Jace — Lost In Space','2022-08-06','crowdshyt-era','crown',4,1,
        'The CROWD @CrowdShyt','https://youtu.be/ms4r261sQ9c','gbe-crowd-owned'
 FROM artists WHERE artist_slug='x-tha-god'
 AND NOT EXISTS(SELECT 1 FROM artist_media WHERE provider='youtube' AND external_id='ms4r261sQ9c');
