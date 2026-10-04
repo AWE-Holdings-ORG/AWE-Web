@@ -104,7 +104,7 @@ LEVEL X event-context rendering is staged on `feature/crown-door-v1`.
 
 Implemented:
 - `lib/player-catalog-service.js` detects the event schema before querying it;
-- when migrations 0013–0015 are not present, the current Player catalog remains operational and returns `event: null`;
+- when migrations 0013–0016 are not present, the current Player catalog remains operational and returns `event: null`;
 - event context is attached only after media authorization succeeds;
 - locked media never receives event artifact or Space source URLs;
 - authorized media may receive verified event name, date, printed time text, organizer, platform, related artifacts, and verified Space/replay links;
@@ -112,11 +112,15 @@ Implemented:
 - LEVEL X renders a verified event panel and artifact links beneath the active media;
 - queue rows prefer linked event name/date when available.
 
+Additional staged verified event context:
+- Training Day — 2024-01-07 — X Tha God vs Big Kannon — first-party CROWD battle source + recovered matchup card + public Training Day Space chronology; exact Space URL/time pending.
+
 Current gate:
-- migrations 0012–0015 remain on HOLD while X Tha God catalog/event reconciliation continues;
+- migrations 0012–0016 remain on HOLD while X Tha God catalog/event reconciliation continues;
 - no Preview D1, production D1, main, DNS, nameserver, or secret changes were made for this runtime integration;
 - the event UI will remain dormant in the current Preview until the held migrations are explicitly approved and applied in order.
 
 Verification:
-- Player Access Tests passed on branch head `61c1c6d22b62520fce8811f98504daf382ff65a2` for both push and pull-request runs.
+- Player Access Tests passed for the event-context runtime integration;
+- the full 36-battle staged migration stack through 0016 passed both push and pull-request CI at `936e1285dd9bafa924670d5b7623576a9f634813`.
 
