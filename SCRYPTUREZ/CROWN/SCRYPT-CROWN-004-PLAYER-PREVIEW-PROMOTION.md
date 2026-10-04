@@ -277,12 +277,25 @@ Migration `0015_x_tha_god_external_event_context.sql` links those records to the
 
 **0014/0015 STATUS: HOLD WITH 0012/0013 WHILE FULL X CATALOG RECONCILIATION CONTINUES.**
 
-The currently staged migration set becomes 34 records after 0012 + 0014, but 34 is explicitly not the final catalog total. The reconciliation ledger already contains additional pending leads.
+Migration `0016_x_tha_god_reconciled_additions.sql` adds:
+- X Tha God vs Big Kannon — Training Day — first-party The CROWD Drive source; event date 2024-01-07 verified cross-source;
+- X Tha God vs OG Duggie — Super Readers — distinct external battle; event date remains NULL because the independently corroborated 2023-05-18 date is release context, not proven event date.
+
+The staged migration set is now **36 distinct battles**:
+- 13 historical CROWD-owned;
+- 1 reconciled first-party CROWD addition;
+- 18 original external records;
+- 4 reconciled external additions.
+
+**0012–0016 STATUS: HOLD FOR PREVIEW DATA PROMOTION WHILE RECONCILIATION CONTINUES.**
+
+The 36-record staged state is a minimum, not a completeness claim.
 
 When approved for Preview, migration order is:
 1. 0012 CROWD-owned base expansion;
 2. 0013 first-party event context;
 3. 0014 verified external reconciliation;
-4. 0015 external event context.
+4. 0015 external event context;
+5. 0016 reconciled additions + Training Day event context.
 
 Production D1 remains untouched.
