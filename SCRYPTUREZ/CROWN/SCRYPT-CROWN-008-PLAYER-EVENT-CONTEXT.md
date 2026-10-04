@@ -1,6 +1,6 @@
 # SCRYPT-CROWN-008 — Da CROWD Player Event Context & Artifact Law
 
-Status: ACTIVE / STAGED — PREVIEW DATA HOLD
+Status: ACTIVE / READY FOR PREVIEW DATA APPLY
 Version: 1.0
 Depends On: SCRYPT-CROWN-002
 Environment: Da CROWD Player
@@ -116,9 +116,10 @@ Additional staged verified event context:
 - Training Day — 2024-01-07 — X Tha God vs Big Kannon — first-party CROWD battle source + recovered matchup card + public Training Day Space chronology; exact Space URL/time pending.
 
 Current gate:
-- migrations 0012–0016 remain on HOLD while X Tha God catalog/event reconciliation continues;
-- no Preview D1, production D1, main, DNS, nameserver, or secret changes were made for this runtime integration;
-- the event UI will remain dormant in the current Preview until the held migrations are explicitly approved and applied in order.
+- migrations 0012–0016 are READY FOR PREVIEW DATA APPLY in numeric order;
+- unresolved historical dates remain NULL rather than blocking Preview;
+- production D1, main, DNS, nameservers, and secrets remain untouched;
+- the event UI remains schema-safe until the Preview migration stack is applied, then becomes active for linked verified events.
 
 Verification:
 - Player Access Tests passed for the event-context runtime integration;
