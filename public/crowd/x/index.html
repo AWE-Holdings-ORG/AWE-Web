@@ -44,7 +44,7 @@
     .close{background:none;border:0;color:#aaa;font-size:28px;cursor:pointer}
     .modal-body{padding:14px}
     .modal-body img{display:block;max-width:100%;max-height:76vh;margin:auto}
-    .modal-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--line);color:#8d826e;font-size:12px}
+    .modal-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--line);color:#8d826e;font-size:12px}.social{padding:14px;border-top:1px solid var(--line)}.social-actions{display:flex;gap:8px;flex-wrap:wrap}.social-actions button{border:1px solid #3d311e;background:#080704;color:#d8c59f;padding:10px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.11em;cursor:pointer}.social-actions button.liked{border-color:var(--gold);color:var(--gold2);background:#171006}.social-msg{min-height:18px;margin-top:8px;color:#8b8f6d;font:800 8px ui-monospace,monospace;letter-spacing:.09em}.comments{display:grid;gap:8px;margin-top:12px}.comment{border-top:1px solid #211b12;padding-top:9px}.comment b{display:block;color:var(--gold2);font:900 8px ui-monospace,monospace;letter-spacing:.11em}.comment time{color:#61594e;font:700 7px ui-monospace,monospace;letter-spacing:.08em}.comment p{margin:5px 0 0;color:#aaa092;line-height:1.45;font-size:12px}.comment-form{display:grid;gap:7px;margin-top:11px}.comment-form textarea{width:100%;min-height:72px;resize:vertical;border:1px solid #3b301d;background:#020202;color:#f8f4ea;padding:11px;outline:none}.comment-form button{justify-self:start;border:1px solid var(--gold);background:#0a0804;color:var(--gold2);padding:9px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
     .source{color:var(--gold2);font:800 9px ui-monospace,monospace;letter-spacing:.12em;text-decoration:none}
     .more{display:block;margin:22px auto 0;border:1px solid var(--line);background:#080704;color:var(--gold2);padding:12px 18px;font:900 9px ui-monospace,monospace;letter-spacing:.13em;cursor:pointer}.placeholder-card{min-height:160px;display:grid;place-items:center;background:radial-gradient(circle,#151008,#030303 72%);color:var(--gold);font:500 36px Georgia,serif}.foot{text-align:center;color:#5e574c;font:800 9px ui-monospace,monospace;letter-spacing:.16em;margin-top:34px}
     @media(max-width:700px){.hero{grid-template-columns:1fr;padding-top:52px}.count{width:max-content}.sig{display:none}.grid{columns:2 150px}}
@@ -81,10 +81,16 @@
   <div class="modal-head"><b id="viewerLabel">THA X FILEZ</b><button id="close" class="close" aria-label="Close">×</button></div>
   <div id="viewerBody" class="modal-body"></div>
   <div class="modal-foot"><span id="viewerTitle"></span><a id="viewerSource" class="source" target="_blank" rel="noopener noreferrer">ORIGINAL FILE ↗</a></div>
+  <section class="social">
+    <div class="social-actions"><button id="likeBtn" type="button">♡ LIKE <span id="likeCount">0</span></button><button id="commentJump" type="button">💬 COMMENTS <span id="commentCount">0</span></button><button id="shareBtn" type="button">↗ SHARE</button></div>
+    <div id="socialMsg" class="social-msg" aria-live="polite"></div>
+    <div id="comments" class="comments"></div>
+    <form id="commentForm" class="comment-form"><textarea id="commentBody" maxlength="1000" placeholder="Comment with your Crown identity…"></textarea><button type="submit">POST COMMENT</button></form>
+  </section>
 </dialog>
 
 <script>
-const state={files:[],filter:"ALL",limit:60};
+const state={files:[],filter:"ALL",limit:60,activeId:null,social:null};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function kind(x){
   const t=String(x.media_type||"").toLowerCase();
@@ -108,8 +114,39 @@ function render(){
   more.hidden=files.length>=all.length;
   more.textContent="LOAD MORE FILEZ // "+files.length+" OF "+all.length;
 }
+function fmtDate(value){const d=new Date(value);return Number.isNaN(d.getTime())?"":d.toLocaleString();}
+function activeFile(){return state.files.find(x=>Number(x.id)===Number(state.activeId))||null;}
+function fileShareUrl(x){
+  const u=new URL("/crowd/x/",location.origin);
+  u.searchParams.set("file",x.collection_file_code||String(x.id));
+  return u.toString();
+}
+async function fetchSocial(id){
+  let data=null;
+  // If the viewer already has a Crown session, use it so LIKE state is personal.
+  try{
+    const crown=await fetch("/api/crown/archivez/social?mediaId="+encodeURIComponent(id));
+    if(crown.ok)data=await crown.json();
+  }catch{}
+  if(!data?.ok){
+    const pub=await fetch("/api/archivez/social?mediaId="+encodeURIComponent(id));
+    data=await pub.json();
+    if(!pub.ok||!data?.ok)throw Error(data?.message||"SOCIAL UNAVAILABLE");
+  }
+  state.social=data;
+  const btn=document.getElementById("likeBtn");
+  document.getElementById("likeCount").textContent=data.likeCount||0;
+  document.getElementById("commentCount").textContent=data.commentCount||0;
+  btn.classList.toggle("liked",data.likedByMe===true);
+  btn.firstChild.textContent=data.likedByMe?"♥ LIKED ":"♡ LIKE ";
+  document.getElementById("comments").innerHTML=(data.comments||[]).map(x=>
+    '<article class="comment"><b>'+esc(x.crownName||"CROWN MEMBER")+'</b><time>'+esc(fmtDate(x.createdAt))+'</time><p>'+esc(x.body)+'</p></article>'
+  ).join("")||'<div class="empty">NO COMMENTS YET.</div>';
+  document.getElementById("socialMsg").textContent="";
+}
 function openFile(id){
   const x=state.files.find(f=>Number(f.id)===id); if(!x)return;
+  state.activeId=Number(id);
   const dialog=document.getElementById("viewer");
   document.getElementById("viewerLabel").textContent=(x.collection_file_code||"THA X FILEZ")+" // "+kind(x);
   document.getElementById("viewerTitle").textContent=x.title||"X THA GOD";
@@ -125,6 +162,10 @@ function openFile(id){
     document.getElementById("viewerBody").innerHTML='<div class="placeholder-card" style="min-height:52vh">X</div>';
   }
   dialog.showModal();
+  fetchSocial(x.id).catch(err=>document.getElementById("socialMsg").textContent=err.message||"SOCIAL UNAVAILABLE");
+  const u=new URL(location.href);
+  u.searchParams.set("file",x.collection_file_code||String(x.id));
+  history.replaceState(null,"",u);
 }
 async function load(){
   const status=document.getElementById("status");
@@ -145,13 +186,51 @@ async function load(){
     });
     status.textContent="PUBLIC ARCHIVE // ONLINE";
     render();
+    const requested=new URLSearchParams(location.search).get("file");
+    if(requested){
+      const x=state.files.find(f=>String(f.collection_file_code||f.id).toLowerCase()===String(requested).toLowerCase());
+      if(x)openFile(Number(x.id));
+    }
   }catch{
     status.textContent="ARCHIVE SIGNAL TEMPORARILY UNAVAILABLE";
     document.getElementById("grid").innerHTML='<div class="empty">THA X FILEZ IS CURRENTLY OFFLINE.</div>';
   }
 }
 document.getElementById("more").onclick=()=>{state.limit+=60;render();};
-document.getElementById("close").onclick=()=>document.getElementById("viewer").close();
+document.getElementById("likeBtn").onclick=async()=>{
+  const x=activeFile();if(!x)return;
+  const msg=document.getElementById("socialMsg");
+  try{
+    const r=await fetch("/api/crown/archivez/like",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:x.id})});
+    const d=await r.json();
+    if(r.status===401)throw Error("CROWN ID REQUIRED TO LIKE.");
+    if(!r.ok||!d.ok)throw Error(d.message||"LIKE FAILED");
+    await fetchSocial(x.id);
+  }catch(err){msg.textContent=err.message||"LIKE FAILED";}
+};
+document.getElementById("commentJump").onclick=()=>document.getElementById("commentBody").focus();
+document.getElementById("commentForm").addEventListener("submit",async e=>{
+  e.preventDefault();const x=activeFile();if(!x)return;
+  const body=document.getElementById("commentBody").value.trim();if(!body)return;
+  const msg=document.getElementById("socialMsg");
+  try{
+    const r=await fetch("/api/crown/archivez/comments",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:x.id,body})});
+    const d=await r.json();
+    if(r.status===401)throw Error("CROWN ID REQUIRED TO COMMENT.");
+    if(!r.ok||!d.ok)throw Error(d.message||"COMMENT FAILED");
+    document.getElementById("commentBody").value="";
+    await fetchSocial(x.id);
+  }catch(err){msg.textContent=err.message||"COMMENT FAILED";}
+});
+document.getElementById("shareBtn").onclick=async()=>{
+  const x=activeFile();if(!x)return;
+  const url=fileShareUrl(x),msg=document.getElementById("socialMsg");
+  try{
+    if(navigator.share)await navigator.share({title:x.title||"Tha X Filez",text:"Tha X Filez // "+(x.title||"X Tha God"),url});
+    else{await navigator.clipboard.writeText(url);msg.textContent="FILE LINK COPIED.";}
+  }catch(err){if(err?.name!=="AbortError")msg.textContent="SHARE UNAVAILABLE.";}
+};
+document.getElementById("close").onclick=()=>{document.getElementById("viewer").close();const u=new URL(location.href);u.searchParams.delete("file");history.replaceState(null,"",u);};
 document.getElementById("viewer").addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
 load();
 </script>
