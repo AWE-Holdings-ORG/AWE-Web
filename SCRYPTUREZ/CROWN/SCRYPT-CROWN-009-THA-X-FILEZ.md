@@ -112,6 +112,16 @@ Combined staged archive:
 
 The earlier Grizz Exam raw `.MOV` files remain separate from the Dropbox flood and are still not auto-classified as interviews/BTS.
 
+## Current Flood State
+
+The staged Preview intake through migration 0024 contains **1,230 unique Tha X Filez records**:
+
+- Google Drive — 218 records
+- Dropbox / X Tha God — 1,012 records
+- Stable review codes — `DXF-0001` through `DXF-1230`
+
+All intake launches PUBLIC-first for X's review. Raw/unclassified videos remain generic VIDEO records until X identifies their final archive category.
+
 ## Runtime
 
 ### Crown Archive Room
