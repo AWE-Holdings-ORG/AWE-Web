@@ -1,6 +1,6 @@
 # SCRYPT-CROWN-004 — Player Access Preview Promotion Runbook
 
-Status: ACTIVE / READY FOR PREVIEW
+Status: ACTIVE / READY FOR PREVIEW DATA APPLY
 Version: 1.0
 Depends On: SCRYPT-CROWN-001, SCRYPT-CROWN-002
 Environment: Cloudflare Preview only
@@ -263,7 +263,7 @@ When reconciliation is complete, Preview rollout order is:
 4. verify the four seeded event-context links and artifacts;
 5. keep unresolved event dates/Spaces absent until evidenced.
 
-Production D1 remains untouched.
+Production D1 remains untouched. This readiness decision applies only to `awe-crown-identity-preview`.
 
 
 ## Verified External Reconciliation Rollout
@@ -287,11 +287,27 @@ The staged migration set is now **36 distinct battles**:
 - 18 original external records;
 - 4 reconciled external additions.
 
-**0012–0016 STATUS: HOLD FOR PREVIEW DATA PROMOTION WHILE RECONCILIATION CONTINUES.**
+**0012–0016 STATUS: READY FOR PREVIEW DATA APPLY.**
 
-The 36-record staged state is a minimum, not a completeness claim.
+Reconciliation has stabilized sufficiently for Preview promotion:
+- the staged set contains 36 distinct battles;
+- exact dates are populated only where verified;
+- unresolved historical dates remain NULL by design;
+- schema/runtime tests pass;
+- Cloudflare branch Preview builds pass;
+- this is still a minimum catalog, not a completeness claim.
 
-When approved for Preview, migration order is:
+Preview-only commands:
+
+```bash
+npm run preview:migrations:list
+npm run preview:migrations:apply
+npm run preview:migrations:list
+```
+
+The first list must show only the expected unapplied Preview migrations. The final list must show no remaining migrations. Wrangler captures a D1 backup when applying migrations.
+
+Migration order is:
 1. 0012 CROWD-owned base expansion;
 2. 0013 first-party event context;
 3. 0014 verified external reconciliation;
