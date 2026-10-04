@@ -21,6 +21,8 @@
     "test:tha-x-filez-images-migration": "python tests/tha-x-filez-initial-images-migration.test.py",
     "test:crowd-player-select": "node --test tests/crowd-player-select.test.mjs",
     "test:crown-member-admin": "node --test tests/crown-member-admin.test.mjs",
-    "test:tha-x-filez-dropbox-flood": "python tests/tha-x-filez-dropbox-flood.test.py"
+    "test:tha-x-filez-dropbox-flood": "python tests/tha-x-filez-dropbox-flood.test.py",
+    "test:player-personal-roster-migration": "python tests/player-personal-roster-migration.test.py",
+    "test:player-personal-roster-api": "node --test tests/player-personal-roster-api.test.mjs"
   }
 }
