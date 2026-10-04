@@ -108,8 +108,9 @@ test("Archivez media is proxied through AWE endpoints",()=>{
 
 test("Dropbox Archivez bridge uses supported Shared Link File API server-side",()=>{
   assert.match(worker,/X_DROPBOX_SHARED_FOLDER_URL/);
-  assert.match(worker,/dropboxAppToken/);
-  assert.match(worker,/grant_type:"client_credentials"/);
+  assert.match(worker,/authorization":"Basic "\+basic/);
+  assert.match(worker,/btoa\(key\+"\:"\+secret\)/);
+  assert.doesNotMatch(worker,/grant_type:"client_credentials"/);
   assert.match(worker,/content\.dropboxapi\.com\/2\/sharing\/get_shared_link_file/);
   assert.match(worker,/dropbox-api-arg/);
   assert.match(worker,/DROPBOX_APP_KEY/);
