@@ -104,7 +104,7 @@ LEVEL X event-context rendering is staged on `feature/crown-door-v1`.
 
 Implemented:
 - `lib/player-catalog-service.js` detects the event schema before querying it;
-- when migrations 0013–0016 are not present, the current Player catalog remains operational and returns `event: null`;
+- when migrations 0013–0017 are not present, the current Player catalog remains operational and returns `event: null`;
 - event context is attached only after media authorization succeeds;
 - locked media never receives event artifact or Space source URLs;
 - authorized media may receive verified event name, date, printed time text, organizer, platform, related artifacts, and verified Space/replay links;
@@ -114,9 +114,10 @@ Implemented:
 
 Additional staged verified event context:
 - Training Day — 2024-01-07 — X Tha God vs Big Kannon — first-party CROWD battle source + recovered matchup card + public Training Day Space chronology; exact Space URL/time pending.
+- Super Readers — X Tha God vs OG Duggie — event series ownership confirmed as GBE / The CROWD and held by Big Tali; exact battle event date remains pending; provider-source provenance remains separate.
 
 Current gate:
-- migrations 0012–0016 are READY FOR PREVIEW DATA APPLY in numeric order;
+- migrations 0012–0017 are READY FOR PREVIEW DATA APPLY in numeric order;
 - unresolved historical dates remain NULL rather than blocking Preview;
 - production D1, main, DNS, nameservers, and secrets remain untouched;
 - the event UI remains schema-safe until the Preview migration stack is applied, then becomes active for linked verified events.
