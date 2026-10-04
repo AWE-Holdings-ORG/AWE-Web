@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#050403">
-  <title>Da X Filez | X Tha God × The CROWD</title>
-  <meta name="description" content="Da X Filez — the public X Tha God image and interview archive from The CROWD.">
+  <title>Tha X Filez | X Tha God × The CROWD</title>
+  <meta name="description" content="Tha X Filez — the public X Tha God image and interview archive from The CROWD.">
   <style>
     :root{--gold:#d8ac4e;--gold2:#f1d783;--ink:#050403;--panel:#0b0906;--line:#2e2517;--muted:#8d826e}
     *{box-sizing:border-box}
@@ -60,7 +60,7 @@
   <section class="hero">
     <div>
       <div class="eyebrow">THE CROWD // ARTIST 001</div>
-      <h1>DA X FILEZ</h1>
+      <h1>THA X FILEZ</h1>
       <p>Images, interviews and visual history from X Tha God. This public archive is one layer of a deeper collection curated through The CROWD.</p>
     </div>
     <aside class="count"><b>PUBLIC FILEZ</b><strong id="count">—</strong></aside>
@@ -73,11 +73,11 @@
 
   <section id="grid" class="grid" aria-live="polite"></section>
 
-  <p class="foot">DA X FILEZ // X THA GOD × THE CROWD × GBE</p>
+  <p class="foot">THA X FILEZ // X THA GOD × THE CROWD × GBE</p>
 </main>
 
 <dialog id="viewer">
-  <div class="modal-head"><b id="viewerLabel">DA X FILEZ</b><button id="close" class="close" aria-label="Close">×</button></div>
+  <div class="modal-head"><b id="viewerLabel">THA X FILEZ</b><button id="close" class="close" aria-label="Close">×</button></div>
   <div id="viewerBody" class="modal-body"></div>
   <div class="modal-foot"><span id="viewerTitle"></span><a id="viewerSource" class="source" target="_blank" rel="noopener noreferrer">ORIGINAL FILE ↗</a></div>
 </dialog>
@@ -103,7 +103,7 @@ function render(){
 function openFile(id){
   const x=state.files.find(f=>Number(f.id)===id); if(!x)return;
   const dialog=document.getElementById("viewer");
-  document.getElementById("viewerLabel").textContent=(x.collection_file_code||"DA X FILEZ")+" // "+kind(x);
+  document.getElementById("viewerLabel").textContent=(x.collection_file_code||"THA X FILEZ")+" // "+kind(x);
   document.getElementById("viewerTitle").textContent=x.title||"X THA GOD";
   const source=document.getElementById("viewerSource");
   source.href=x.source_url||x.canonical_url||"#";
@@ -119,10 +119,10 @@ function openFile(id){
 async function load(){
   const status=document.getElementById("status");
   try{
-    const r=await fetch("/api/player/catalog?artist=x-tha-god");
+    const r=await fetch("/api/archivez/catalog?artist=x-tha-god&collection=tha-x-filez");
     const d=await r.json();
     if(!r.ok||!d.ok)throw Error(d.code||"archive");
-    state.files=(d.media||[]).filter(x=>String(x.collection_slug||"").toLowerCase()==="da-x-filez"&&x.authorized!==false);
+    state.files=(d.media||[]).filter(x=>String(x.collection_slug||"").toLowerCase()==="tha-x-filez"&&x.authorized!==false);
     document.getElementById("count").textContent=state.files.length;
     const cats=["ALL",...new Set(state.files.map(kind))];
     const filters=document.getElementById("filters");
@@ -136,7 +136,7 @@ async function load(){
     render();
   }catch{
     status.textContent="ARCHIVE SIGNAL TEMPORARILY UNAVAILABLE";
-    document.getElementById("grid").innerHTML='<div class="empty">DA X FILEZ IS CURRENTLY OFFLINE.</div>';
+    document.getElementById("grid").innerHTML='<div class="empty">THA X FILEZ IS CURRENTLY OFFLINE.</div>';
   }
 }
 document.getElementById("close").onclick=()=>document.getElementById("viewer").close();
