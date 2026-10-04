@@ -19,6 +19,7 @@ on:
       - "migrations/0013_player_event_context.sql"
       - "migrations/0015_x_tha_god_external_event_context.sql"
       - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
+      - "migrations/0016_x_tha_god_reconciled_additions.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -28,6 +29,7 @@ on:
       - "tests/player-analytics-migration.test.py"
       - "tests/player-event-context-migration.test.py"
       - "tests/x-external-event-context-migration.test.py"
+      - "tests/x-reconciled-additions-migration.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
@@ -53,6 +55,7 @@ on:
       - "migrations/0013_player_event_context.sql"
       - "migrations/0015_x_tha_god_external_event_context.sql"
       - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
+      - "migrations/0016_x_tha_god_reconciled_additions.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -62,6 +65,7 @@ on:
       - "tests/player-analytics-migration.test.py"
       - "tests/player-event-context-migration.test.py"
       - "tests/x-external-event-context-migration.test.py"
+      - "tests/x-reconciled-additions-migration.test.py"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -107,6 +111,9 @@ jobs:
 
       - name: Validate reconciled X external event context
         run: npm run test:x-external-event-context-migration
+
+      - name: Validate X reconciled additions
+        run: npm run test:x-reconciled-additions-migration
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
