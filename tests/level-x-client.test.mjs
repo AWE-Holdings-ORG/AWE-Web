@@ -4,7 +4,9 @@ import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 
 const LEVEL_X=fileURLToPath(new URL("../public/crown/crowd/level-x/index.html",import.meta.url));
+const CATALOG_SERVICE=fileURLToPath(new URL("../lib/player-catalog-service.js",import.meta.url));
 const html=readFileSync(LEVEL_X,"utf8");
+const catalogService=readFileSync(CATALOG_SERVICE,"utf8");
 const match=html.match(/<script>([\s\S]*?)<\/script>/i);
 
 test("LEVEL X inline Player script parses",()=>{
@@ -60,3 +62,21 @@ test("LEVEL X does not invent a personal music lane for X",()=>{
   assert.match(html,/Flyers \+ Events/);
   assert.match(html,/From Da Vault/);
 });
+
+test("LEVEL X renders verified event context and archive artifacts",()=>{
+  const script=match?.[1]||"";
+  assert.match(html,/id="eventContext"/);
+  assert.match(script,/function renderEventContext\(item\)/);
+  assert.match(script,/event\.display_name/);
+  assert.match(script,/event\.event_date/);
+  assert.match(script,/event\.artifacts/);
+  assert.match(script,/EVENT CONTEXT \/\/ VERIFIED ARCHIVE/);
+  assert.match(script,/SPACE \/ REPLAY/);
+});
+
+test("catalog exposes event context only after media authorization",()=>{
+  assert.match(catalogService,/if\(item\.authorized\)\{[\s\S]*item\.event=await eventContext\(db,Number\(item\.id\)\)/);
+  assert.match(catalogService,/else\{[\s\S]*item\.event=null/);
+  assert.doesNotMatch(catalogService,/evidence_note:event\.evidence_note/);
+});
+
