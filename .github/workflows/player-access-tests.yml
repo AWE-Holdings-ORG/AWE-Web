@@ -10,6 +10,8 @@ on:
       - "lib/archivez-api.js"
       - "lib/player-analytics.js"
       - "worker-entry.js"
+      - "worker.js"
+      - "public/crown/index.html"
       - "public/crown/crowd/level-x/index.html"
       - "public/crown/crowd/player/index.html"
       - "public/crown/crowd/index.html"
@@ -34,6 +36,7 @@ on:
       - "tests/preview-security-cleanup.test.mjs"
       - "tests/level-x-client.test.mjs"
       - "tests/crowd-player-select.test.mjs"
+      - "tests/crown-member-admin.test.mjs"
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
       - "tests/player-event-context-migration.test.py"
@@ -61,6 +64,8 @@ on:
       - "lib/archivez-api.js"
       - "lib/player-analytics.js"
       - "worker-entry.js"
+      - "worker.js"
+      - "public/crown/index.html"
       - "public/crown/crowd/level-x/index.html"
       - "public/crown/crowd/player/index.html"
       - "public/crown/crowd/index.html"
@@ -85,6 +90,7 @@ on:
       - "tests/preview-security-cleanup.test.mjs"
       - "tests/level-x-client.test.mjs"
       - "tests/crowd-player-select.test.mjs"
+      - "tests/crown-member-admin.test.mjs"
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
       - "tests/player-event-context-migration.test.py"
@@ -130,6 +136,9 @@ jobs:
 
       - name: Validate CROWD Player artist-select formula
         run: npm run test:crowd-player-select
+
+      - name: Validate Crown member admin controls
+        run: npm run test:crown-member-admin
 
       - name: Run Player analytics service tests
         run: npm run test:player-analytics
