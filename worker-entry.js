@@ -263,43 +263,9 @@ async function archiveMediaDecision(env,mediaId,{
 }
 
 const X_DROPBOX_SHARED_FOLDER_URL="https://www.dropbox.com/scl/fo/3m0ooipt21spernsy34aa/ANAnGkOcszfg7Pk_IU8G240?rlkey=rditxo7ageg786kr9vaoytljz&dl=0";
-let dropboxAppTokenCache={token:null,expiresAt:0};
 
 function dropboxAppConfigured(env){
   return !!String(env?.DROPBOX_APP_KEY||"").trim()&&!!String(env?.DROPBOX_APP_SECRET||"").trim();
-}
-
-async function dropboxAppToken(env){
-  const now=Date.now();
-  if(dropboxAppTokenCache.token&&dropboxAppTokenCache.expiresAt>now+60_000){
-    return dropboxAppTokenCache.token;
-  }
-
-  if(!dropboxAppConfigured(env))return null;
-
-  const key=String(env.DROPBOX_APP_KEY).trim();
-  const secret=String(env.DROPBOX_APP_SECRET).trim();
-  const basic=btoa(key+":"+secret);
-  const body=new URLSearchParams({grant_type:"client_credentials"});
-
-  const response=await fetch("https://api.dropboxapi.com/oauth2/token",{
-    method:"POST",
-    headers:{
-      "authorization":"Basic "+basic,
-      "content-type":"application/x-www-form-urlencoded"
-    },
-    body
-  });
-
-  if(!response.ok)return null;
-  const data=await response.json().catch(()=>null);
-  if(!data?.access_token)return null;
-
-  dropboxAppTokenCache={
-    token:data.access_token,
-    expiresAt:now+(Number(data.expires_in)||14_400)*1000
-  };
-  return data.access_token;
 }
 
 function dropboxSharedPath(media){
@@ -308,12 +274,17 @@ function dropboxSharedPath(media){
 }
 
 async function dropboxSharedFileResponse(request,env,media){
-  const token=await dropboxAppToken(env);
+  if(!dropboxAppConfigured(env))return null;
+
   const path=dropboxSharedPath(media);
-  if(!token||!path)return null;
+  if(!path)return null;
+
+  const key=String(env.DROPBOX_APP_KEY).trim();
+  const secret=String(env.DROPBOX_APP_SECRET).trim();
+  const basic=btoa(key+":"+secret);
 
   const headers=new Headers({
-    "authorization":"Bearer "+token,
+    "authorization":"Basic "+basic,
     "dropbox-api-arg":JSON.stringify({
       url:X_DROPBOX_SHARED_FOLDER_URL,
       path
