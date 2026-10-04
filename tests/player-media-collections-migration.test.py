@@ -80,7 +80,7 @@ INSERT INTO media_access_policy(media_id,access_state,teaser_mode,cypherz_visibl
 SELECT id,'crown','locked',1,1 FROM artist_media;
 """)
 
-sql=(ROOT/"migrations/0017_da_x_filez_and_super_readers.sql").read_text()
+sql=(ROOT/"migrations/0017_tha_x_filez_and_super_readers.sql").read_text()
 db.executescript(sql)
 db.executescript(sql)
 
@@ -89,11 +89,11 @@ SELECT c.collection_slug,c.display_name,c.description,c.default_access_state,COU
 FROM player_media_collections c
 LEFT JOIN player_media_collection_items i
   ON i.collection_id=c.id AND i.active=1
-WHERE c.artist_id=1 AND c.collection_slug='da-x-filez'
+WHERE c.artist_id=1 AND c.collection_slug='tha-x-filez'
 GROUP BY c.id
 """).fetchone()
 
-assert collection[0:2]==('da-x-filez','Da X Filez')
+assert collection[0:2]==('tha-x-filez','Tha X Filez')
 assert collection[3]=='public', collection
 assert collection[4]==2, collection
 
@@ -102,7 +102,7 @@ SELECT m.media_type,m.external_id
 FROM player_media_collection_items i
 JOIN player_media_collections c ON c.id=i.collection_id
 JOIN artist_media m ON m.id=i.media_id
-WHERE c.collection_slug='da-x-filez'
+WHERE c.collection_slug='tha-x-filez'
 ORDER BY m.sort_order
 """).fetchall()
 
@@ -117,7 +117,7 @@ FROM player_media_collection_items i
 JOIN player_media_collections c ON c.id=i.collection_id
 JOIN artist_media m ON m.id=i.media_id
 JOIN media_access_policy p ON p.media_id=m.id
-WHERE c.collection_slug='da-x-filez'
+WHERE c.collection_slug='tha-x-filez'
 ORDER BY m.sort_order
 """).fetchall()
 
@@ -148,4 +148,4 @@ assert event==(
   'Super Readers',None,'Big Tali / Stardom / The CROWD','gbe-crowd-owned','owner-confirmed','B3h9fKRPimI'
 ), event
 
-print("PASS: Da X Filez launches PUBLIC-first with per-file overrides available; YouTube thumbnails are staged as presentation metadata; Super Readers/Stardom lineage is encoded without inventing an event date")
+print("PASS: Tha X Filez launches PUBLIC-first with per-file overrides available; YouTube thumbnails are staged as presentation metadata; Super Readers/Stardom lineage is encoded without inventing an event date")
