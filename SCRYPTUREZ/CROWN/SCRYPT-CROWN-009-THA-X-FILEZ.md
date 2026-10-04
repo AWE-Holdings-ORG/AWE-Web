@@ -1,7 +1,7 @@
 # SCRYPT-CROWN-009 — Tha X Filez
 
 Status: ACTIVE / READY FOR PREVIEW DATA APPLY
-Version: 2.0
+Version: 2.1
 Depends On: SCRYPT-CROWN-002, SCRYPT-CROWN-010
 Environment: Da Archivez / Tha X Filez
 
@@ -78,24 +78,39 @@ Each imported file receives a stable review code:
 - `DXF-0002`
 - etc.
 
-The first image batch uses:
-- `DXF-0001` through `DXF-0092`.
+The review-code ranges are now:
+- Drive image batch: `DXF-0001` through `DXF-0092`;
+- Dropbox flood batch: `DXF-0093` through `DXF-1104`.
 
 X may curate by code instead of gallery position, for example:
 - `DXF-0017 -> HOUSE`
 - `DXF-0042 -> VAULT`
 - `DXF-0088 -> PUBLIC`
 
-## Initial Public Batch
+## Public Intake Batches
 
-Migration 0018 stages:
+Migration 0018 stages the first Drive batch:
 - Hype3Wear / X Tha God — 5 still images;
 - Grizz Exams / X Tha God — 87 still images;
 - total — 92 still images;
 - original Drive file retained as provenance;
 - web-safe Drive thumbnail used for browser rendering.
 
-Raw Grizz Exam `.MOV` files are NOT part of the initial batch.
+Migrations 0019–0022 stage the Dropbox flood:
+- source folder: `/X Tha God`;
+- 809 images;
+- 203 videos;
+- total — 1,012 Dropbox records;
+- Dropbox preview URL retained as provenance/source link;
+- all records launch PUBLIC-first;
+- videos remain generic `video` until X classifies them;
+- Dropbox records intentionally do not fake a thumbnail URL when a durable browser image source is unavailable.
+
+Combined staged archive:
+- **1,104 Tha X Filez**
+- **DXF-0001 through DXF-1104**
+
+The earlier Grizz Exam raw `.MOV` files remain separate from the Dropbox flood and are still not auto-classified as interviews/BTS.
 
 ## Runtime
 
@@ -104,13 +119,15 @@ Raw Grizz Exam `.MOV` files are NOT part of the initial batch.
 - requires The CROWD Crown access through the normal Crown asset gate;
 - uses the dedicated Crown Archivez API;
 - shows authorized files and permitted teasers according to SCRYPT-CROWN-002;
-- provides archive filters, file queue, stable DXF codes, access-state labels and original-file provenance where authorized.
+- provides archive filters, a paged 60-file queue, stable DXF codes, access-state labels and original-file provenance where authorized;
+- Dropbox files without a durable inline thumbnail render a safe DBX placeholder and an Original File link instead of a broken embed.
 
 ### Public Review Mirror
 `/crowd/x/`
 - requires no Crown session;
 - uses the dedicated public Archivez API;
 - receives PUBLIC files only;
+- renders 60 records initially and progressively loads more to keep 1,000+ Filez usable on mobile;
 - remains `noindex,nofollow` during the initial artist review phase;
 - exposes no Crown comments, analytics or restricted media.
 
@@ -142,7 +159,7 @@ For X Tha God vs OG Duggie:
 ## Promotion Gate
 
 Before production promotion:
-- migrations 0017 and 0018 pass;
+- migrations 0017 through 0022 pass;
 - Da Archivez route/API isolation tests pass;
 - LEVEL X test proves Tha X Filez is excluded;
 - public review surface proves PUBLIC-only delivery;
