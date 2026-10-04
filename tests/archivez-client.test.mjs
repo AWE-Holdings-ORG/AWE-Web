@@ -8,6 +8,7 @@ const XFILEZ=fileURLToPath(new URL("../public/crown/crowd/archivez/tha-x-filez/i
 const CROWD=fileURLToPath(new URL("../public/crown/crowd/index.html",import.meta.url));
 const WORKER=fileURLToPath(new URL("../worker-entry.js",import.meta.url));
 const API=fileURLToPath(new URL("../lib/archivez-api.js",import.meta.url));
+const PLAYER_API=fileURLToPath(new URL("../lib/player-api.js",import.meta.url));
 const SERVICE=fileURLToPath(new URL("../lib/player-catalog-service.js",import.meta.url));
 
 const hub=readFileSync(HUB,"utf8");
@@ -15,6 +16,7 @@ const xfilez=readFileSync(XFILEZ,"utf8");
 const crowd=readFileSync(CROWD,"utf8");
 const worker=readFileSync(WORKER,"utf8");
 const api=readFileSync(API,"utf8");
+const playerApi=readFileSync(PLAYER_API,"utf8");
 const service=readFileSync(SERVICE,"utf8");
 const match=xfilez.match(/<script>([\s\S]*?)<\/script>/i);
 
@@ -64,4 +66,10 @@ test("Crown Archivez route requires Crown identity while public Archivez does no
   assert.match(crownRoute,/surface:"crown"/);
   assert.doesNotMatch(publicRoute,/crownIdentity\(request,env\)/);
   assert.match(publicRoute,/surface:"public"/);
+});
+
+test("Da CROWD Player API excludes Tha X Filez server-side",()=>{
+  assert.match(playerApi,/excludeCollectionSlugs:\["tha-x-filez"\]/);
+  assert.match(service,/excludeCollectionSlugs=\[\]/);
+  assert.match(service,/const excluded=new Set/);
 });
