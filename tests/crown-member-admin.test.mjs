@@ -37,12 +37,16 @@ test("owner CROWD grant is explicit and server-side",()=>{
   assert.match(block,/owner-grant/);
 });
 
-test("Da Round Table member console script parses and is owner-hidden",()=>{
+test("Da Round Table member console script parses and auto-reveals for owner",()=>{
   assert.ok(match,"DRT script missing");
   assert.doesNotThrow(()=>new Function(match[1]));
   assert.match(drt,/id="members-admin"[^>]*hidden/);
   assert.match(drt,/id="member-console"[^>]*hidden/);
+  assert.match(drt,/Crown Members & House Access/);
+  assert.match(drt,/PENDING DISCOVERIES SHOW HERE/);
   assert.match(match[1],/data\.awId==='AWE-000001'/);
+  assert.match(match[1],/memberConsole\.hidden=false/);
+  assert.match(match[1],/loadMembers\(\)/);
   assert.match(match[1],/\/api\/crown\/admin\/members/);
   assert.match(match[1],/\/api\/crown\/admin\/grant/);
 });
