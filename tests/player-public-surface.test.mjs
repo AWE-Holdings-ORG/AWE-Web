@@ -12,24 +12,24 @@ const worker=readFileSync(WORKER,"utf8");
 const service=readFileSync(SERVICE,"utf8");
 const match=html.match(/<script>([\s\S]*?)<\/script>/i);
 
-test("Da X Filez public page script parses",()=>{
-  assert.ok(match,"Da X Filez script block missing");
+test("Tha X Filez public page script parses",()=>{
+  assert.ok(match,"Tha X Filez script block missing");
   assert.doesNotThrow(()=>new Function(match[1]));
 });
 
-test("Da X Filez uses anonymous public catalog, not Crown catalog",()=>{
+test("Tha X Filez uses anonymous public catalog, not Crown catalog",()=>{
   const script=match?.[1]||"";
-  assert.match(script,/\/api\/player\/catalog\?artist=x-tha-god/);
+  assert.match(script,/\/api\/archivez\/catalog\?artist=x-tha-god&collection=tha-x-filez/);
   assert.doesNotMatch(script,/\/api\/crown\/player\/catalog/);
   assert.match(script,/collection_slug\|\|""/);
-  assert.match(script,/da-x-filez/);
+  assert.match(script,/tha-x-filez/);
   assert.match(script,/collection_file_code/);
   assert.match(html,/noindex,nofollow/);
 });
 
-test("public Player endpoint uses public surface without Crown identity",()=>{
-  const route=worker.match(/if\(url\.pathname==="\/api\/player\/catalog"[\s\S]*?\n    \}/)?.[0]||"";
-  assert.match(route,/playerCatalogResponse/);
+test("public Archivez endpoint uses public surface without Crown identity",()=>{
+  const route=worker.match(/if\(url\.pathname==="\/api\/archivez\/catalog"[\s\S]*?\n    \}/)?.[0]||"";
+  assert.match(route,/archivezCatalogResponse/);
   assert.match(route,/surface:"public"/);
   assert.match(route,/crownMemberId:null/);
   assert.doesNotMatch(route,/crownIdentity\(/);
@@ -40,7 +40,7 @@ test("public surface filters to PUBLIC access before sanitization",()=>{
   assert.match(service,/const safe=resolveAndSanitizeMedia\(surfaceFiltered,viewer\)/);
 });
 
-test("Da X Filez public page has no Crown engagement controls",()=>{
+test("Tha X Filez public page has no Crown engagement controls",()=>{
   assert.doesNotMatch(html,/CROWD COMMENTS/);
   assert.doesNotMatch(html,/ANALYTICS/);
   assert.doesNotMatch(html,/\/api\/crown\/player\/view/);
