@@ -62,3 +62,22 @@ test("sharing creates stable DXF deep links",()=>{
   assert.match(pub,/navigator\.clipboard\.writeText/);
   assert.match(pub,/new URLSearchParams\(location\.search\)\.get\("file"\)/);
 });
+
+test("public metadata overlay avoids giant D1 IN bind lists",()=>{
+  assert.match(api,/SELECT media_id,public_title,public_caption,updated_at FROM archive_media_public_meta/);
+  assert.doesNotMatch(api,/WHERE media_id IN/);
+  assert.doesNotMatch(api,/chunk\.map\(\(\)=>"\?"\)/);
+});
+
+test("Crown Archivez images use full-frame image mode",()=>{
+  assert.match(crown,/\.screen\.image-mode\{aspect-ratio:auto/);
+  assert.match(crown,/max-height:calc\(78vh - 20px\)/);
+  assert.match(crown,/screen\.classList\.toggle\("image-mode",isImage\)/);
+  assert.match(crown,/screen\.classList\.toggle\("video-mode",isVideo\)/);
+});
+
+test("Archivez social controls use Crown styling",()=>{
+  assert.match(crown,/\.social-actions button\{/);
+  assert.match(crown,/\.admin-edit\{/);
+  assert.match(crown,/\.comment-form textarea/);
+});
