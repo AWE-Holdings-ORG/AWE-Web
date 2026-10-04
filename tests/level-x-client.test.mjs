@@ -85,7 +85,8 @@ test("LEVEL X renders verified event context and archive artifacts",()=>{
 
 test("catalog event context is authorization-gated and schema-safe",()=>{
   assert.match(catalogService,/const hasEventContext=await eventSchemaReady\(db\)/);
-  assert.match(catalogService,/if\(item\.authorized\)\{[\s\S]*item\.event=hasEventContext\?await eventContext\(db,Number\(item\.id\)\):null/);
+  assert.match(catalogService,/hasEventContext\?eventContextMap\(db,artist\.id\):Promise\.resolve\(new Map\(\)\)/);
+  assert.match(catalogService,/if\(item\.authorized\)\{[\s\S]*item\.event=events\.get\(Number\(item\.id\)\)\|\|null/);
   assert.match(catalogService,/else\{[\s\S]*item\.event=null/);
   assert.match(catalogService,/sqlite_master/);
   assert.doesNotMatch(catalogService,/evidence_note:event\.evidence_note/);
@@ -94,8 +95,16 @@ test("catalog event context is authorization-gated and schema-safe",()=>{
 
 test("catalog media collections are schema-safe and attached before access sanitization",()=>{
   assert.match(catalogService,/async function collectionSchemaReady\(db\)/);
-  assert.match(catalogService,/async function collectionContext\(db,mediaId\)/);
+  assert.match(catalogService,/async function collectionContextMap\(db,artistId\)/);
   assert.match(catalogService,/const hasCollections=await collectionSchemaReady\(db\)/);
+  assert.match(catalogService,/const collections=hasCollections\?await collectionContextMap\(db,artist\.id\):new Map\(\)/);
   assert.match(catalogService,/collection_slug:collection\?\.collection_slug\|\|null/);
   assert.match(catalogService,/const safe=resolveAndSanitizeMedia\(surfaceFiltered,viewer\)/);
+});
+
+test("catalog batches engagement and event context for large X archives",()=>{
+  assert.match(catalogService,/async function engagementMap\(db,artistId\)/);
+  assert.match(catalogService,/async function eventContextMap\(db,artistId\)/);
+  assert.doesNotMatch(catalogService,/await engagement\(db,Number\(item\.id\)\)/);
+  assert.doesNotMatch(catalogService,/await eventContext\(db,Number\(item\.id\)\)/);
 });
