@@ -295,7 +295,17 @@ Migration `0017_da_x_filez_and_super_readers.sql` adds:
 
 Migration 0017 does not change the 36-battle count.
 
-**0012–0017 STATUS: READY FOR PREVIEW DATA APPLY.**
+Migration `0018_da_x_filez_initial_public_images.sql` adds:
+- 92 PUBLIC Da X Filez still images from first-party The CROWD Drive;
+- 5 from Hype3Wear / X Tha God;
+- 87 from Grizz Exams / X Tha God;
+- web-safe Drive thumbnail URLs for rendering;
+- original Drive view URLs for provenance;
+- no raw MOV files pending classification.
+
+The public review surface `/crowd/x/` reads only PUBLIC Player records and requires no Crown session. It remains noindex during the initial X review pass.
+
+**0012–0018 STATUS: READY FOR PREVIEW DATA APPLY.**
 
 Reconciliation has stabilized sufficiently for Preview promotion:
 - the staged set contains 36 distinct battles;
@@ -321,6 +331,7 @@ Migration order is:
 3. 0014 verified external reconciliation;
 4. 0015 external event context;
 5. 0016 reconciled additions + Training Day event context;
-6. 0017 Da X Filez collections + Super Readers owned-event context.
+6. 0017 Da X Filez collections + Stardom/Super Readers event context;
+7. 0018 initial 92-image PUBLIC Da X Filez batch.
 
 Production D1 remains untouched.
