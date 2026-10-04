@@ -169,9 +169,17 @@ async function loadDropboxHealth(ownerVisible){
   try{
     const r=await fetch("/api/crown/archivez/dropbox-health");
     const data=await r.json();
-    el.textContent=data?.configured
-      ?"DROPBOX BRIDGE // ONLINE"
-      :"DROPBOX BRIDGE // SETUP REQUIRED";
+    if(!data?.configured){
+      el.textContent="DROPBOX BRIDGE // SETUP REQUIRED";
+    }else if(data?.auth?.ok!==true){
+      el.textContent="DROPBOX BRIDGE // AUTH FAIL "+(data?.auth?.status||"");
+    }else if(data?.metadata?.ok!==true){
+      el.textContent="DROPBOX BRIDGE // FILE LOOKUP FAIL "+(data?.metadata?.status||"");
+    }else if(data?.file?.ok!==true){
+      el.textContent="DROPBOX BRIDGE // BYTE STREAM FAIL "+(data?.file?.status||"");
+    }else{
+      el.textContent="DROPBOX BRIDGE // VERIFIED ONLINE";
+    }
   }catch{
     el.textContent="DROPBOX BRIDGE // STATUS UNAVAILABLE";
   }
