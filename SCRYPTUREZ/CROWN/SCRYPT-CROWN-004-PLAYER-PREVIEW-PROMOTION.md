@@ -287,23 +287,29 @@ The staged migration set is now **36 distinct battles**:
 - 18 original external records;
 - 4 reconciled external additions.
 
-Migration `0017_da_x_filez_and_super_readers.sql` adds:
+Migration `0017_tha_x_filez_and_super_readers.sql` adds:
 - the generic Player media-collection schema;
-- X Tha God collection `Da X Filez` for images/photos/portraits/interviews;
+- X Tha God collection `Tha X Filez` for images/photos/portraits/interviews;
 - YouTube provider thumbnails as presentation metadata for X media;
 - owned Super Readers event context held by Big Tali / The CROWD, while preserving provider-source provenance separately.
 
 Migration 0017 does not change the 36-battle count.
 
-Migration `0018_da_x_filez_initial_public_images.sql` adds:
-- 92 PUBLIC Da X Filez still images from first-party The CROWD Drive;
+Migration `0018_tha_x_filez_initial_public_images.sql` adds:
+- 92 PUBLIC Tha X Filez still images from first-party The CROWD Drive;
 - 5 from Hype3Wear / X Tha God;
 - 87 from Grizz Exams / X Tha God;
 - web-safe Drive thumbnail URLs for rendering;
 - original Drive view URLs for provenance;
 - no raw MOV files pending classification.
 
-The public review surface `/crowd/x/` reads only PUBLIC Player records and requires no Crown session. It remains noindex during the initial X review pass.
+The public review surface `/crowd/x/` reads only PUBLIC Archivez records and requires no Crown session. It remains noindex during the initial X review pass.
+
+Da Archivez is a separate CROWD system:
+- The CROWD button 06 opens `/crown/crowd/archivez/`;
+- Tha X Filez lives at `/crown/crowd/archivez/tha-x-filez/`;
+- Tha X Filez uses the dedicated Archivez catalog API;
+- LEVEL X / Da CROWD Player excludes the `tha-x-filez` collection.
 
 **0012–0018 STATUS: READY FOR PREVIEW DATA APPLY.**
 
@@ -331,7 +337,7 @@ Migration order is:
 3. 0014 verified external reconciliation;
 4. 0015 external event context;
 5. 0016 reconciled additions + Training Day event context;
-6. 0017 Da X Filez collections + Stardom/Super Readers event context;
-7. 0018 initial 92-image PUBLIC Da X Filez batch.
+6. 0017 Tha X Filez collection + Stardom/Super Readers event context;
+7. 0018 initial 92-image PUBLIC Tha X Filez batch.
 
 Production D1 remains untouched.
