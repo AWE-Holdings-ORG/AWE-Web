@@ -23,10 +23,16 @@ test("PUBLIC returns full source",()=>{
   assert.equal(r.canonical_url,"https://example.com/watch");
 });
 test("HOUSE without grant returns teaser but no source",()=>{
-  const r=one(media("house","locked",{house_slug:"the-crowd"}));
+  const r=one(media("house","locked",{
+    house_slug:"the-crowd",
+    collection_slug:"da-x-filez",
+    collection_name:"Da X Filez"
+  }));
   assert.equal(r.authorized,false);
   assert.equal(r.canonical_url,undefined);
   assert.equal(r.provider,undefined);
+  assert.equal(r.collection_slug,"da-x-filez");
+  assert.equal(r.collection_name,"Da X Filez");
 });
 test("HOUSE with matching grant returns full source",()=>{
   const r=one(media("house","locked",{house_slug:"the-crowd"}),{houseSlugs:["the-crowd"]});
@@ -40,11 +46,16 @@ test("UNLOCK grant returns full source",()=>{
   const r=one(media("unlock","locked"),{unlockedMediaIds:[1]});
   assert.equal(r.authorized,true);
 });
-test("encrypted UNLOCK redacts title, art and source",()=>{
-  const r=one(media("unlock","encrypted"));
+test("encrypted UNLOCK redacts title, art, source and collection identity",()=>{
+  const r=one(media("unlock","encrypted",{
+    collection_slug:"da-x-filez",
+    collection_name:"Da X Filez"
+  }));
   assert.equal(r.title,"ENCRYPTED SIGNAL");
   assert.equal(r.canonical_url,undefined);
   assert.equal(r.thumbnail_url,null);
+  assert.equal(r.collection_slug,undefined);
+  assert.equal(r.collection_name,undefined);
 });
 test("CROWN requires active Crown authentication",()=>{
   const r=one(media("crown","locked"));
