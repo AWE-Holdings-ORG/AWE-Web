@@ -220,9 +220,9 @@ Do not merge to main until those runtime gates pass.
 
 ## X Tha God CROWD-Owned Battle Expansion
 
-**0012 STATUS: HOLD FOR EVENT RECONCILIATION.**
+**0012 STATUS: READY FOR PREVIEW DATA APPLY.**
 
-Do not apply migration 0012 to Preview D1 until the CROWD event evidence registry has reconciled the known flyer-derived event dates and removed approximate historical year assumptions. Pending dates may remain NULL; they must not be guessed.
+The CROWD event evidence registry has stabilized sufficiently for Preview. Verified exact dates are populated; unresolved dates remain NULL by design and are not guessed.
 
 Migration `0012_x_tha_god_crowd_owned_battles.sql` adds the 13 GBE / The CROWD-owned battles recovered from the official @CrowdShyt tracker source and reorders the existing 18 external embeds behind them.
 
@@ -238,7 +238,7 @@ Historical YouTube/provider view counts from the old tracker are not imported in
 
 SCRYPT-CROWN-008 adds migration `0013_player_event_context.sql`.
 
-**0013 STATUS: HOLD WITH 0012 UNTIL CROWD EVENT RECONCILIATION IS READY.**
+**0013 STATUS: READY FOR PREVIEW DATA APPLY AFTER 0012.**
 
 Migration 0013 is additive and creates:
 - `player_events`;
@@ -275,11 +275,11 @@ Migration `0014_x_tha_god_verified_external_reconciliation.sql` stages three ind
 
 Migration `0015_x_tha_god_external_event_context.sql` links those records to the reusable Player event-context schema.
 
-**0014/0015 STATUS: HOLD WITH 0012/0013 WHILE FULL X CATALOG RECONCILIATION CONTINUES.**
+**0014/0015 STATUS: READY FOR PREVIEW DATA APPLY AFTER 0012/0013.**
 
 Migration `0016_x_tha_god_reconciled_additions.sql` adds:
 - X Tha God vs Big Kannon — Training Day — first-party The CROWD Drive source; event date 2024-01-07 verified cross-source;
-- X Tha God vs OG Duggie — Super Readers — distinct external battle; event date remains NULL because the independently corroborated 2023-05-18 date is release context, not proven event date.
+- X Tha God vs OG Duggie — Super Readers — distinct battle; event date remains NULL because the independently corroborated 2023-05-18 date is release context, not proven event date. Super Readers event ownership is established separately in 0017.
 
 The staged migration set is now **36 distinct battles**:
 - 13 historical CROWD-owned;
@@ -287,7 +287,15 @@ The staged migration set is now **36 distinct battles**:
 - 18 original external records;
 - 4 reconciled external additions.
 
-**0012–0016 STATUS: READY FOR PREVIEW DATA APPLY.**
+Migration `0017_da_x_filez_and_super_readers.sql` adds:
+- the generic Player media-collection schema;
+- X Tha God collection `Da X Filez` for images/photos/portraits/interviews;
+- YouTube provider thumbnails as presentation metadata for X media;
+- owned Super Readers event context held by Big Tali / The CROWD, while preserving provider-source provenance separately.
+
+Migration 0017 does not change the 36-battle count.
+
+**0012–0017 STATUS: READY FOR PREVIEW DATA APPLY.**
 
 Reconciliation has stabilized sufficiently for Preview promotion:
 - the staged set contains 36 distinct battles;
@@ -312,6 +320,7 @@ Migration order is:
 2. 0013 first-party event context;
 3. 0014 verified external reconciliation;
 4. 0015 external event context;
-5. 0016 reconciled additions + Training Day event context.
+5. 0016 reconciled additions + Training Day event context;
+6. 0017 Da X Filez collections + Super Readers owned-event context.
 
 Production D1 remains untouched.
