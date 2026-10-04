@@ -1,0 +1,33 @@
+name: Apply Preview D1 Migrations
+
+on:
+  push:
+    branches:
+      - feature/crown-door-v1
+    paths:
+      - "migrations/**"
+      - "wrangler.preview-migrations.jsonc"
+      - ".github/workflows/preview-d1-migrations.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-d1-migrations
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: Apply pending migrations to Preview D1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+
+      - name: Apply pending Preview D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply awe-crown-identity-preview --remote --config wrangler.preview-migrations.jsonc
