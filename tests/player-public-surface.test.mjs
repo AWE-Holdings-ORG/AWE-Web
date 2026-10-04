@@ -45,3 +45,12 @@ test("Tha X Filez public page has no Crown engagement controls",()=>{
   assert.doesNotMatch(html,/ANALYTICS/);
   assert.doesNotMatch(html,/\/api\/crown\/player\/view/);
 });
+
+test("public Tha X Filez paginates large archives and avoids broken Dropbox image embeds",()=>{
+  const script=match?.[1]||"";
+  assert.match(script,/limit:60/);
+  assert.match(script,/LOAD MORE FILEZ/);
+  assert.match(script,/provider==="dropbox"/);
+  assert.match(script,/return "VIDEO"/);
+  assert.doesNotMatch(script,/const thumb=x\.thumbnail_url\|\|x\.source_url/);
+});
