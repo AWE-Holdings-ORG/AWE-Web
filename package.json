@@ -12,6 +12,8 @@
     "test:player-analytics-migration": "python tests/player-analytics-migration.test.py",
     "test:player-event-context-migration": "python tests/player-event-context-migration.test.py",
     "test:x-external-event-context-migration": "python tests/x-external-event-context-migration.test.py",
-    "test:x-reconciled-additions-migration": "python tests/x-reconciled-additions-migration.test.py"
+    "test:x-reconciled-additions-migration": "python tests/x-reconciled-additions-migration.test.py",
+    "preview:migrations:list": "wrangler d1 migrations list awe-crown-identity-preview --remote --config wrangler.preview-migrations.jsonc",
+    "preview:migrations:apply": "wrangler d1 migrations apply awe-crown-identity-preview --remote --config wrangler.preview-migrations.jsonc"
   }
 }
