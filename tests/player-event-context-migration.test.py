@@ -11,6 +11,7 @@ CREATE TABLE artist_media(
   external_id TEXT UNIQUE
 );
 INSERT INTO artist_media(external_id) VALUES
+('ms4r261sQ9c'),
 ('2InJIUKuoZY'),
 ('4kHtN7my50A'),
 ('xo-TQJUhzJs'),
