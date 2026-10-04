@@ -1,5 +1,5 @@
 {
-  "version": "0.1",
+  "version": "0.2",
   "status": "RECONCILIATION",
   "updated_at": "2026-10-03",
   "artist_slug": "x-tha-god",
@@ -200,37 +200,38 @@
         "created_at": "2023-08-17T03:19:07.880Z",
         "modified_at": "2023-08-17T03:19:25.693Z"
       }
-    }
-  ],
-  "recovered_leads": [
+    },
     {
       "opponent": "Big Kannon",
       "event": "Training Day",
       "youtube_id": null,
-      "event_date": null,
+      "event_date": "2024-01-07",
       "event_time": null,
       "space_url": null,
-      "rights": "crowd-related-pending-final-provenance",
-      "flyer_status": "public-full-card-recovered",
+      "rights": "gbe-crowd-owned",
+      "flyer_status": "public-matchup-card-recovered",
       "matchup_on_flyer": true,
       "drive": {
         "battle_asset_id": "1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks",
         "battle_asset_name": "XVSKannon.mp4"
       },
-      "confidence": "matchup-event-verified-date-pending",
+      "confidence": "verified-cross-source",
       "training_day_space_anchor": {
         "date": "2024-01-07",
         "duration": "02:50:18",
         "audience_public_index": "~2.4k tuned in",
         "title": "WE THE FANS x THE CROWD PRESENTS TRAINING DAY HOSTED BY JAYBLAC",
-        "direct_matchup_binding": false,
+        "direct_matchup_binding": true,
         "faceoffs": {
           "date": "2023-12-23",
           "duration": "01:23:09",
           "audience_public_index": "621 tuned in",
           "title": "TRAINING DAY FACEOFFS HOSTED BY COLA THE BIG SPEAKER"
-        }
-      }
+        },
+        "binding_basis": "Recovered Training Day card identifies X Tha God vs Big Kannon; first-party Drive contains XVSKannon.mp4; public Training Day Space archive dates the program 2024-01-07."
+      },
+      "evidence": "First-party The CROWD Drive battle source plus recovered Training Day matchup card and public Training Day Space chronology establish the 2024-01-07 event date. Exact Space URL/time remain pending."
     }
-  ]
+  ],
+  "recovered_leads": []
 }
