@@ -30,6 +30,10 @@ on:
       - "migrations/0016_x_tha_god_reconciled_additions.sql"
       - "migrations/0017_tha_x_filez_and_super_readers.sql"
       - "migrations/0018_tha_x_filez_initial_public_images.sql"
+      - "migrations/0022_tha_x_filez_dropbox_04.sql"
+      - "migrations/0021_tha_x_filez_dropbox_03.sql"
+      - "migrations/0020_tha_x_filez_dropbox_02.sql"
+      - "migrations/0019_tha_x_filez_dropbox_01.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -46,6 +50,7 @@ on:
       - "tests/player-public-surface.test.mjs"
       - "tests/archivez-client.test.mjs"
       - "tests/tha-x-filez-initial-images-migration.test.py"
+      - "tests/tha-x-filez-dropbox-flood.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
@@ -100,6 +105,7 @@ on:
       - "tests/player-public-surface.test.mjs"
       - "tests/archivez-client.test.mjs"
       - "tests/tha-x-filez-initial-images-migration.test.py"
+      - "tests/tha-x-filez-dropbox-flood.test.py"
       - "SCRYPTUREZ/CROWN/**"
       - ".github/workflows/player-access-tests.yml"
 
@@ -166,6 +172,9 @@ jobs:
 
       - name: Validate initial Tha X Filez image seed
         run: npm run test:tha-x-filez-images-migration
+
+      - name: Validate Tha X Filez Dropbox flood
+        run: npm run test:tha-x-filez-dropbox-flood
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
