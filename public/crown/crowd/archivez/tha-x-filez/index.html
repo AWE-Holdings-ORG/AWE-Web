@@ -73,7 +73,7 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
     <div class="screen-wrap">
       <div id="screen" class="screen"><div class="placeholder"><div class="x">X</div><small>SELECT A FILE</small></div></div>
       <div class="meta"><span id="code" class="code">DXF-—</span><span id="tier">ACCESS —</span><span id="type">TYPE —</span></div>
-      <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>ORIGINAL FILE ↗</a></div>
+      <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>SOURCE ADMIN ↗</a></div>
       <div class="nav"><button id="prev" type="button">← PREV</button><button id="next" type="button">NEXT →</button></div>
     </div>
     <div>
@@ -102,22 +102,20 @@ function tier(x){
 }
 function mediaMarkup(x){
   if(x.authorized===false){
-    const art=x.thumbnail_url?'<img src="'+esc(x.thumbnail_url)+'" alt="">':'';
-    return art||'<div class="placeholder"><div class="x">⌁</div><small>FILE ACCESS REQUIRED</small></div>';
+    return x.thumb_url
+      ?'<img src="'+esc(x.thumb_url)+'" alt="">'
+      :'<div class="placeholder"><div class="x">⌁</div><small>FILE ACCESS REQUIRED</small></div>';
   }
   const type=String(x.media_type||"").toLowerCase();
-  if(x.provider==="dropbox"&&!x.thumbnail_url){
-    return '<div class="placeholder"><div class="x">DBX</div><small>DROPBOX SOURCE // USE ORIGINAL FILE ↗</small></div>';
-  }
   if(["photo","portrait","image","artwork"].includes(type)){
-    const src=x.thumbnail_url||"";
-    return src?'<img src="'+esc(src)+'" alt="'+esc(x.title)+'">':'<div class="placeholder"><small>IMAGE PREVIEW UNAVAILABLE // OPEN ORIGINAL FILE</small></div>';
+    return x.preview_url
+      ?'<img src="'+esc(x.preview_url)+'" alt="'+esc(x.title)+'">'
+      :'<div class="placeholder"><small>IMAGE PREVIEW UNAVAILABLE</small></div>';
   }
-  if(x.provider==="youtube"&&x.external_id){
-    return '<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(x.external_id)+'" title="'+esc(x.title)+'" allowfullscreen></iframe>';
-  }
-  if(["video","clip","interview","bts","behind-the-scenes"].includes(type)&&x.canonical_url){
-    return '<video controls preload="metadata" src="'+esc(x.canonical_url)+'"></video>';
+  if(["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)){
+    return x.preview_url
+      ?'<video controls preload="metadata" src="'+esc(x.preview_url)+'"></video>'
+      :'<div class="placeholder"><small>VIDEO PREVIEW UNAVAILABLE</small></div>';
   }
   return '<div class="placeholder"><div class="x">X</div><small>'+esc(kind(x))+'</small></div>';
 }
@@ -132,8 +130,9 @@ function select(id){
   document.getElementById("title").textContent=x.title||"ARCHIVE FILE";
   document.getElementById("description").textContent=x.authorized===false?"This file exists in Tha X Filez, but your current Crown does not unlock its contents.":(x.description||"THE CROWD ARCHIVE");
   const source=document.getElementById("source");
-  source.hidden=x.authorized===false||(!x.source_url&&!x.canonical_url);
-  source.href=x.source_url||x.canonical_url||"#";
+  const canSeeSource=x.provenance_visible===true&&x.authorized!==false&&(x.source_url||x.canonical_url);
+  source.hidden=!canSeeSource;
+  source.href=canSeeSource?(x.source_url||x.canonical_url):"#";
 }
 function renderQueue(){
   state.filtered=state.filter==="ALL"?state.media:state.media.filter(x=>kind(x)===state.filter);
@@ -143,9 +142,9 @@ function renderQueue(){
   const pageItems=state.filtered.slice(start,start+state.pageSize);
   const q=document.getElementById("queue");
   q.innerHTML=pageItems.map(x=>{
-    const art=x.thumbnail_url?'<span class="thumb"><img src="'+esc(x.thumbnail_url)+'" alt=""></span>':'<span class="thumb">'+(x.provider==="dropbox"?"DBX":"X")+'</span>';
+    const art=x.thumb_url?'<span class="thumb"><img src="'+esc(x.thumb_url)+'" alt=""></span>':'<span class="thumb">X</span>';
     const klass=String(x.access_state||"").toLowerCase()==="vault"?"vault":"";
-    return '<button type="button" data-id="'+x.id+'">'+art+'<span class="qcopy"><b class="'+klass+'">'+esc(x.collection_file_code||"DXF")+' // '+esc(tier(x))+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(kind(x))+' // '+esc(String(x.provider||"ARCHIVE").toUpperCase())+'</small></span></button>';
+    return '<button type="button" data-id="'+x.id+'">'+art+'<span class="qcopy"><b class="'+klass+'">'+esc(x.collection_file_code||"DXF")+' // '+esc(tier(x))+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(kind(x))+' // ARCHIVE</small></span></button>';
   }).join("")||'<div class="empty">NO FILEZ IN THIS LANE.</div>';
   q.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>select(Number(b.dataset.id)));
   document.getElementById("pageLabel").textContent="PAGE "+(state.page+1)+" / "+pages+" // "+state.filtered.length+" FILEZ";
