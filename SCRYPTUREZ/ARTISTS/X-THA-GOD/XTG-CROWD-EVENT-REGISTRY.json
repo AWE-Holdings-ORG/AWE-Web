@@ -1,5 +1,5 @@
 {
-  "version": "0.2",
+  "version": "0.3",
   "status": "RECONCILIATION",
   "updated_at": "2026-10-03",
   "artist_slug": "x-tha-god",
@@ -8,7 +8,8 @@
     "event_date": "exact first-party evidence only; historical approximate years do not qualify",
     "youtube_publish_date": "tracked separately from event_date",
     "spaces": "must have public post/Space URL or first-party evidence before binding",
-    "player_analytics": "historical provider counts never seed first-party CROWD VIEW analytics"
+    "player_analytics": "historical provider counts never seed first-party CROWD VIEW analytics",
+    "youtube_thumbnail": "Official @CrowdShyt YouTube thumbnails are flyer-evidence candidates. Visually confirm before promoting to an event artifact; printed date/time may support event evidence, but upload date never substitutes for event date."
   },
   "battles": [
     {
