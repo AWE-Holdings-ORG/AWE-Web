@@ -64,3 +64,11 @@ test("public Archivez API strips storage provenance",()=>{
   assert.match(api,/delete delivery\.source_url/);
   assert.match(api,/delete delivery\.provider/);
 });
+
+test("public Archivez descriptions hide storage-provider wording",()=>{
+  const apiPath=fileURLToPath(new URL("../lib/archivez-api.js",import.meta.url));
+  const api=readFileSync(apiPath,"utf8");
+  assert.match(api,/startsWith\("dropbox intake"\)/);
+  assert.match(api,/Tha X Filez image\. Artist tier\/category review pending\./);
+  assert.match(api,/Tha X Filez video\. Artist tier\/category review pending\./);
+});
