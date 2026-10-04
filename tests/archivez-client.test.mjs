@@ -74,12 +74,34 @@ test("Da CROWD Player API excludes Tha X Filez server-side",()=>{
   assert.match(service,/const excluded=new Set/);
 });
 
-test("Tha X Filez scales its Crown queue and handles Dropbox sources safely",()=>{
+test("Tha X Filez scales its Crown queue and never exposes storage sources to normal viewers",()=>{
   const script=match?.[1]||"";
   assert.match(script,/pageSize:60/);
   assert.match(script,/pagePrev/);
   assert.match(script,/pageNext/);
-  assert.match(script,/provider==="dropbox"/);
-  assert.match(script,/DROPBOX SOURCE \/\/ USE ORIGINAL FILE/);
-  assert.doesNotMatch(script,/x\.thumbnail_url\|\|x\.source_url\|\|x\.canonical_url/);
+  assert.match(script,/preview_url/);
+  assert.match(script,/thumb_url/);
+  assert.match(script,/provenance_visible===true/);
+  assert.match(xfilez,/SOURCE ADMIN ↗/);
+  assert.doesNotMatch(script,/DROPBOX SOURCE/);
+  assert.doesNotMatch(script,/\/\/ '+esc\(String\(x\.provider/);
+});
+
+test("Archivez API redacts Drive/Dropbox provenance unless owner",()=>{
+  assert.match(api,/provenanceVisible=member\?\.aw_id==="AWE-000001"/);
+  assert.match(api,/delete delivery\.canonical_url/);
+  assert.match(api,/delete delivery\.source_url/);
+  assert.match(api,/delete delivery\.source_name/);
+  assert.match(api,/delete delivery\.provider/);
+  assert.match(api,/preview_url/);
+  assert.match(api,/thumb_url/);
+});
+
+test("Archivez media is proxied through AWE endpoints",()=>{
+  assert.match(worker,/url\.pathname==="\/api\/crown\/archivez\/media"/);
+  assert.match(worker,/url\.pathname==="\/api\/archivez\/media"/);
+  assert.match(worker,/archiveMediaProxyResponse/);
+  assert.match(worker,/dropboxRawUrl/);
+  assert.match(worker,/driveThumbnailUrl/);
+  assert.match(worker,/driveDownloadUrl/);
 });
