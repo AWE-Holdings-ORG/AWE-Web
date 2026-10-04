@@ -234,7 +234,7 @@ async function archiveMediaDecision(env,mediaId,{
 }={}){
   const media=await env.CROWN_DB.prepare(`
     SELECT
-      m.id,m.media_type,m.provider,m.external_id,m.canonical_url,m.thumbnail_url,
+      m.id,m.title,m.media_type,m.provider,m.external_id,m.canonical_url,m.thumbnail_url,
       COALESCE(p.access_state,'unknown') AS access_state,
       p.house_slug,p.unlock_slug,COALESCE(p.teaser_mode,'concealed') AS teaser_mode
     FROM artist_media m
