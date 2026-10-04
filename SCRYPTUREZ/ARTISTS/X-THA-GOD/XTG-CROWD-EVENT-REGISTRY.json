@@ -210,7 +210,20 @@
         "battle_asset_id": "1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks",
         "battle_asset_name": "XVSKannon.mp4"
       },
-      "confidence": "matchup-event-verified-date-pending"
+      "confidence": "matchup-event-verified-date-pending",
+      "training_day_space_anchor": {
+        "date": "2024-01-07",
+        "duration": "02:50:18",
+        "audience_public_index": "~2.4k tuned in",
+        "title": "WE THE FANS x THE CROWD PRESENTS TRAINING DAY HOSTED BY JAYBLAC",
+        "direct_matchup_binding": false,
+        "faceoffs": {
+          "date": "2023-12-23",
+          "duration": "01:23:09",
+          "audience_public_index": "621 tuned in",
+          "title": "TRAINING DAY FACEOFFS HOSTED BY COLA THE BIG SPEAKER"
+        }
+      }
     }
   ]
 }
