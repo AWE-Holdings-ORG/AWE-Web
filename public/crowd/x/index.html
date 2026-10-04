@@ -46,7 +46,7 @@
     .modal-body img{display:block;max-width:100%;max-height:76vh;margin:auto}
     .modal-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--line);color:#8d826e;font-size:12px}
     .source{color:var(--gold2);font:800 9px ui-monospace,monospace;letter-spacing:.12em;text-decoration:none}
-    .foot{text-align:center;color:#5e574c;font:800 9px ui-monospace,monospace;letter-spacing:.16em;margin-top:34px}
+    .more{display:block;margin:22px auto 0;border:1px solid var(--line);background:#080704;color:var(--gold2);padding:12px 18px;font:900 9px ui-monospace,monospace;letter-spacing:.13em;cursor:pointer}.placeholder-card{min-height:160px;display:grid;place-items:center;background:radial-gradient(circle,#151008,#030303 72%);color:var(--gold);font:500 36px Georgia,serif}.foot{text-align:center;color:#5e574c;font:800 9px ui-monospace,monospace;letter-spacing:.16em;margin-top:34px}
     @media(max-width:700px){.hero{grid-template-columns:1fr;padding-top:52px}.count{width:max-content}.sig{display:none}.grid{columns:2 150px}}
   </style>
 </head>
@@ -72,6 +72,7 @@
   </section>
 
   <section id="grid" class="grid" aria-live="polite"></section>
+  <button id="more" class="more" type="button" hidden>LOAD MORE FILEZ</button>
 
   <p class="foot">THA X FILEZ // X THA GOD × THE CROWD × GBE</p>
 </main>
@@ -83,22 +84,27 @@
 </dialog>
 
 <script>
-const state={files:[],filter:"ALL"};
+const state={files:[],filter:"ALL",limit:60};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function kind(x){
   const t=String(x.media_type||"").toLowerCase();
   return t==="interview"?"INTERVIEWS":"IMAGES";
 }
 function render(){
-  const files=state.filter==="ALL"?state.files:state.files.filter(x=>kind(x)===state.filter);
+  const all=state.filter==="ALL"?state.files:state.files.filter(x=>kind(x)===state.filter);
+  const files=all.slice(0,state.limit);
   const grid=document.getElementById("grid");
   grid.innerHTML=files.map(x=>{
-    const thumb=x.thumbnail_url||x.source_url||"";
-    return '<button class="file" data-id="'+x.id+'">'+
-      (thumb?'<img loading="lazy" src="'+esc(thumb)+'" alt="'+esc(x.title)+'">':'')+
+    const art=x.thumbnail_url
+      ?'<img loading="lazy" src="'+esc(x.thumbnail_url)+'" alt="'+esc(x.title)+'">'
+      :'<span class="placeholder-card">'+(x.provider==="dropbox"?"DBX":"X")+'</span>';
+    return '<button class="file" data-id="'+x.id+'">'+art+
       '<span class="file-copy"><b>'+esc(x.collection_file_code||"DXF")+' // '+esc(kind(x))+' // PUBLIC FILE</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.description||"THE CROWD ARCHIVE")+'</small></span></button>';
   }).join("")||'<div class="empty">NO PUBLIC FILEZ IN THIS LANE YET.</div>';
   grid.querySelectorAll("[data-id]").forEach(el=>el.onclick=()=>openFile(Number(el.dataset.id)));
+  const more=document.getElementById("more");
+  more.hidden=files.length>=all.length;
+  more.textContent="LOAD MORE FILEZ // "+files.length+" OF "+all.length;
 }
 function openFile(id){
   const x=state.files.find(f=>Number(f.id)===id); if(!x)return;
@@ -109,10 +115,14 @@ function openFile(id){
   source.href=x.source_url||x.canonical_url||"#";
   source.hidden=!x.source_url&&!x.canonical_url;
   const type=String(x.media_type||"").toLowerCase();
-  if(type==="interview"&&x.provider==="youtube"&&x.external_id){
+  if(x.provider==="dropbox"&&!x.thumbnail_url){
+    document.getElementById("viewerBody").innerHTML='<div class="placeholder-card" style="min-height:52vh">DBX</div>';
+  }else if(type==="interview"&&x.provider==="youtube"&&x.external_id){
     document.getElementById("viewerBody").innerHTML='<div style="aspect-ratio:16/9"><iframe style="width:100%;height:100%;border:0" src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(x.external_id)+'" title="'+esc(x.title)+'" allowfullscreen></iframe></div>';
+  }else if(x.thumbnail_url){
+    document.getElementById("viewerBody").innerHTML='<img src="'+esc(x.thumbnail_url)+'" alt="'+esc(x.title)+'">';
   }else{
-    document.getElementById("viewerBody").innerHTML='<img src="'+esc(x.thumbnail_url||x.source_url||"")+'" alt="'+esc(x.title)+'">';
+    document.getElementById("viewerBody").innerHTML='<div class="placeholder-card" style="min-height:52vh">X</div>';
   }
   dialog.showModal();
 }
@@ -129,6 +139,7 @@ async function load(){
     filters.innerHTML=cats.map(c=>'<button data-filter="'+c+'" class="'+(c==="ALL"?"active":"")+'">'+c+'</button>').join("");
     filters.querySelectorAll("button").forEach(b=>b.onclick=()=>{
       state.filter=b.dataset.filter;
+      state.limit=60;
       filters.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
       render();
     });
@@ -139,6 +150,7 @@ async function load(){
     document.getElementById("grid").innerHTML='<div class="empty">THA X FILEZ IS CURRENTLY OFFLINE.</div>';
   }
 }
+document.getElementById("more").onclick=()=>{state.limit+=60;render();};
 document.getElementById("close").onclick=()=>document.getElementById("viewer").close();
 document.getElementById("viewer").addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
 load();
