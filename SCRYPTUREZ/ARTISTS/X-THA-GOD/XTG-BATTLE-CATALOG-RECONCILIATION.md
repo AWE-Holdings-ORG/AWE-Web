@@ -88,14 +88,16 @@ These are distinct records, not duplicates of current seed rows. Event ownership
 ## D — Public Index Battle Missing From Both Current Seed and Old 27 Tracker — 1
 
 ### Chuck Lucci vs X Tha God
-- league: Demon Time Battle League;
+- league: Stardom — formerly Demon Time Battle League;
+- league operator: Big Tali;
 - event: Insidious;
 - event date: 2023-09-30;
 - provider release date: 2023-10-04;
 - YouTube ID: `xgupv_oiIQ8`;
 - provider embed URL recovered through public battle index: `https://www.youtube.com/embed/xgupv_oiIQ8`;
 - VerseTracker independently lists it as a distinct X battle on 2023-10-04;
-- rights relationship: external / Demon Time, pending any separate first-party agreement evidence.
+- event/league lineage: Stardom / former Demon Time Battle League;
+- provider/source rights remain separate and are not inferred from league operation.
 
 Status: PROVIDER + EVENT VERIFIED / READY FOR ADDITIVE EXTERNAL SEED REVIEW.
 
@@ -135,7 +137,8 @@ The staged catalog stack is now:
 - 0012 — 13 historical CROWD-owned uploads;
 - 0014 — DeeJayy, Tino, and Chuck Lucci external reconciliation;
 - 0016 — Big Kannon / Training Day plus OG Duggie / Super Readers battle record;
-- 0017 — Da X Filez collection foundation, YouTube thumbnail presentation metadata, and owned Super Readers event context.
+- 0017 — Da X Filez collection foundation, YouTube thumbnail presentation metadata, Stardom lineage, and owned Super Readers event context;
+- 0018 — first 92 PUBLIC Da X Filez still images from first-party CROWD Drive folders.
 
 The staged result is 36 distinct battles. It is still a minimum, not catalog completeness.
 
