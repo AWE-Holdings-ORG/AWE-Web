@@ -7,7 +7,7 @@
 *{box-sizing:border-box}html{background:#020202}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at 50% 18%,#181107 0,#070605 32%,#020202 70%);overflow-x:hidden}
 #cipher{position:fixed;inset:0;width:100%;height:100%;opacity:.16;pointer-events:none;mask-image:linear-gradient(to bottom,#000 0,#000 70%,transparent 100%)}
 .shell{position:relative;z-index:2;width:min(1180px,92vw);margin:auto;padding:38px 0 72px}
-.top{display:flex;justify-content:space-between;gap:20px;color:#6f685b;font:700 9px ui-monospace,monospace;letter-spacing:.18em;border-bottom:1px solid rgba(216,172,78,.15);padding-bottom:18px}.session-tools{display:flex;align-items:center;gap:14px}.session-tools button{border:0;background:transparent;color:#5e584d;font:700 8px ui-monospace,monospace;letter-spacing:.14em;cursor:pointer}.session-tools button:hover,.session-tools button:focus-visible{color:var(--gold2)}
+.top{display:flex;justify-content:space-between;gap:20px;color:#6f685b;font:700 9px ui-monospace,monospace;letter-spacing:.18em;border-bottom:1px solid rgba(216,172,78,.15);padding-bottom:18px}.session-tools{display:flex;align-items:center;gap:14px}.session-tools button{border:0;background:transparent;color:#5e584d;font:700 8px ui-monospace,monospace;letter-spacing:.14em;cursor:pointer}.session-tools button:hover,.session-tools button:focus-visible{color:var(--gold2)}.member-console{max-width:900px;margin:24px auto 0;border:1px solid rgba(216,172,78,.18);background:rgba(3,4,3,.82);padding:18px}.member-console h2{font:500 28px Georgia,serif;margin:4px 0 14px}.member-console-head{display:flex;justify-content:space-between;gap:14px;align-items:end}.member-console-head p{margin:0;color:#6f685b;font:800 8px ui-monospace,monospace;letter-spacing:.14em}.member-list{display:grid;gap:8px;margin-top:14px}.member-row{border:1px solid rgba(216,172,78,.12);padding:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#050504}.member-row b{display:block;color:var(--gold2);font:800 9px ui-monospace,monospace;letter-spacing:.12em}.member-row strong{display:block;font:500 20px Georgia,serif;margin:4px 0}.member-row small{color:#756d61;font:700 8px ui-monospace,monospace;letter-spacing:.08em;line-height:1.55}.member-row button{border:1px solid #4f4228;background:#0a0805;color:var(--gold2);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.1em;cursor:pointer}.member-row button[disabled]{opacity:.45;cursor:default}.member-msg{min-height:18px;margin:10px 0 0;color:#8fa26a;font:700 9px ui-monospace,monospace;letter-spacing:.08em}
 .hero{text-align:center;padding:62px 0 36px}.crown{color:var(--gold2);font-size:34px}.kicker{color:var(--gold);font:800 10px ui-monospace,monospace;letter-spacing:.34em;margin:16px 0}.hero h1{font:500 clamp(42px,7vw,78px)/.92 Georgia,serif;margin:0}.hero h1 span{color:var(--gold2)}.welcome{color:var(--muted);margin:22px auto 0;font:600 11px ui-monospace,monospace;letter-spacing:.12em}
 .prompt{text-align:center;margin:30px 0 28px;color:#a99e87;font:700 10px ui-monospace,monospace;letter-spacing:.25em}
 .houses{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.house{position:relative;min-height:220px;border:1px solid rgba(216,172,78,.14);background:rgba(6,6,5,.72);display:grid;place-items:center;text-align:center;padding:24px;overflow:hidden}.house:before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(216,172,78,.07),transparent 65%);opacity:0;transition:.5s}.house-logo{max-width:82%;max-height:120px;filter:grayscale(1) brightness(.12);opacity:.38;transition:.55s}.house-name{font:700 9px ui-monospace,monospace;letter-spacing:.17em;color:#4c483f;margin-top:14px}.house.locked:after{content:"UNKNOWN // LOCKED";position:absolute;bottom:18px;color:#454139;font:700 8px ui-monospace,monospace;letter-spacing:.15em}.house.unlocked{cursor:pointer;border-color:rgba(241,215,131,.38);box-shadow:inset 0 0 35px rgba(216,172,78,.025)}.house.unlocked:before{opacity:1}.house.unlocked .house-logo{filter:none;opacity:1}.house.unlocked .house-name{color:var(--gold2)}.house.unlocked:after{content:"ACCESS GRANTED";position:absolute;bottom:18px;color:#817653;font:700 8px ui-monospace,monospace;letter-spacing:.15em}.house.discovered{border-color:rgba(216,172,78,.28)}.house.discovered .house-logo{filter:grayscale(1) brightness(.5);opacity:.72}.house.discovered .house-name{color:#8d846f}.house.discovered:after{content:"DISCOVERED // ACCESS LOCKED";position:absolute;bottom:18px;color:#665f51;font:700 8px ui-monospace,monospace;letter-spacing:.12em}
@@ -20,7 +20,7 @@
 </style></head><body>
 <canvas id="cipher" aria-hidden="true"></canvas>
 <main class="shell">
-<header class="top"><span>CROWN NETWORK // DRT</span><span class="session-tools"><span>AUTHORIZED CROWN SESSION</span><button id="logout" type="button">END SESSION</button></span></header>
+<header class="top"><span>CROWN NETWORK // DRT</span><span class="session-tools"><span>AUTHORIZED CROWN SESSION</span><button id="members-admin" type="button" hidden>MEMBERS</button><button id="logout" type="button">END SESSION</button></span></header>
 <section class="hero"><div class="crown">♛</div><p class="kicker">DA ROUND TABLE</p><h1>WEAR YOUR CROWN<br><span>PROUDLY.</span></h1><p class="welcome" id="welcome">IDENTITY CONFIRMED.</p></section>
 <p class="prompt">WHICH HOUSE DO YOU SEEK?</p>
 <section class="houses" aria-label="Crown Network Houses">
@@ -32,12 +32,46 @@
   <article class="house locked"><div><div class="sigil">?</div><div class="house-name">UNKNOWN SIGNAL</div></div></article>
 </section>
 <form class="keybox" id="house-key"><label for="key">HOUSE KEY // DISCOVER ANOTHER DOOR</label><div class="keyrow"><input id="key" name="key" placeholder="#________" autocomplete="off" spellcheck="false"><button>SEEK</button></div><p class="msg" id="msg" aria-live="polite"></p></form>
+<section class="member-console" id="member-console" hidden>
+  <div class="member-console-head"><div><p>OWNER CONTROL // PREVIEW</p><h2>Crown Members</h2></div><p>ACCESS IS GRANTED, NOT ASSUMED.</p></div>
+  <div class="member-list" id="member-list"></div>
+  <p class="member-msg" id="member-msg" aria-live="polite"></p>
+</section>
 <p class="foot">DA ROUND TABLE // THE HOUSES ARE LISTENING.</p>
 </main>
 <script>
-const welcome=document.querySelector('#welcome'),msg=document.querySelector('#msg'),keyForm=document.querySelector('#house-key'),keyInput=document.querySelector('#key'),logout=document.querySelector('#logout');
+const welcome=document.querySelector('#welcome'),msg=document.querySelector('#msg'),keyForm=document.querySelector('#house-key'),keyInput=document.querySelector('#key'),logout=document.querySelector('#logout'),membersAdmin=document.querySelector('#members-admin'),memberConsole=document.querySelector('#member-console'),memberList=document.querySelector('#member-list'),memberMsg=document.querySelector('#member-msg');
 const unlock=(slug,destination,authorized=true)=>{const card=document.querySelector('[data-house="'+slug+'"]');if(!card)return;card.classList.remove('locked');if(authorized){card.classList.add('unlocked');card.dataset.destination=destination||'';card.addEventListener('click',()=>{if(card.dataset.destination){fetch('/api/crown/visit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({house:slug}),keepalive:true});location.assign(card.dataset.destination);}},{once:false});}else{card.classList.add('discovered');}};
-fetch('/api/crown/atrium').then(r=>r.json().then(data=>({r,data}))).then(({r,data})=>{if(!r.ok)throw 0;const returning=(data.discoveries||[]).some(d=>d.last_visited_at);welcome.textContent=(returning?'CROWN SESSION ACTIVE':'IDENTITY CONFIRMED')+' // '+data.awId+' // '+(returning?'WELCOME BACK, ':'WELCOME, ')+String(data.crownName).toUpperCase()+'.';(data.discoveries||[]).forEach(d=>unlock(d.house_slug,d.destination,!!d.authorized));const q=new URLSearchParams(location.search).get('key');if(q){keyInput.value=q;keyForm.requestSubmit();}}).catch(()=>location.assign('/'));
+fetch('/api/crown/atrium').then(r=>r.json().then(data=>({r,data}))).then(({r,data})=>{if(!r.ok)throw 0;const returning=(data.discoveries||[]).some(d=>d.last_visited_at);welcome.textContent=(returning?'CROWN SESSION ACTIVE':'IDENTITY CONFIRMED')+' // '+data.awId+' // '+(returning?'WELCOME BACK, ':'WELCOME, ')+String(data.crownName).toUpperCase()+'.';(data.discoveries||[]).forEach(d=>unlock(d.house_slug,d.destination,!!d.authorized));if(data.awId==='AWE-000001'&&membersAdmin)membersAdmin.hidden=false;const q=new URLSearchParams(location.search).get('key');if(q){keyInput.value=q;keyForm.requestSubmit();}}).catch(()=>location.assign('/'));
+async function loadMembers(){
+  if(!memberList)return;
+  memberMsg.textContent='LOADING MEMBERS...';
+  try{
+    const r=await fetch('/api/crown/admin/members');
+    const data=await r.json();
+    if(!r.ok||!data.ok)throw new Error(data.message||'MEMBER LIST UNAVAILABLE.');
+    memberList.innerHTML=(data.members||[]).map(m=>{
+      const crowd=(m.houses||[]).includes('the-crowd');
+      const discovered=(m.discoveries||[]).some(d=>d.houseSlug==='the-crowd');
+      return '<article class="member-row"><div><b>'+m.awId+'</b><strong>'+String(m.crownName||'').replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]))+'</strong><small>STATUS // '+String(m.status||'').toUpperCase()+'<br>THE CROWD // '+(crowd?'ACCESS GRANTED':discovered?'DISCOVERED / ACCESS PENDING':'NOT DISCOVERED')+'</small></div><button type="button" data-awid="'+m.awId+'" '+(crowd?'disabled':'')+'>'+(crowd?'CROWD GRANTED':'GRANT THE CROWD')+'</button></article>';
+    }).join('');
+    memberList.querySelectorAll('button[data-awid]:not([disabled])').forEach(btn=>btn.addEventListener('click',async()=>{
+      btn.disabled=true;memberMsg.textContent='GRANTING THE CROWD...';
+      try{
+        const r=await fetch('/api/crown/admin/grant',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({awId:btn.dataset.awid,houseSlug:'the-crowd'})});
+        const data=await r.json();
+        if(!r.ok||!data.ok)throw new Error(data.message||'ACCESS GRANT FAILED.');
+        memberMsg.textContent='THE CROWD ACCESS GRANTED // '+String(data.crownName||'').toUpperCase()+'.';
+        await loadMembers();
+      }catch(err){btn.disabled=false;memberMsg.textContent=err.message||'ACCESS GRANT FAILED.';}
+    }));
+    memberMsg.textContent=(data.members||[]).length+' CROWN MEMBER'+((data.members||[]).length===1?'':'S')+' FOUND.';
+  }catch(err){memberMsg.textContent=err.message||'MEMBER LIST UNAVAILABLE.';}
+}
+membersAdmin?.addEventListener('click',()=>{
+  memberConsole.hidden=!memberConsole.hidden;
+  if(!memberConsole.hidden){loadMembers();memberConsole.scrollIntoView({behavior:'smooth',block:'start'});}
+});
 logout?.addEventListener('click',()=>{logout.disabled=true;fetch('/api/crown/logout',{method:'POST'}).finally(()=>location.assign('/'));});
 keyForm.addEventListener('submit',e=>{e.preventDefault();const key=keyInput.value.trim();if(!key)return;msg.classList.remove('error');msg.textContent='SEEKING HOUSE...';fetch('/api/crown/house-key',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key})}).then(async r=>({r,data:await r.json().catch(()=>({}))})).then(({r,data})=>{if(!r.ok)throw new Error(data.message||'HOUSE KEY NOT RECOGNIZED.');unlock(data.house,data.destination);msg.textContent='HOUSE KEY RECOGNIZED // '+data.houseName.toUpperCase()+'.';document.querySelector('[data-house="'+data.house+'"]')?.scrollIntoView({behavior:'smooth',block:'center'});}).catch(err=>{msg.classList.add('error');msg.textContent=err.message;});});
 const canvas=document.querySelector('#cipher'),ctx=canvas.getContext('2d'),glyphs=['AW','01','//','#','♛','AWE','CROWN','DRT','0','1','X','7','∆','◇'];let cols=[],w=0,h=0;
