@@ -6,34 +6,43 @@ import {fileURLToPath} from "node:url";
 const PAGE=fileURLToPath(new URL("../public/crown/crowd/player/index.html",import.meta.url));
 const html=readFileSync(PAGE,"utf8");
 const match=html.match(/<script>([\s\S]*?)<\/script>/i);
+const script=match?.[1]||"";
 
 test("Da CROWD Player select script parses",()=>{
   assert.ok(match,"Player select script missing");
-  assert.doesNotThrow(()=>new Function(match[1]));
+  assert.doesNotThrow(()=>new Function(script));
 });
 
-test("X uses uploaded poster with website-owned overlay formula",()=>{
+test("X uses the full-floor poster formula",()=>{
   assert.match(html,/data-name="X THA GOD"/);
   assert.match(html,/data-image="\/assets\/x-tha-god-character\.jpeg"/);
   assert.match(html,/data-stage-class="poster-stage"/);
   assert.match(html,/data-art-fit="cover"/);
-  assert.match(html,/data-art-position="center center"/);
-  assert.match(html,/id="stageName">X THA GOD<\/h2>/);
-  assert.match(html,/id="startButton"[^>]*>PRESS START \/\/ ENTER LEVEL X<\/a>/);
-});
-
-test("X and DeeJayy share the same Player stage dimensions",()=>{
-  assert.match(html,/\.stage\.poster-stage\{min-height:700px\}/);
-  assert.match(html,/@media\(max-width:720px\)[\s\S]*?\.stage\.poster-stage\{min-height:800px\}/);
-  assert.match(html,/data-name="X THA GOD"[\s\S]*?data-stage-class="poster-stage"/);
-  assert.match(html,/data-name="DEEJAYY"[\s\S]*?data-stage-class="poster-stage"/);
+  assert.match(html,/\.stage\.poster-stage\{min-height:960px;aspect-ratio:4\/5\}/);
+  assert.match(html,/@media\(max-width:720px\)[\s\S]*?\.stage\.poster-stage\{min-height:820px/);
   assert.match(html,/\.stage-copy\{[^}]*min-height:270px/);
 });
 
-test("X fills its full stage while DeeJayy keeps its established art treatment",()=>{
-  const script=match?.[1]||"";
-  assert.match(html,/data-name="X THA GOD"[\s\S]*?data-art-fit="cover"/);
-  assert.match(html,/data-name="DEEJAYY"[\s\S]*?data-art-fit="100% 118%" data-art-position="left center"/);
-  assert.match(script,/stage\.classList\.remove\('poster-stage'\)/);
-  assert.match(script,/slot\.dataset\.stageClass/);
+test("CROWD fallback roster contains X and Big Tali but not DeeJayy",()=>{
+  assert.match(html,/data-name="X THA GOD"/);
+  assert.match(html,/data-name="BIG TALI"/);
+  assert.doesNotMatch(html,/data-name="DEEJAYY"/);
+  assert.match(html,/THE CROWD \/\/ STARDOM/);
+});
+
+test("Player loads member-specific roster data",()=>{
+  assert.match(script,/\/api\/crown\/player\/roster\?house=the-crowd/);
+  assert.match(script,/function renderRoster\(signals\)/);
+  assert.match(script,/unlockSource==='cheat-code'/);
+  assert.match(script,/unlockSource==='legacy-preview'/);
+  assert.match(script,/PERSONAL ROSTER/);
+});
+
+test("Cheat Code terminal is wired to the authenticated CROWD endpoint",()=>{
+  assert.match(html,/CHEAT CODE \/\/ HIDDEN SIGNAL/);
+  assert.match(html,/id="cheatForm"/);
+  assert.match(html,/id="cheatCode"/);
+  assert.match(script,/\/api\/crown\/player\/cheat/);
+  assert.match(script,/houseSlug:'the-crowd'/);
+  assert.match(script,/CHEAT ACCEPTED/);
 });
