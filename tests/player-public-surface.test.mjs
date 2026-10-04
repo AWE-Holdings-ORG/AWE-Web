@@ -23,6 +23,7 @@ test("Da X Filez uses anonymous public catalog, not Crown catalog",()=>{
   assert.doesNotMatch(script,/\/api\/crown\/player\/catalog/);
   assert.match(script,/collection_slug\|\|""/);
   assert.match(script,/da-x-filez/);
+  assert.match(script,/collection_file_code/);
   assert.match(html,/noindex,nofollow/);
 });
 
