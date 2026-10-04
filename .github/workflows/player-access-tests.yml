@@ -31,6 +31,7 @@ on:
       - "migrations/0017_tha_x_filez_and_super_readers.sql"
       - "migrations/0018_tha_x_filez_initial_public_images.sql"
       - "migrations/0022_tha_x_filez_dropbox_04.sql"
+      - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
       - "migrations/0021_tha_x_filez_dropbox_03.sql"
       - "migrations/0020_tha_x_filez_dropbox_02.sql"
       - "migrations/0019_tha_x_filez_dropbox_01.sql"
@@ -40,6 +41,8 @@ on:
       - "tests/preview-security-cleanup.test.mjs"
       - "tests/level-x-client.test.mjs"
       - "tests/crowd-player-select.test.mjs"
+      - "tests/player-personal-roster-api.test.mjs"
+      - "tests/player-personal-roster-migration.test.py"
       - "tests/crown-member-admin.test.mjs"
       - "tests/player-analytics.test.mjs"
       - "tests/player-analytics-migration.test.py"
@@ -142,6 +145,12 @@ jobs:
 
       - name: Validate CROWD Player artist-select formula
         run: npm run test:crowd-player-select
+
+      - name: Validate personalized Player roster migration
+        run: npm run test:player-personal-roster-migration
+
+      - name: Validate personalized roster and Cheat Code API
+        run: npm run test:player-personal-roster-api
 
       - name: Validate Crown member admin controls
         run: npm run test:crown-member-admin
