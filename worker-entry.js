@@ -262,19 +262,71 @@ async function archiveMediaDecision(env,mediaId,{
   return {authorized:decision.authorized===true,media:decision.authorized===true?media:null};
 }
 
-const X_DROPBOX_SHARED_FOLDER={
-  base:"https://www.dropbox.com/scl/fo/3m0ooipt21spernsy34aa/ANAnGkOcszfg7Pk_IU8G240",
-  rlkey:"rditxo7ageg786kr9vaoytljz"
-};
+const X_DROPBOX_SHARED_FOLDER_URL="https://www.dropbox.com/scl/fo/3m0ooipt21spernsy34aa/ANAnGkOcszfg7Pk_IU8G240?rlkey=rditxo7ageg786kr9vaoytljz&dl=0";
+let dropboxAppTokenCache={token:null,expiresAt:0};
 
-function dropboxSharedFolderFileUrl(media,mode="raw"){
+function dropboxAppConfigured(env){
+  return !!String(env?.DROPBOX_APP_KEY||"").trim()&&!!String(env?.DROPBOX_APP_SECRET||"").trim();
+}
+
+async function dropboxAppToken(env){
+  const now=Date.now();
+  if(dropboxAppTokenCache.token&&dropboxAppTokenCache.expiresAt>now+60_000){
+    return dropboxAppTokenCache.token;
+  }
+
+  if(!dropboxAppConfigured(env))return null;
+
+  const key=String(env.DROPBOX_APP_KEY).trim();
+  const secret=String(env.DROPBOX_APP_SECRET).trim();
+  const basic=btoa(key+":"+secret);
+  const body=new URLSearchParams({grant_type:"client_credentials"});
+
+  const response=await fetch("https://api.dropboxapi.com/oauth2/token",{
+    method:"POST",
+    headers:{
+      "authorization":"Basic "+basic,
+      "content-type":"application/x-www-form-urlencoded"
+    },
+    body
+  });
+
+  if(!response.ok)return null;
+  const data=await response.json().catch(()=>null);
+  if(!data?.access_token)return null;
+
+  dropboxAppTokenCache={
+    token:data.access_token,
+    expiresAt:now+(Number(data.expires_in)||14_400)*1000
+  };
+  return data.access_token;
+}
+
+function dropboxSharedPath(media){
   const title=String(media?.title||"").trim();
-  if(!title)return null;
-  const base=X_DROPBOX_SHARED_FOLDER.base.replace(/\/$/,"");
-  const url=new URL(base+"/"+encodeURIComponent(title));
-  url.searchParams.set("rlkey",X_DROPBOX_SHARED_FOLDER.rlkey);
-  url.searchParams.set(mode==="download"?"dl":"raw","1");
-  return url.toString();
+  return title?"/"+title:null;
+}
+
+async function dropboxSharedFileResponse(request,env,media){
+  const token=await dropboxAppToken(env);
+  const path=dropboxSharedPath(media);
+  if(!token||!path)return null;
+
+  const headers=new Headers({
+    "authorization":"Bearer "+token,
+    "dropbox-api-arg":JSON.stringify({
+      url:X_DROPBOX_SHARED_FOLDER_URL,
+      path
+    })
+  });
+
+  const range=request.headers.get("range");
+  if(range)headers.set("range",range);
+
+  return fetch("https://content.dropboxapi.com/2/sharing/get_shared_link_file",{
+    method:"POST",
+    headers
+  });
 }
 
 function driveThumbnailUrl(media){
@@ -325,10 +377,25 @@ async function archiveMediaProxyResponse(request,env,{
       upstream=driveDownloadUrl(media);
     }
   }else if(media.provider==="dropbox"){
-    if(mode==="thumbnail"&&["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)){
+    if(mode==="thumbnail"){
       return new Response(null,{status:204,headers:{"cache-control":"private, no-store"}});
     }
-    upstream=dropboxSharedFolderFileUrl(media,"raw");
+    const dropboxResponse=await dropboxSharedFileResponse(request,env,media);
+    if(!dropboxResponse){
+      return json({ok:false,message:"DROPBOX ARCHIVE BRIDGE NOT CONFIGURED.",code:"DROPBOX_BRIDGE_CONFIG_MISSING"},503);
+    }
+    if(!dropboxResponse.ok&&dropboxResponse.status!==206){
+      return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE.",code:"DROPBOX_BRIDGE_UPSTREAM_FAILURE"},502);
+    }
+
+    const outHeaders=new Headers();
+    for(const name of ["content-type","content-length","content-range","accept-ranges","etag","last-modified"]){
+      const value=dropboxResponse.headers.get(name);
+      if(value)outHeaders.set(name,value);
+    }
+    outHeaders.set("cache-control","private, no-store");
+    outHeaders.set("x-content-type-options","nosniff");
+    return new Response(dropboxResponse.body,{status:dropboxResponse.status,headers:outHeaders});
   }
 
   if(!upstream){
@@ -339,34 +406,13 @@ async function archiveMediaProxyResponse(request,env,{
   const range=request.headers.get("range");
   if(range)headers.set("range",range);
 
-  let remote=await fetch(upstream,{
+  const remote=await fetch(upstream,{
     method:"GET",
     headers,
     redirect:"follow"
   });
 
-  const expectedImage=["photo","portrait","image","artwork"].includes(type);
-  const expectedVideo=["video","clip","interview","bts","behind-the-scenes","promo"].includes(type);
-  const contentType=String(remote.headers.get("content-type")||"").toLowerCase();
-  const wrongDropboxPayload=media.provider==="dropbox"&&(
-    contentType.includes("text/html")||
-    (expectedImage&&!contentType.startsWith("image/"))||
-    (expectedVideo&&!contentType.startsWith("video/")&&!contentType.includes("application/octet-stream"))
-  );
-
-  if(wrongDropboxPayload){
-    const retryUrl=dropboxSharedFolderFileUrl(media,"download");
-    if(retryUrl){
-      remote=await fetch(retryUrl,{method:"GET",headers,redirect:"follow"});
-    }
-  }
-
   if(!remote.ok&&remote.status!==206){
-    return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},502);
-  }
-
-  const finalType=String(remote.headers.get("content-type")||"").toLowerCase();
-  if(media.provider==="dropbox"&&finalType.includes("text/html")){
     return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},502);
   }
 
@@ -449,6 +495,17 @@ export default {
           code:"ARCHIVEZ_PUBLIC_RUNTIME_FAILURE"
         },503);
       }
+    }
+
+    if(url.pathname==="/api/crown/archivez/dropbox-health"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      if(identity.member.aw_id!=="AWE-000001")return json({ok:false,message:"OWNER ACCESS REQUIRED."},403);
+      return json({
+        ok:true,
+        configured:dropboxAppConfigured(env),
+        mode:"DROPBOX APP AUTH // SHARED LINK FILE API"
+      });
     }
 
     if(url.pathname==="/api/crown/archivez/media"&&request.method==="GET"){
