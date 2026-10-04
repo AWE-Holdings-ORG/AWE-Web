@@ -270,9 +270,9 @@ const X_DROPBOX_SHARED_FOLDER={
 function dropboxSharedFolderFileUrl(media,mode="raw"){
   const title=String(media?.title||"").trim();
   if(!title)return null;
-  const url=new URL(X_DROPBOX_SHARED_FOLDER.base);
+  const base=X_DROPBOX_SHARED_FOLDER.base.replace(/\/$/,"");
+  const url=new URL(base+"/"+encodeURIComponent(title));
   url.searchParams.set("rlkey",X_DROPBOX_SHARED_FOLDER.rlkey);
-  url.searchParams.set("preview",title);
   url.searchParams.set(mode==="download"?"dl":"raw","1");
   return url.toString();
 }
