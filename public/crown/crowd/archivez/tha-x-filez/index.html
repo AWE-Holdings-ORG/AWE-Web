@@ -52,8 +52,9 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
 .qcopy strong{display:block;font:500 16px Georgia,serif;margin:6px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qcopy small{color:#6f675c;font-size:10px}
 .empty{padding:28px;color:#756d61;font:800 9px ui-monospace,monospace;letter-spacing:.13em}
-.nav{display:flex;gap:7px;margin-top:12px}
+.nav{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.nav.queue-nav{justify-content:space-between;align-items:center;margin:0 0 10px}
 .nav button{border:1px solid var(--line);background:#080704;color:var(--g2);padding:9px 12px;cursor:pointer;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
+.page-label{color:#756d61;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
 .foot{text-align:center;color:#5d554b;font:800 8px ui-monospace,monospace;letter-spacing:.16em;margin-top:24px}
 @media(max-width:900px){.hero,.stage{grid-template-columns:1fr}.sig{display:none}.queue{max-height:420px}.detail{grid-template-columns:1fr}}
 </style>
@@ -75,13 +76,16 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
       <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>ORIGINAL FILE ↗</a></div>
       <div class="nav"><button id="prev" type="button">← PREV</button><button id="next" type="button">NEXT →</button></div>
     </div>
-    <aside id="queue" class="queue"></aside>
+    <div>
+      <div class="nav queue-nav"><button id="pagePrev" type="button">← QUEUE</button><span id="pageLabel" class="page-label">PAGE —</span><button id="pageNext" type="button">QUEUE →</button></div>
+      <aside id="queue" class="queue"></aside>
+    </div>
   </div>
   <p class="foot">THA X FILEZ // DA ARCHIVEZ // THE CROWD</p>
 </section>
 </main>
 <script>
-const state={media:[],filtered:[],filter:"ALL",activeId:null};
+const state={media:[],filtered:[],filter:"ALL",activeId:null,page:0,pageSize:60};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function kind(x){
   const t=String(x.media_type||"").toLowerCase();
@@ -102,9 +106,12 @@ function mediaMarkup(x){
     return art||'<div class="placeholder"><div class="x">⌁</div><small>FILE ACCESS REQUIRED</small></div>';
   }
   const type=String(x.media_type||"").toLowerCase();
+  if(x.provider==="dropbox"&&!x.thumbnail_url){
+    return '<div class="placeholder"><div class="x">DBX</div><small>DROPBOX SOURCE // USE ORIGINAL FILE ↗</small></div>';
+  }
   if(["photo","portrait","image","artwork"].includes(type)){
-    const src=x.thumbnail_url||x.source_url||x.canonical_url;
-    return src?'<img src="'+esc(src)+'" alt="'+esc(x.title)+'">':'<div class="placeholder"><small>IMAGE SOURCE UNAVAILABLE</small></div>';
+    const src=x.thumbnail_url||"";
+    return src?'<img src="'+esc(src)+'" alt="'+esc(x.title)+'">':'<div class="placeholder"><small>IMAGE PREVIEW UNAVAILABLE // OPEN ORIGINAL FILE</small></div>';
   }
   if(x.provider==="youtube"&&x.external_id){
     return '<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(x.external_id)+'" title="'+esc(x.title)+'" allowfullscreen></iframe>';
@@ -130,19 +137,28 @@ function select(id){
 }
 function renderQueue(){
   state.filtered=state.filter==="ALL"?state.media:state.media.filter(x=>kind(x)===state.filter);
+  const pages=Math.max(1,Math.ceil(state.filtered.length/state.pageSize));
+  state.page=Math.min(Math.max(0,state.page),pages-1);
+  const start=state.page*state.pageSize;
+  const pageItems=state.filtered.slice(start,start+state.pageSize);
   const q=document.getElementById("queue");
-  q.innerHTML=state.filtered.map(x=>{
-    const art=x.thumbnail_url?'<span class="thumb"><img src="'+esc(x.thumbnail_url)+'" alt=""></span>':'<span class="thumb">X</span>';
+  q.innerHTML=pageItems.map(x=>{
+    const art=x.thumbnail_url?'<span class="thumb"><img src="'+esc(x.thumbnail_url)+'" alt=""></span>':'<span class="thumb">'+(x.provider==="dropbox"?"DBX":"X")+'</span>';
     const klass=String(x.access_state||"").toLowerCase()==="vault"?"vault":"";
-    return '<button type="button" data-id="'+x.id+'">'+art+'<span class="qcopy"><b class="'+klass+'">'+esc(x.collection_file_code||"DXF")+' // '+esc(tier(x))+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(kind(x))+'</small></span></button>';
+    return '<button type="button" data-id="'+x.id+'">'+art+'<span class="qcopy"><b class="'+klass+'">'+esc(x.collection_file_code||"DXF")+' // '+esc(tier(x))+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(kind(x))+' // '+esc(String(x.provider||"ARCHIVE").toUpperCase())+'</small></span></button>';
   }).join("")||'<div class="empty">NO FILEZ IN THIS LANE.</div>';
   q.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>select(Number(b.dataset.id)));
-  if(state.filtered.length&&!state.filtered.some(x=>Number(x.id)===state.activeId))select(state.filtered[0].id);
+  document.getElementById("pageLabel").textContent="PAGE "+(state.page+1)+" / "+pages+" // "+state.filtered.length+" FILEZ";
+  document.getElementById("pagePrev").disabled=state.page<=0;
+  document.getElementById("pageNext").disabled=state.page>=pages-1;
+  if(pageItems.length&&!pageItems.some(x=>Number(x.id)===state.activeId))select(pageItems[0].id);
 }
 function move(step){
   if(!state.filtered.length)return;
   let i=state.filtered.findIndex(x=>Number(x.id)===state.activeId);
   i=(i+step+state.filtered.length)%state.filtered.length;
+  state.page=Math.floor(i/state.pageSize);
+  renderQueue();
   select(state.filtered[i].id);
   document.querySelector('#queue button[data-id="'+state.filtered[i].id+'"]')?.scrollIntoView({block:"nearest"});
 }
@@ -159,6 +175,7 @@ async function load(){
     f.innerHTML=cats.map(c=>'<button data-filter="'+esc(c)+'" class="'+(c==="ALL"?"active":"")+'">'+esc(c)+'</button>').join("");
     f.querySelectorAll("button").forEach(b=>b.onclick=()=>{
       state.filter=b.dataset.filter;
+      state.page=0;
       f.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
       renderQueue();
     });
@@ -170,6 +187,8 @@ async function load(){
 }
 document.getElementById("prev").onclick=()=>move(-1);
 document.getElementById("next").onclick=()=>move(1);
+document.getElementById("pagePrev").onclick=()=>{state.page=Math.max(0,state.page-1);renderQueue();};
+document.getElementById("pageNext").onclick=()=>{state.page+=1;renderQueue();};
 load();
 </script>
 </body>
