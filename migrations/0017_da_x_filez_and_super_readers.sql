@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS player_media_collections (
   collection_slug TEXT NOT NULL,
   display_name TEXT NOT NULL,
   description TEXT,
+  default_access_state TEXT NOT NULL DEFAULT 'public'
+    CHECK(default_access_state IN ('public','house','unlock','crown','vault')),
   sort_order INTEGER NOT NULL DEFAULT 100,
   active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)),
   UNIQUE(artist_id,collection_slug),
@@ -40,11 +42,11 @@ CREATE INDEX IF NOT EXISTS idx_player_media_collection_items
   ON player_media_collection_items(collection_id,active,sort_order);
 
 INSERT OR IGNORE INTO player_media_collections(
-  artist_id,collection_slug,display_name,description,sort_order,active
+  artist_id,collection_slug,display_name,description,default_access_state,sort_order,active
 )
 SELECT id,'da-x-filez','Da X Filez',
-       'X Tha God image and interview archive. Access is controlled per file through the existing Player access ladder.',
-       20,1
+       'X Tha God image and interview archive. Launch default is PUBLIC; X may reclassify individual files through the existing Player access ladder.',
+       'public',20,1
 FROM artists
 WHERE artist_slug='x-tha-god';
 
@@ -62,6 +64,41 @@ WHERE c.collection_slug='da-x-filez'
     SELECT 1 FROM player_media_collection_items pci
     WHERE pci.media_id=m.id AND pci.is_primary=1 AND pci.active=1
   );
+
+-- Da X Filez launches PUBLIC-first by owner direction.
+-- This is an initial/default classification, not a permanent override.
+-- X may later reclassify any individual file to HOUSE / UNLOCK / CROWN / VAULT.
+INSERT OR IGNORE INTO media_access_policy(
+  media_id,access_state,teaser_mode,cypherz_visible,active
+)
+SELECT i.media_id,'public','visible',1,1
+FROM player_media_collection_items i
+JOIN player_media_collections c ON c.id=i.collection_id
+WHERE c.collection_slug='da-x-filez' AND i.active=1;
+
+UPDATE media_access_policy
+SET access_state='public',
+    house_slug=NULL,
+    unlock_slug=NULL,
+    teaser_mode='visible',
+    cypherz_visible=1,
+    active=1,
+    updated_at=CURRENT_TIMESTAMP
+WHERE media_id IN (
+  SELECT i.media_id
+  FROM player_media_collection_items i
+  JOIN player_media_collections c ON c.id=i.collection_id
+  WHERE c.collection_slug='da-x-filez' AND i.active=1
+);
+
+UPDATE artist_media
+SET visibility='public'
+WHERE id IN (
+  SELECT i.media_id
+  FROM player_media_collection_items i
+  JOIN player_media_collections c ON c.id=i.collection_id
+  WHERE c.collection_slug='da-x-filez' AND i.active=1
+);
 
 -- Provider thumbnails are presentation metadata, not event-date evidence.
 -- For YouTube records, preserve the standard provider thumbnail URL so LEVEL X
@@ -87,10 +124,10 @@ INSERT OR IGNORE INTO player_events(
   NULL,
   NULL,
   'battle event',
-  'Big Tali / The CROWD',
+  'Big Tali / Stardom / The CROWD',
   'gbe-crowd-owned',
   'owner-confirmed',
-  'Enterprise owner confirmed Super Readers is a battle-event series held by Big Tali and belongs to The CROWD ecosystem. The 2023-05-18 date remains provider release context only; exact battle event date is still pending.'
+  'Enterprise owner confirmed Super Readers is a battle-event series held by Big Tali and belongs to The CROWD ecosystem. Big Tali also runs Stardom, formerly Demon Time Battle League. The 2023-05-18 date remains provider release context only; exact battle event date is still pending.'
 );
 
 INSERT OR IGNORE INTO player_event_media(event_id,media_id,relation_role,sort_order)
