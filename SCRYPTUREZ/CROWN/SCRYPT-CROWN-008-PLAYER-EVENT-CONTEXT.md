@@ -1,6 +1,6 @@
 # SCRYPT-CROWN-008 — Da CROWD Player Event Context & Artifact Law
 
-Status: ACTIVE / IMPLEMENTING
+Status: ACTIVE / STAGED — PREVIEW DATA HOLD
 Version: 1.0
 Depends On: SCRYPT-CROWN-002
 Environment: Da CROWD Player
@@ -97,3 +97,26 @@ Do not apply event-context migrations to production until:
 - verified seed evidence is documented;
 - Preview D1 migration succeeds;
 - LEVEL X renders event context without breaking existing media access law.
+
+## Runtime Integration — 2026-10-03
+
+LEVEL X event-context rendering is staged on `feature/crown-door-v1`.
+
+Implemented:
+- `lib/player-catalog-service.js` detects the event schema before querying it;
+- when migrations 0013–0015 are not present, the current Player catalog remains operational and returns `event: null`;
+- event context is attached only after media authorization succeeds;
+- locked media never receives event artifact or Space source URLs;
+- authorized media may receive verified event name, date, printed time text, organizer, platform, related artifacts, and verified Space/replay links;
+- internal evidence notes are not exposed through the customer-facing catalog;
+- LEVEL X renders a verified event panel and artifact links beneath the active media;
+- queue rows prefer linked event name/date when available.
+
+Current gate:
+- migrations 0012–0015 remain on HOLD while X Tha God catalog/event reconciliation continues;
+- no Preview D1, production D1, main, DNS, nameserver, or secret changes were made for this runtime integration;
+- the event UI will remain dormant in the current Preview until the held migrations are explicitly approved and applied in order.
+
+Verification:
+- Player Access Tests passed on branch head `61c1c6d22b62520fce8811f98504daf382ff65a2` for both push and pull-request runs.
+
