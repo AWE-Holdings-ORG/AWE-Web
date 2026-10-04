@@ -97,9 +97,9 @@ function render(){
   const files=all.slice(0,state.limit);
   const grid=document.getElementById("grid");
   grid.innerHTML=files.map(x=>{
-    const art=x.thumbnail_url
-      ?'<img loading="lazy" src="'+esc(x.thumbnail_url)+'" alt="'+esc(x.title)+'">'
-      :'<span class="placeholder-card">'+(x.provider==="dropbox"?"DBX":"X")+'</span>';
+    const art=x.thumb_url
+      ?'<img loading="lazy" src="'+esc(x.thumb_url)+'" alt="'+esc(x.title)+'">'
+      :'<span class="placeholder-card">X</span>';
     return '<button class="file" data-id="'+x.id+'">'+art+
       '<span class="file-copy"><b>'+esc(x.collection_file_code||"DXF")+' // '+esc(kind(x))+' // PUBLIC FILE</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.description||"THE CROWD ARCHIVE")+'</small></span></button>';
   }).join("")||'<div class="empty">NO PUBLIC FILEZ IN THIS LANE YET.</div>';
@@ -114,15 +114,13 @@ function openFile(id){
   document.getElementById("viewerLabel").textContent=(x.collection_file_code||"THA X FILEZ")+" // "+kind(x);
   document.getElementById("viewerTitle").textContent=x.title||"X THA GOD";
   const source=document.getElementById("viewerSource");
-  source.href=x.source_url||x.canonical_url||"#";
-  source.hidden=!x.source_url&&!x.canonical_url;
+  source.hidden=true;
+  source.removeAttribute("href");
   const type=String(x.media_type||"").toLowerCase();
-  if(x.provider==="dropbox"&&!x.thumbnail_url){
-    document.getElementById("viewerBody").innerHTML='<div class="placeholder-card" style="min-height:52vh">DBX</div>';
-  }else if(type==="interview"&&x.provider==="youtube"&&x.external_id){
-    document.getElementById("viewerBody").innerHTML='<div style="aspect-ratio:16/9"><iframe style="width:100%;height:100%;border:0" src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(x.external_id)+'" title="'+esc(x.title)+'" allowfullscreen></iframe></div>';
-  }else if(x.thumbnail_url){
-    document.getElementById("viewerBody").innerHTML='<img src="'+esc(x.thumbnail_url)+'" alt="'+esc(x.title)+'">';
+  if(["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)&&x.preview_url){
+    document.getElementById("viewerBody").innerHTML='<video controls preload="metadata" style="width:100%;max-height:76vh" src="'+esc(x.preview_url)+'"></video>';
+  }else if(x.preview_url){
+    document.getElementById("viewerBody").innerHTML='<img src="'+esc(x.preview_url)+'" alt="'+esc(x.title)+'">';
   }else{
     document.getElementById("viewerBody").innerHTML='<div class="placeholder-card" style="min-height:52vh">X</div>';
   }
