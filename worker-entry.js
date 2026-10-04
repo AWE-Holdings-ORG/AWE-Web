@@ -60,6 +60,162 @@ async function playerAccessSchema(env){
   };
 }
 
+async function playerRosterSchemaReady(env){
+  if(!env?.CROWN_DB)return false;
+  const result=await env.CROWN_DB.prepare(
+    "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name IN ('player_signals','house_player_roster','member_signal_unlocks','player_cheat_codes','player_cheat_redemptions')"
+  ).first();
+  return Number(result?.n||0)===5;
+}
+
+async function memberHasHouse(db,memberId,houseSlug){
+  const row=await db.prepare(
+    "SELECT 1 AS ok FROM member_access WHERE member_id=? AND house_slug=? AND active=1 LIMIT 1"
+  ).bind(memberId,houseSlug).first();
+  return !!row?.ok;
+}
+
+async function playerRosterResponse(request,env,member){
+  if(!(await playerRosterSchemaReady(env))){
+    return json({ok:false,message:"PLAYER ROSTER SCHEMA NOT READY.",code:"PLAYER_ROSTER_SCHEMA_MISSING"},503);
+  }
+
+  const url=new URL(request.url);
+  const houseSlug=String(url.searchParams.get("house")||"the-crowd").trim().toLowerCase();
+  if(!(await memberHasHouse(env.CROWN_DB,Number(member.id),houseSlug))){
+    return json({ok:false,message:"HOUSE ACCESS REQUIRED."},403);
+  }
+
+  const result=await env.CROWN_DB.prepare(`
+    SELECT
+      s.signal_slug,s.artist_slug,s.display_name,s.canonical_house_slug,s.signal_label,
+      s.represents_text,s.world_text,s.status_text,s.character_image_url,s.headshot_url,
+      s.art_fit,s.art_position,s.destination,s.start_text,s.building_message,
+      COALESCE(r.relationship_status,'unlocked') AS relationship_status,
+      COALESCE(r.sort_order,900) AS sort_order,
+      u.unlock_source,
+      CASE WHEN u.member_id IS NULL THEN 0 ELSE 1 END AS member_unlocked
+    FROM player_signals s
+    LEFT JOIN house_player_roster r
+      ON r.house_slug=? AND r.signal_slug=s.signal_slug AND r.active=1
+    LEFT JOIN member_signal_unlocks u
+      ON u.member_id=? AND u.house_slug=? AND u.signal_slug=s.signal_slug AND u.active=1
+    WHERE s.active=1
+      AND (
+        (r.signal_slug IS NOT NULL AND r.visible_by_default=1)
+        OR u.member_id IS NOT NULL
+      )
+    ORDER BY COALESCE(r.sort_order,900),s.display_name
+  `).bind(houseSlug,Number(member.id),houseSlug).all();
+
+  const signals=(result?.results||[]).map((row,index)=>({
+    index:index+1,
+    signalSlug:row.signal_slug,
+    artistSlug:row.artist_slug,
+    displayName:row.display_name,
+    canonicalHouseSlug:row.canonical_house_slug,
+    signalLabel:row.signal_label,
+    representsText:row.represents_text,
+    worldText:row.world_text,
+    statusText:row.status_text,
+    characterImageUrl:row.character_image_url,
+    headshotUrl:row.headshot_url,
+    artFit:row.art_fit,
+    artPosition:row.art_position,
+    destination:row.destination,
+    startText:row.start_text,
+    buildingMessage:row.building_message,
+    relationshipStatus:row.relationship_status,
+    unlockSource:row.unlock_source,
+    memberUnlocked:Number(row.member_unlocked)===1
+  }));
+
+  return json({
+    ok:true,
+    houseSlug,
+    member:{awId:member.aw_id,crownName:member.crown_name},
+    signals,
+    capacity:12
+  });
+}
+
+function normalizeCheatCode(value){
+  return String(value||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,80);
+}
+
+async function sha256Hex(value){
+  const bytes=new TextEncoder().encode(value);
+  const digest=await crypto.subtle.digest("SHA-256",bytes);
+  return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+async function playerCheatCodeResponse(request,env,member){
+  if(!(await playerRosterSchemaReady(env))){
+    return json({ok:false,message:"CHEAT SYSTEM NOT READY.",code:"PLAYER_ROSTER_SCHEMA_MISSING"},503);
+  }
+
+  const body=await request.clone().json().catch(()=>null);
+  const houseSlug=String(body?.houseSlug||"the-crowd").trim().toLowerCase();
+  const normalized=normalizeCheatCode(body?.code);
+  if(normalized.length<3)return json({ok:false,message:"CHEAT CODE REQUIRED."},400);
+
+  if(!(await memberHasHouse(env.CROWN_DB,Number(member.id),houseSlug))){
+    return json({ok:false,message:"HOUSE ACCESS REQUIRED."},403);
+  }
+
+  const codeHash=await sha256Hex(normalized);
+  const cheat=await env.CROWN_DB.prepare(`
+    SELECT c.id,c.house_slug,c.signal_slug,c.label,c.max_redemptions,c.expires_at,
+           s.display_name
+    FROM player_cheat_codes c
+    JOIN player_signals s ON s.signal_slug=c.signal_slug AND s.active=1
+    WHERE c.code_hash=? AND c.house_slug=? AND c.active=1
+      AND (c.expires_at IS NULL OR datetime(c.expires_at)>datetime('now'))
+    LIMIT 1
+  `).bind(codeHash,houseSlug).first();
+
+  if(!cheat)return json({ok:false,message:"CHEAT CODE // NO SIGNAL FOUND."},404);
+
+  const existing=await env.CROWN_DB.prepare(
+    "SELECT 1 AS ok FROM player_cheat_redemptions WHERE cheat_code_id=? AND member_id=? LIMIT 1"
+  ).bind(cheat.id,Number(member.id)).first();
+
+  if(!existing&&cheat.max_redemptions!==null){
+    const used=await env.CROWN_DB.prepare(
+      "SELECT COUNT(*) AS n FROM player_cheat_redemptions WHERE cheat_code_id=?"
+    ).bind(cheat.id).first();
+    if(Number(used?.n||0)>=Number(cheat.max_redemptions)){
+      return json({ok:false,message:"CHEAT CODE // SIGNAL EXPIRED."},410);
+    }
+  }
+
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare(`
+      INSERT OR IGNORE INTO player_cheat_redemptions(cheat_code_id,member_id,redeemed_at)
+      VALUES(?,?,datetime('now'))
+    `).bind(cheat.id,Number(member.id)),
+    env.CROWN_DB.prepare(`
+      INSERT INTO member_signal_unlocks(
+        member_id,house_slug,signal_slug,unlock_source,source_ref,unlocked_at,active
+      ) VALUES(?,?,?,'cheat-code',?,datetime('now'),1)
+      ON CONFLICT(member_id,house_slug,signal_slug)
+      DO UPDATE SET unlock_source='cheat-code',source_ref=excluded.source_ref,active=1
+    `).bind(Number(member.id),houseSlug,cheat.signal_slug,String(cheat.id)),
+    env.CROWN_DB.prepare(`
+      INSERT INTO access_events(member_id,event_type,house_slug,created_at)
+      VALUES(?,'player_cheat_signal_unlocked',?,datetime('now'))
+    `).bind(Number(member.id),houseSlug)
+  ]);
+
+  return json({
+    ok:true,
+    message:"CHEAT CODE ACCEPTED // SIGNAL UNLOCKED.",
+    houseSlug,
+    signalSlug:cheat.signal_slug,
+    displayName:cheat.display_name
+  });
+}
+
 async function engagementMediaId(request){
   if(request.method==="GET"){
     const value=Number(new URL(request.url).searchParams.get("mediaId"));
@@ -182,6 +338,26 @@ export default {
           message:"PUBLIC PLAYER TEMPORARILY UNAVAILABLE.",
           code:"PLAYER_PUBLIC_RUNTIME_FAILURE"
         },503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/player/roster"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        return playerRosterResponse(request,env,identity.member);
+      }catch{
+        return json({ok:false,message:"PLAYER ROSTER TEMPORARILY UNAVAILABLE.",code:"PLAYER_ROSTER_RUNTIME_FAILURE"},503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/player/cheat"&&request.method==="POST"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        return playerCheatCodeResponse(request,env,identity.member);
+      }catch{
+        return json({ok:false,message:"CHEAT SYSTEM TEMPORARILY UNAVAILABLE.",code:"PLAYER_CHEAT_RUNTIME_FAILURE"},503);
       }
     }
 
