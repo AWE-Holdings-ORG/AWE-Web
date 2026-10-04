@@ -23,6 +23,11 @@ RECONCILED_EXTERNAL_EXPECTED=[
     ("xgupv_oiIQ8","Chuck Lucci vs X Tha God — Insidious","2023-09-30"),
     ("jKl0NU9K8hE","DEEJAYY vs X THA GOD - iBattleTV","2024-06-15"),
     ("twjhGe-nJCw","Tino vs X Tha God — Back 2 Business","2024-11-02"),
+    ("B3h9fKRPimI","X Tha God vs OG Duggie — Super Readers",None),
+]
+
+RECONCILED_CROWD_EXPECTED=[
+    ("1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks","X Tha God vs Big Kannon — Training Day","2024-01-07"),
 ]
 
 EXTERNAL_EXPECTED=[
@@ -86,15 +91,16 @@ INSERT INTO artists(id,artist_slug) VALUES(1,'x-tha-god');
 
 seed_external=(ROOT/"migrations/0008_x_tha_god_verified_media_seed.sql").read_text()
 seed_crowd=(ROOT/"migrations/0012_x_tha_god_crowd_owned_battles.sql").read_text()
+seed_event_context=(ROOT/"migrations/0013_player_event_context.sql").read_text()
 seed_reconciled=(ROOT/"migrations/0014_x_tha_god_verified_external_reconciliation.sql").read_text()
+seed_external_events=(ROOT/"migrations/0015_x_tha_god_external_event_context.sql").read_text()
+seed_additions=(ROOT/"migrations/0016_x_tha_god_reconciled_additions.sql").read_text()
 
-# Apply each twice to enforce idempotence.
-db.executescript(seed_external)
-db.executescript(seed_crowd)
-db.executescript(seed_reconciled)
-db.executescript(seed_external)
-db.executescript(seed_crowd)
-db.executescript(seed_reconciled)
+# Apply the staged stack twice to enforce idempotence.
+for sql in (seed_external,seed_crowd,seed_event_context,seed_reconciled,seed_external_events,seed_additions):
+    db.executescript(sql)
+for sql in (seed_external,seed_crowd,seed_event_context,seed_reconciled,seed_external_events,seed_additions):
+    db.executescript(sql)
 
 rows=db.execute("""
 SELECT external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,
@@ -103,12 +109,13 @@ FROM artist_media
 ORDER BY sort_order,id
 """).fetchall()
 
-assert len(rows)==34, len(rows)
-assert len({row[0] for row in rows})==34
+assert len(rows)==36, len(rows)
+assert len({row[0] for row in rows})==36
 
-crowd_rows=rows[:13]
-external_rows=rows[13:31]
-reconciled_rows=rows[31:]
+crowd_rows=[row for row in rows if row[0] in {item[0] for item in CROWD_EXPECTED}]
+reconciled_crowd_rows=[row for row in rows if row[0] in {item[0] for item in RECONCILED_CROWD_EXPECTED}]
+external_rows=[row for row in rows if row[0] in {item[0] for item in EXTERNAL_EXPECTED}]
+reconciled_rows=[row for row in rows if row[0] in {item[0] for item in RECONCILED_EXTERNAL_EXPECTED}]
 
 assert [row[0] for row in crowd_rows]==[item[0] for item in CROWD_EXPECTED]
 assert [row[1] for row in crowd_rows]==[item[1] for item in CROWD_EXPECTED]
@@ -123,6 +130,20 @@ for external_id,title,event_date,era_slug,media_type,provider,visibility,sort_or
     assert active==1
     assert source_name=="The CROWD @CrowdShyt"
     assert source_url==f"https://youtu.be/{external_id}"
+    assert rights_status=="gbe-crowd-owned"
+
+assert [row[0] for row in reconciled_crowd_rows]==[item[0] for item in RECONCILED_CROWD_EXPECTED]
+assert [row[1] for row in reconciled_crowd_rows]==[item[1] for item in RECONCILED_CROWD_EXPECTED]
+assert [row[2] for row in reconciled_crowd_rows]==[item[2] for item in RECONCILED_CROWD_EXPECTED]
+assert [row[7] for row in reconciled_crowd_rows]==[14]
+for external_id,title,event_date,era_slug,media_type,provider,visibility,sort_order,active,source_name,source_url,rights_status in reconciled_crowd_rows:
+    assert era_slug=="crowd-reconciled"
+    assert media_type=="battle"
+    assert provider=="google-drive"
+    assert visibility=="crown"
+    assert active==1
+    assert source_name=="The CROWD Drive"
+    assert source_url=="https://drive.google.com/file/d/1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks/view"
     assert rights_status=="gbe-crowd-owned"
 
 assert [row[0] for row in external_rows]==[item[0] for item in EXTERNAL_EXPECTED]
@@ -159,17 +180,17 @@ WHERE m.external_id IN (
   'TmwYVT_gI0Q','7s82HgWmML0','6JSDWKTBPxw','ms4r261sQ9c',
   'aCyK8W8y5v0','dIENORIk-lU','ViOv-hJ4uOs','2InJIUKuoZY',
   '4kHtN7my50A','xo-TQJUhzJs','bDgH8kdPbEA','-RHWE4oHcFc',
-  'CyNwV5ir91A',
-  'jKl0NU9K8hE','twjhGe-nJCw','xgupv_oiIQ8'
+  'CyNwV5ir91A','1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks',
+  'jKl0NU9K8hE','twjhGe-nJCw','xgupv_oiIQ8','B3h9fKRPimI'
 )
 ORDER BY m.sort_order
 """).fetchall()
 
-assert len(policies)==16, len(policies)
+assert len(policies)==18, len(policies)
 for external_id,access_state,teaser_mode,cypherz_visible,active in policies:
     assert access_state=="crown"
     assert teaser_mode=="locked"
     assert cypherz_visible==1
     assert active==1
 
-print("PASS: LEVEL X staged migration set is 34 unique battles = 13 CROWD-owned + 18 original external + 3 reconciled external; this is not asserted as catalog completeness")
+print("PASS: LEVEL X staged migration set is 36 unique battles = 13 historical CROWD + 1 reconciled CROWD + 18 original external + 4 reconciled external; this remains a minimum, not catalog completeness")
