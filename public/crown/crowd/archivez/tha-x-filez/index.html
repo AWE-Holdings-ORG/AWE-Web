@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Tha X Filez | Da Archivez</title>
+<style>
+:root{--g:#d8ac4e;--g2:#f1d783;--m:#8b8377;--line:#332814;--panel:#080704;--violet:#b78cff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 78% 8%,#181107,#050403 34%,#000 76%);color:#f8f4ea;font-family:Inter,system-ui,sans-serif}
+.shell{width:min(1320px,94vw);margin:auto;padding:28px 0 72px}
+.top{display:flex;justify-content:space-between;gap:15px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:17px}
+.top a{color:var(--g2);text-decoration:none;font:800 9px ui-monospace,monospace;letter-spacing:.14em}
+.sig{color:#736b5f;font:800 9px ui-monospace,monospace;letter-spacing:.16em}
+.hero{padding:54px 0 34px;display:grid;grid-template-columns:1.35fr .65fr;gap:28px;align-items:end}
+.eyebrow{color:var(--g);font:900 10px ui-monospace,monospace;letter-spacing:.3em}
+h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
+.hero p{max-width:700px;margin:0;color:var(--m);line-height:1.78}
+.dossier{border:1px solid var(--line);padding:18px;background:#070603cc}
+.dossier b{display:block;color:var(--g2);font:900 8px ui-monospace,monospace;letter-spacing:.16em}
+.dossier strong{display:block;font:500 32px Georgia,serif;margin:8px 0}
+.dossier small{color:#70685d;font:800 8px ui-monospace,monospace;letter-spacing:.12em}
+.archive{border:1px solid var(--line);background:#060503cc;padding:20px}
+.archive-head{display:flex;justify-content:space-between;gap:14px;align-items:end;margin-bottom:15px}
+.archive-head h2{font:500 clamp(28px,4vw,46px) Georgia,serif;margin:4px 0}
+.archive-head p{margin:0;color:#756d61;font:800 8px ui-monospace,monospace;letter-spacing:.13em}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.filters button{border:1px solid var(--line);background:#080704;color:#8d826e;padding:9px 12px;font:800 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.filters button.active{background:var(--g);border-color:var(--g);color:#050403}
+.stage{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,.75fr);gap:12px}
+.screen-wrap{min-width:0}
+.screen{aspect-ratio:16/10;border:1px solid #211b11;background:radial-gradient(circle,#151008,#030303 64%);display:grid;place-items:center;overflow:hidden;position:relative}
+.screen img,.screen video,.screen iframe{width:100%;height:100%;object-fit:contain;border:0}
+.placeholder{text-align:center;padding:30px}
+.placeholder .x{font:500 clamp(72px,13vw,160px) Georgia,serif;color:var(--g)}
+.placeholder small{display:block;color:#71695d;font:900 9px ui-monospace,monospace;letter-spacing:.18em}
+.meta{display:flex;gap:15px;flex-wrap:wrap;border-top:1px solid #211b11;border-bottom:1px solid #211b11;padding:12px 2px;color:#766e62;font:800 8px ui-monospace,monospace;letter-spacing:.12em}
+.meta .code{color:var(--g2)}
+.detail{padding:16px 2px 4px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}
+.detail h3{font:500 28px Georgia,serif;margin:0 0 6px}
+.detail p{margin:0;color:#81786c;line-height:1.65}
+.source{color:var(--g2);text-decoration:none;border:1px solid var(--line);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.1em}
+.queue{border:1px solid #211b11;max-height:650px;overflow:auto}
+.queue button{width:100%;border:0;border-bottom:1px solid #211b11;background:#070605;color:#eee;padding:9px;text-align:left;display:grid;grid-template-columns:92px minmax(0,1fr);gap:11px;align-items:center;cursor:pointer}
+.queue button:hover,.queue button.active{background:#151008}
+.thumb{width:92px;aspect-ratio:4/3;border:1px solid #211b11;background:#030303;display:grid;place-items:center;overflow:hidden;color:var(--g);font:500 30px Georgia,serif}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.qcopy{min-width:0}
+.qcopy b{display:block;color:var(--g);font:900 7px ui-monospace,monospace;letter-spacing:.11em}
+.qcopy b.vault{color:var(--violet)}
+.qcopy strong{display:block;font:500 16px Georgia,serif;margin:6px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qcopy small{color:#6f675c;font-size:10px}
+.empty{padding:28px;color:#756d61;font:800 9px ui-monospace,monospace;letter-spacing:.13em}
+.nav{display:flex;gap:7px;margin-top:12px}
+.nav button{border:1px solid var(--line);background:#080704;color:var(--g2);padding:9px 12px;cursor:pointer;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
+.foot{text-align:center;color:#5d554b;font:800 8px ui-monospace,monospace;letter-spacing:.16em;margin-top:24px}
+@media(max-width:900px){.hero,.stage{grid-template-columns:1fr}.sig{display:none}.queue{max-height:420px}.detail{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top"><a href="/crown/crowd/archivez/">← DA ARCHIVEZ</a><div class="sig">FILE ROOM 001 // X THA GOD</div></header>
+<section class="hero">
+  <div><div class="eyebrow">DA ARCHIVEZ // ARTIST FILE ROOM 001</div><h1>THA X FILEZ</h1><p>X Tha God’s preserved archive inside The CROWD — images, interviews, behind-the-scenes material, promos and history. This room is separate from LEVEL X and Da CROWD Player.</p></div>
+  <aside class="dossier"><b>ARCHIVE STATUS</b><strong id="fileCount">— FILEZ</strong><small>ACCESS IS EVALUATED PER FILE</small></aside>
+</section>
+<section class="archive">
+  <div class="archive-head"><div><p>ARCHIVE PLAYER // THA X FILEZ</p><h2>Open a file.</h2></div><p id="status">CONNECTING TO ARCHIVE…</p></div>
+  <div id="filters" class="filters"></div>
+  <div class="stage">
+    <div class="screen-wrap">
+      <div id="screen" class="screen"><div class="placeholder"><div class="x">X</div><small>SELECT A FILE</small></div></div>
+      <div class="meta"><span id="code" class="code">DXF-—</span><span id="tier">ACCESS —</span><span id="type">TYPE —</span></div>
+      <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>ORIGINAL FILE ↗</a></div>
+      <div class="nav"><button id="prev" type="button">← PREV</button><button id="next" type="button">NEXT →</button></div>
+    </div>
+    <aside id="queue" class="queue"></aside>
+  </div>
+  <p class="foot">THA X FILEZ // DA ARCHIVEZ // THE CROWD</p>
+</section>
+</main>
+<script>
+const state={media:[],filtered:[],filter:"ALL",activeId:null};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function kind(x){
+  const t=String(x.media_type||"").toLowerCase();
+  if(t==="interview")return "INTERVIEWS";
+  if(["photo","portrait","image","artwork"].includes(t))return "IMAGES";
+  if(t.includes("behind")||t==="bts")return "BTS";
+  if(["document","pdf","text"].includes(t))return "DOCUMENTS";
+  if(["video","clip","promo"].includes(t))return "VIDEO";
+  return "OTHER";
+}
+function tier(x){
+  const t=String(x.access_state||"unknown").toUpperCase();
+  return t==="PUBLIC"?"PUBLIC FILE":t==="HOUSE"?"HOUSE FILE":t==="UNLOCK"?"UNLOCK FILE":t==="CROWN"?"CROWN FILE":t==="VAULT"?"VAULT FILE":"ACCESS UNKNOWN";
+}
+function mediaMarkup(x){
+  if(x.authorized===false){
+    const art=x.thumbnail_url?'<img src="'+esc(x.thumbnail_url)+'" alt="">':'';
+    return art||'<div class="placeholder"><div class="x">⌁</div><small>FILE ACCESS REQUIRED</small></div>';
+  }
+  const type=String(x.media_type||"").toLowerCase();
+  if(["photo","portrait","image","artwork"].includes(type)){
+    const src=x.thumbnail_url||x.source_url||x.canonical_url;
+    return src?'<img src="'+esc(src)+'" alt="'+esc(x.title)+'">':'<div class="placeholder"><small>IMAGE SOURCE UNAVAILABLE</small></div>';
+  }
+  if(x.provider==="youtube"&&x.external_id){
+    return '<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(x.external_id)+'" title="'+esc(x.title)+'" allowfullscreen></iframe>';
+  }
+  if(["video","clip","interview","bts","behind-the-scenes"].includes(type)&&x.canonical_url){
+    return '<video controls preload="metadata" src="'+esc(x.canonical_url)+'"></video>';
+  }
+  return '<div class="placeholder"><div class="x">X</div><small>'+esc(kind(x))+'</small></div>';
+}
+function select(id){
+  const x=state.media.find(m=>Number(m.id)===Number(id)); if(!x)return;
+  state.activeId=Number(x.id);
+  document.querySelectorAll("#queue button").forEach(b=>b.classList.toggle("active",Number(b.dataset.id)===state.activeId));
+  document.getElementById("screen").innerHTML=mediaMarkup(x);
+  document.getElementById("code").textContent=x.collection_file_code||"DXF-—";
+  document.getElementById("tier").textContent=tier(x)+(x.authorized===false?" // LOCKED":"");
+  document.getElementById("type").textContent=kind(x);
+  document.getElementById("title").textContent=x.title||"ARCHIVE FILE";
+  document.getElementById("description").textContent=x.authorized===false?"This file exists in Tha X Filez, but your current Crown does not unlock its contents.":(x.description||"THE CROWD ARCHIVE");
+  const source=document.getElementById("source");
+  source.hidden=x.authorized===false||(!x.source_url&&!x.canonical_url);
+  source.href=x.source_url||x.canonical_url||"#";
+}
+function renderQueue(){
+  state.filtered=state.filter==="ALL"?state.media:state.media.filter(x=>kind(x)===state.filter);
+  const q=document.getElementById("queue");
+  q.innerHTML=state.filtered.map(x=>{
+    const art=x.thumbnail_url?'<span class="thumb"><img src="'+esc(x.thumbnail_url)+'" alt=""></span>':'<span class="thumb">X</span>';
+    const klass=String(x.access_state||"").toLowerCase()==="vault"?"vault":"";
+    return '<button type="button" data-id="'+x.id+'">'+art+'<span class="qcopy"><b class="'+klass+'">'+esc(x.collection_file_code||"DXF")+' // '+esc(tier(x))+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(kind(x))+'</small></span></button>';
+  }).join("")||'<div class="empty">NO FILEZ IN THIS LANE.</div>';
+  q.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>select(Number(b.dataset.id)));
+  if(state.filtered.length&&!state.filtered.some(x=>Number(x.id)===state.activeId))select(state.filtered[0].id);
+}
+function move(step){
+  if(!state.filtered.length)return;
+  let i=state.filtered.findIndex(x=>Number(x.id)===state.activeId);
+  i=(i+step+state.filtered.length)%state.filtered.length;
+  select(state.filtered[i].id);
+  document.querySelector('#queue button[data-id="'+state.filtered[i].id+'"]')?.scrollIntoView({block:"nearest"});
+}
+async function load(){
+  try{
+    const r=await fetch("/api/crown/archivez/catalog?artist=x-tha-god&collection=tha-x-filez");
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw Error(d.code||"archive");
+    state.media=d.media||[];
+    document.getElementById("fileCount").textContent=state.media.length+" FILEZ";
+    document.getElementById("status").textContent="ARCHIVE SIGNAL // ONLINE";
+    const cats=["ALL",...new Set(state.media.map(kind))];
+    const f=document.getElementById("filters");
+    f.innerHTML=cats.map(c=>'<button data-filter="'+esc(c)+'" class="'+(c==="ALL"?"active":"")+'">'+esc(c)+'</button>').join("");
+    f.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      state.filter=b.dataset.filter;
+      f.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+      renderQueue();
+    });
+    renderQueue();
+  }catch{
+    document.getElementById("status").textContent="ARCHIVE SIGNAL // OFFLINE";
+    document.getElementById("queue").innerHTML='<div class="empty">THA X FILEZ IS TEMPORARILY UNAVAILABLE.</div>';
+  }
+}
+document.getElementById("prev").onclick=()=>move(-1);
+document.getElementById("next").onclick=()=>move(1);
+load();
+</script>
+</body>
+</html>
