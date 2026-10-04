@@ -18,6 +18,7 @@
     "test:player-media-collections-migration": "python tests/player-media-collections-migration.test.py",
     "test:player-public-surface": "node --test tests/player-public-surface.test.mjs",
     "test:archivez-client": "node --test tests/archivez-client.test.mjs",
-    "test:tha-x-filez-images-migration": "python tests/tha-x-filez-initial-images-migration.test.py"
+    "test:tha-x-filez-images-migration": "python tests/tha-x-filez-initial-images-migration.test.py",
+    "test:crowd-player-select": "node --test tests/crowd-player-select.test.mjs"
   }
 }
