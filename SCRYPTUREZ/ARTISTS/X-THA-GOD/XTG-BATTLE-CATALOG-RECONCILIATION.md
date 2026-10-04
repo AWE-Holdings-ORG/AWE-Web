@@ -80,7 +80,7 @@ These are distinct records, not duplicates of current seed rows.
 
 | ID | Opponent | League / Event | YouTube ID | Why distinct |
 |---|---|---|---|---|
-| R01 | OG Duggie | Demon Time/Stardom — Super Readers | B3h9fKRPimI | distinct from seeded OG Duggie championship battle `AeoEDYdnJzk` |
+| R01 | OG Duggie | Demon Time/Stardom — Super Readers | B3h9fKRPimI | distinct from seeded OG Duggie championship battle `AeoEDYdnJzk`; independently corroborated by the *Super readers* release listing: `X Tha God Vs Og Duggie`, runtime 8:19, release 2023-05-18; exact battle event date still pending |
 | R02 | DeeJayy | iBattleTV — Sunfall | jKl0NU9K8hE | solo battle; distinct from seeded tag battle `QuJEFuUBGCk`; event index dates Sunfall 2024-06-15; provider release 2024-07-24 |
 | R03 | Tino | The Grizz Exam — Back 2 Business | twjhGe-nJCw | absent from migration 0008; event 2024-11-02; provider release 2024-12-02 |
 
@@ -139,7 +139,7 @@ Migration 0012 is **not** the final X catalog migration.
 ## Reconciliation Queue
 
 1. Verify provider/publication source for Big Kannon / Training Day.
-2. Verify current provider availability for OG Duggie / Super Readers `B3h9fKRPimI`.
+2. Verify current YouTube/provider availability for OG Duggie / Super Readers `B3h9fKRPimI`; battle identity and 2023-05-18 release-context are independently corroborated, but event date remains pending.
 3. Stage the verified DeeJayy, Tino, and Chuck Lucci omissions as an additive external migration.
 4. Search first-party CROWD Drive for additional `xV*`, `XV*`, matchup-named, and event-folder battle assets.
 5. Search public indexes for X battles outside the old tracker/current migration.
