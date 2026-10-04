@@ -54,13 +54,22 @@ test("LEVEL X analytics control is grant-gated and threshold stays internal",()=
 });
 
 
-test("LEVEL X does not invent a personal music lane for X",()=>{
+test("LEVEL X uses Da X Filez for X images and interviews without inventing a music lane",()=>{
+  const script=match?.[1]||"";
   assert.doesNotMatch(html,/02\s*\/\/\s*LISTEN/i);
   assert.doesNotMatch(html,/<h3>Music<\/h3>/i);
-  assert.match(html,/Photo Archive/);
+  assert.match(html,/Da X Filez/);
+  assert.match(html,/PUBLIC \/ HOUSE \/ UNLOCK \/ CROWN \/ VAULT/);
   assert.match(html,/Behind the Scenes/);
   assert.match(html,/Flyers \+ Events/);
   assert.match(html,/From Da Vault/);
+  assert.match(script,/collection_slug\|\|""/);
+  assert.match(script,/da-x-filez/);
+  assert.match(script,/function accessTierLabel\(x\)/);
+  assert.match(script,/PUBLIC FILE/);
+  assert.match(script,/VAULT FILE/);
+  assert.match(script,/queue-thumb/);
+  assert.match(script,/thumbnail_url/);
 });
 
 test("LEVEL X renders verified event context and archive artifacts",()=>{
@@ -82,3 +91,11 @@ test("catalog event context is authorization-gated and schema-safe",()=>{
   assert.doesNotMatch(catalogService,/evidence_note:event\.evidence_note/);
 });
 
+
+test("catalog media collections are schema-safe and attached before access sanitization",()=>{
+  assert.match(catalogService,/async function collectionSchemaReady\(db\)/);
+  assert.match(catalogService,/async function collectionContext\(db,mediaId\)/);
+  assert.match(catalogService,/const hasCollections=await collectionSchemaReady\(db\)/);
+  assert.match(catalogService,/collection_slug:collection\?\.collection_slug\|\|null/);
+  assert.match(catalogService,/const safe=resolveAndSanitizeMedia\(surfaceFiltered,viewer\)/);
+});
