@@ -96,14 +96,14 @@ function render(){
     const thumb=x.thumbnail_url||x.source_url||"";
     return '<button class="file" data-id="'+x.id+'">'+
       (thumb?'<img loading="lazy" src="'+esc(thumb)+'" alt="'+esc(x.title)+'">':'')+
-      '<span class="file-copy"><b>'+esc(kind(x))+' // PUBLIC FILE</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.description||"THE CROWD ARCHIVE")+'</small></span></button>';
+      '<span class="file-copy"><b>'+esc(x.collection_file_code||"DXF")+' // '+esc(kind(x))+' // PUBLIC FILE</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.description||"THE CROWD ARCHIVE")+'</small></span></button>';
   }).join("")||'<div class="empty">NO PUBLIC FILEZ IN THIS LANE YET.</div>';
   grid.querySelectorAll("[data-id]").forEach(el=>el.onclick=()=>openFile(Number(el.dataset.id)));
 }
 function openFile(id){
   const x=state.files.find(f=>Number(f.id)===id); if(!x)return;
   const dialog=document.getElementById("viewer");
-  document.getElementById("viewerLabel").textContent="DA X FILEZ // "+kind(x);
+  document.getElementById("viewerLabel").textContent=(x.collection_file_code||"DA X FILEZ")+" // "+kind(x);
   document.getElementById("viewerTitle").textContent=x.title||"X THA GOD";
   const source=document.getElementById("viewerSource");
   source.href=x.source_url||x.canonical_url||"#";
