@@ -1,7 +1,7 @@
 {
   "version": "0.1",
   "status": "RECONCILIATION",
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-03",
   "artist_slug": "x-tha-god",
   "source_scope": "The CROWD / @CrowdShyt first-party era",
   "rules": {
@@ -49,12 +49,13 @@
       "opponent": "Jace",
       "event": "Lost In Space",
       "youtube_id": "ms4r261sQ9c",
-      "event_date": null,
+      "event_date": "2022-08-06",
       "event_time": null,
       "space_url": null,
       "rights": "gbe-crowd-owned",
       "flyer_status": "pending",
-      "confidence": "battle-high"
+      "confidence": "date-high-public-spaces-index",
+      "evidence": "Preserved historical project research citing SpacesDashboard for X Tha God vs Jace Twitter Spaces battle date."
     },
     {
       "opponent": "Tieso",
