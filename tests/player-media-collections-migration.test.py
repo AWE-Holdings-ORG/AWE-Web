@@ -54,6 +54,18 @@ CREATE TABLE player_event_media(
   FOREIGN KEY(event_id) REFERENCES player_events(id) ON DELETE CASCADE,
   FOREIGN KEY(media_id) REFERENCES artist_media(id) ON DELETE CASCADE
 );
+CREATE TABLE media_access_policy(
+  media_id INTEGER PRIMARY KEY,
+  access_state TEXT NOT NULL,
+  house_slug TEXT,
+  unlock_slug TEXT,
+  teaser_mode TEXT NOT NULL,
+  cypherz_visible INTEGER NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(media_id) REFERENCES artist_media(id) ON DELETE CASCADE
+);
 
 INSERT INTO artists(id,artist_slug) VALUES(1,'x-tha-god');
 INSERT INTO artist_media(
@@ -63,6 +75,9 @@ INSERT INTO artist_media(
   (1,'photo','google-drive','photo-1','X portrait','crown',50,'gbe-crowd-owned'),
   (1,'interview','youtube','interview-1','X Interview 01','crown',51,'gbe-crowd-owned'),
   (1,'battle','youtube','battle-2','Another battle','crown',52,'embed-source');
+
+INSERT INTO media_access_policy(media_id,access_state,teaser_mode,cypherz_visible,active)
+SELECT id,'crown','locked',1,1 FROM artist_media;
 """)
 
 sql=(ROOT/"migrations/0017_da_x_filez_and_super_readers.sql").read_text()
@@ -70,7 +85,7 @@ db.executescript(sql)
 db.executescript(sql)
 
 collection=db.execute("""
-SELECT c.collection_slug,c.display_name,c.description,COUNT(i.media_id)
+SELECT c.collection_slug,c.display_name,c.description,c.default_access_state,COUNT(i.media_id)
 FROM player_media_collections c
 LEFT JOIN player_media_collection_items i
   ON i.collection_id=c.id AND i.active=1
@@ -79,7 +94,8 @@ GROUP BY c.id
 """).fetchone()
 
 assert collection[0:2]==('da-x-filez','Da X Filez')
-assert collection[3]==2, collection
+assert collection[3]=='public', collection
+assert collection[4]==2, collection
 
 members=db.execute("""
 SELECT m.media_type,m.external_id
@@ -94,6 +110,21 @@ assert members==[
   ('photo','photo-1'),
   ('interview','interview-1'),
 ], members
+
+public_filez=db.execute("""
+SELECT m.external_id,m.visibility,p.access_state,p.teaser_mode,p.cypherz_visible
+FROM player_media_collection_items i
+JOIN player_media_collections c ON c.id=i.collection_id
+JOIN artist_media m ON m.id=i.media_id
+JOIN media_access_policy p ON p.media_id=m.id
+WHERE c.collection_slug='da-x-filez'
+ORDER BY m.sort_order
+""").fetchall()
+
+assert public_filez==[
+  ('photo-1','public','public','visible',1),
+  ('interview-1','public','public','visible',1),
+], public_filez
 
 thumbs=dict(db.execute("""
 SELECT external_id,thumbnail_url
@@ -114,7 +145,7 @@ WHERE e.event_slug='super-readers-x-vs-og-duggie'
 """).fetchone()
 
 assert event==(
-  'Super Readers',None,'Big Tali / The CROWD','gbe-crowd-owned','owner-confirmed','B3h9fKRPimI'
+  'Super Readers',None,'Big Tali / Stardom / The CROWD','gbe-crowd-owned','owner-confirmed','B3h9fKRPimI'
 ), event
 
-print("PASS: Da X Filez collection is independent of access policy; YouTube thumbnails are staged as presentation metadata; Super Readers event ownership is encoded without inventing an event date")
+print("PASS: Da X Filez launches PUBLIC-first with per-file overrides available; YouTube thumbnails are staged as presentation metadata; Super Readers/Stardom lineage is encoded without inventing an event date")
