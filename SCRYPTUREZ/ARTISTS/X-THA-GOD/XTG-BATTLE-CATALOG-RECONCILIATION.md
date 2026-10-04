@@ -25,9 +25,10 @@ Current minimum: **36 distinct battle records/leads**.
 Breakdown:
 - 13 historical @CrowdShyt / GBE-The CROWD owned uploads from the old tracker;
 - 18 external records already in migration 0008;
-- 3 old-tracker external records omitted from migration 0008;
-- 1 additional public-index external battle (Chuck Lucci);
-- 1 additional first-party CROWD battle lead (Big Kannon / Training Day).
+- 4 reconciled external additions: OG Duggie / Super Readers, DeeJayy / Sunfall, Tino / Back 2 Business, and Chuck Lucci / Insidious;
+- 1 reconciled first-party CROWD addition: Big Kannon / Training Day.
+
+The full 36-record minimum is now represented in the staged migration stack through migration 0016. This remains a minimum, not a completeness claim.
 
 This number is a minimum, not a final total.
 
@@ -98,19 +99,20 @@ These are distinct records, not duplicates of current seed rows.
 
 Status: PROVIDER + EVENT VERIFIED / READY FOR ADDITIVE EXTERNAL SEED REVIEW.
 
-## E — First-Party CROWD Battle Lead Missing From Historical Tracker — 1
+## E — Reconciled First-Party CROWD Addition — 1
 
 ### X Tha God vs Big Kannon — Training Day
 Evidence:
 - first-party The CROWD Drive contains `XVSKannon.mp4`;
 - Drive ID: `1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks`;
-- public Training Day card identifies `X THA GOD vs BIG KANNON`;
+- recovered Training Day card identifies `X THA GOD vs BIG KANNON`;
+- public Training Day Space chronology identifies `WE THE FANS x THE CROWD PRESENTS TRAINING DAY HOSTED BY JAYBLAC` on 2024-01-07;
 - event: Training Day;
-- exact event date/time: PENDING;
-- Space ID/URL: PENDING;
+- event date: 2024-01-07 — VERIFIED CROSS-SOURCE;
+- exact event time and Space URL/ID: PENDING;
 - YouTube/public distribution URL: PENDING.
 
-Status: VERIFIED MATCHUP / FIRST-PARTY SOURCE; publication/date reconciliation pending.
+Status: STAGED IN MIGRATION 0016 / FIRST-PARTY CROWD SOURCE / EVENT DATE VERIFIED CROSS-SOURCE.
 
 ## Public Index Coverage Warning
 
@@ -122,32 +124,43 @@ VerseTracker's current X profile is useful but incomplete:
 
 The historical 27-row internal tracker is also incomplete:
 - it omits later/current external battles already present in migration 0008;
-- it omits the Big Kannon / Training Day first-party lead;
+- it omitted the Big Kannon / Training Day first-party battle now staged in 0016;
 - it omitted Chuck Lucci.
 
 ## Migration Law
 
 Migration 0012 is **not** the final X catalog migration.
 
-0012 may remain the additive seed for the 13 historical CROWD-owned uploads, but:
-- documentation and QA must describe the post-0012 state as a **base expansion**, not a complete catalog;
-- additional reconciled battles require additive migration(s);
+The staged catalog stack is now:
+- 0012 — 13 historical CROWD-owned uploads;
+- 0014 — DeeJayy, Tino, and Chuck Lucci external reconciliation;
+- 0016 — Big Kannon / Training Day first-party addition plus OG Duggie / Super Readers external addition.
+
+The staged result is 36 distinct battles. It is still a minimum, not catalog completeness.
+
+Rules:
+- documentation and QA must describe the post-0012 state as a base expansion;
+- additional reconciled battles remain additive;
 - no direct-provider URL is guessed;
+- no provider/release date is converted into an event date;
 - no approximate event date is seeded as exact;
 - migration order must preserve current Preview data and access policies.
 
 ## Reconciliation Queue
 
-1. Verify provider/publication source for Big Kannon / Training Day.
-2. Verify current YouTube/provider availability for OG Duggie / Super Readers `B3h9fKRPimI`; battle identity and 2023-05-18 release-context are independently corroborated, but event date remains pending.
-3. Stage the verified DeeJayy, Tino, and Chuck Lucci omissions as an additive external migration.
-4. Search first-party CROWD Drive for additional `xV*`, `XV*`, matchup-named, and event-folder battle assets.
-5. Search public indexes for X battles outside the old tracker/current migration.
-6. Deduplicate by matchup + event + source evidence, not opponent name alone.
-7. Only after reconciliation stabilizes, establish a new Player catalog target count.
+Completed in staged migrations:
+- DeeJayy, Tino, and Chuck Lucci → migration 0014;
+- Big Kannon / Training Day and OG Duggie / Super Readers → migration 0016.
+
+Remaining:
+1. Search first-party CROWD Drive for additional `xV*`, `XV*`, matchup-named, and event-folder battle assets.
+2. Search public indexes for X battles outside the old tracker/current staged set.
+3. Recover unresolved CROWD matchup flyers, exact dates/times, and Space URLs.
+4. Deduplicate by matchup + event + source evidence, not opponent name alone.
+5. Only after reconciliation stabilizes, establish a Player catalog completeness target.
 
 ## Current Conclusion
 
 **31 is not the complete X Tha God battle catalog.**
 
-Current evidence supports at least **36 distinct battle records/leads**, with further archival reconciliation still in progress.
+Current evidence supports at least **36 distinct battles**, and all 36 are now represented in the staged migration stack through 0016. Further archival reconciliation is still in progress.
