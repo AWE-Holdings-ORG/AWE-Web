@@ -74,9 +74,11 @@ test("LEVEL X renders verified event context and archive artifacts",()=>{
   assert.match(script,/SPACE \/ REPLAY/);
 });
 
-test("catalog exposes event context only after media authorization",()=>{
-  assert.match(catalogService,/if\(item\.authorized\)\{[\s\S]*item\.event=await eventContext\(db,Number\(item\.id\)\)/);
+test("catalog event context is authorization-gated and schema-safe",()=>{
+  assert.match(catalogService,/const hasEventContext=await eventSchemaReady\(db\)/);
+  assert.match(catalogService,/if\(item\.authorized\)\{[\s\S]*item\.event=hasEventContext\?await eventContext\(db,Number\(item\.id\)\):null/);
   assert.match(catalogService,/else\{[\s\S]*item\.event=null/);
+  assert.match(catalogService,/sqlite_master/);
   assert.doesNotMatch(catalogService,/evidence_note:event\.evidence_note/);
 });
 
