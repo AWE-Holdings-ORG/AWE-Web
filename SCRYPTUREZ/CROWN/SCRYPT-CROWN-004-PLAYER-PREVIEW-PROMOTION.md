@@ -311,7 +311,19 @@ Da Archivez is a separate CROWD system:
 - Tha X Filez uses the dedicated Archivez catalog API;
 - LEVEL X / Da CROWD Player excludes the `tha-x-filez` collection.
 
-**0012–0018 STATUS: READY FOR PREVIEW DATA APPLY.**
+Migrations `0019`–`0022` add the 1,012-file Dropbox / X Tha God archive intake.
+
+Migration `0023_player_personal_rosters_and_cheat_codes.sql` adds personalized House rosters and the Cheat Code foundation.
+
+Migration `0024_tha_x_filez_drive_completion.sql` completes the Drive intake with 126 additional records omitted by the earlier capped folder read.
+
+Final staged Tha X Filez total after 0024:
+- **1,230 unique files**
+- **218 Google Drive**
+- **1,012 Dropbox**
+- **DXF-0001 through DXF-1230**
+
+**0012–0024 STATUS: READY FOR PREVIEW DATA APPLY.**
 
 Reconciliation has stabilized sufficiently for Preview promotion:
 - the staged set contains 36 distinct battles;
