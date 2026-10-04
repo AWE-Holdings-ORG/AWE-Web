@@ -54,17 +54,12 @@ test("LEVEL X analytics control is grant-gated and threshold stays internal",()=
 });
 
 
-test("LEVEL X uses Da X Filez for X images and interviews without inventing a music lane",()=>{
+test("LEVEL X keeps Tha X Filez out of Da CROWD Player",()=>{
   const script=match?.[1]||"";
-  assert.doesNotMatch(html,/02\s*\/\/\s*LISTEN/i);
-  assert.doesNotMatch(html,/<h3>Music<\/h3>/i);
-  assert.match(html,/Da X Filez/);
-  assert.match(html,/PUBLIC \/ HOUSE \/ UNLOCK \/ CROWN \/ VAULT/);
-  assert.match(html,/Behind the Scenes/);
-  assert.match(html,/Flyers \+ Events/);
-  assert.match(html,/From Da Vault/);
+  assert.doesNotMatch(html,/THA X FILEZ|Tha X Filez/i);
+  assert.match(html,/Battle History/);
   assert.match(script,/collection_slug\|\|""/);
-  assert.match(script,/da-x-filez/);
+  assert.match(script,/!==["']tha-x-filez["']/);
   assert.match(script,/function accessTierLabel\(x\)/);
   assert.match(script,/PUBLIC FILE/);
   assert.match(script,/VAULT FILE/);
