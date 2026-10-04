@@ -139,3 +139,10 @@ test("Dropbox Archivez emits explicit browser-safe MIME types",()=>{
   assert.match(worker,/content-disposition","inline"/);
   assert.match(worker,/outHeaders\.set\("content-type",explicitType\)/);
 });
+
+test("actual Archivez media decision includes the Dropbox filename",()=>{
+  const block=worker.match(/async function archiveMediaDecision[\s\S]*?async function playerEngagementAuthorized/)?.[0]||"";
+  assert.match(block,/m\.id,m\.title,m\.media_type,m\.provider/);
+  assert.match(worker,/function dropboxSharedPath/);
+  assert.match(worker,/media\?\.title/);
+});
