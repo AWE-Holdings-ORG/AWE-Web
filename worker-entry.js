@@ -417,6 +417,31 @@ function driveDownloadUrl(media){
   return id?"https://drive.usercontent.google.com/download?id="+encodeURIComponent(id)+"&export=download&confirm=t":null;
 }
 
+function archiveMimeType(media){
+  const title=String(media?.title||"").toLowerCase();
+  const ext=title.includes(".")?title.split(".").pop():"";
+  const byExt={
+    jpg:"image/jpeg",
+    jpeg:"image/jpeg",
+    png:"image/png",
+    webp:"image/webp",
+    gif:"image/gif",
+    avif:"image/avif",
+    heic:"image/heic",
+    heif:"image/heif",
+    mp4:"video/mp4",
+    mov:"video/quicktime",
+    m4v:"video/x-m4v",
+    webm:"video/webm"
+  };
+  if(byExt[ext])return byExt[ext];
+
+  const type=String(media?.media_type||"").toLowerCase();
+  if(["photo","portrait","image","artwork"].includes(type))return "image/jpeg";
+  if(["video","clip","interview","bts","behind-the-scenes","promo"].includes(type))return "video/mp4";
+  return null;
+}
+
 async function archiveMediaProxyResponse(request,env,{
   crownMemberId=null,
   crownAuthenticated=false,
@@ -461,10 +486,15 @@ async function archiveMediaProxyResponse(request,env,{
     }
 
     const outHeaders=new Headers();
-    for(const name of ["content-type","content-length","content-range","accept-ranges","etag","last-modified"]){
+    for(const name of ["content-length","content-range","accept-ranges","etag","last-modified"]){
       const value=dropboxResponse.headers.get(name);
       if(value)outHeaders.set(name,value);
     }
+    const explicitType=archiveMimeType(media);
+    const upstreamType=dropboxResponse.headers.get("content-type");
+    if(explicitType)outHeaders.set("content-type",explicitType);
+    else if(upstreamType)outHeaders.set("content-type",upstreamType);
+    outHeaders.set("content-disposition","inline");
     outHeaders.set("cache-control","private, no-store");
     outHeaders.set("x-content-type-options","nosniff");
     return new Response(dropboxResponse.body,{status:dropboxResponse.status,headers:outHeaders});
