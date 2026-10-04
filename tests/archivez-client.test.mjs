@@ -101,7 +101,17 @@ test("Archivez media is proxied through AWE endpoints",()=>{
   assert.match(worker,/url\.pathname==="\/api\/crown\/archivez\/media"/);
   assert.match(worker,/url\.pathname==="\/api\/archivez\/media"/);
   assert.match(worker,/archiveMediaProxyResponse/);
-  assert.match(worker,/dropboxRawUrl/);
+  assert.match(worker,/dropboxSharedFolderFileUrl/);
   assert.match(worker,/driveThumbnailUrl/);
   assert.match(worker,/driveDownloadUrl/);
+});
+
+test("Dropbox Archivez bridge keeps folder access server-side",()=>{
+  assert.match(worker,/X_DROPBOX_SHARED_FOLDER/);
+  assert.match(worker,/dropboxSharedFolderFileUrl/);
+  assert.match(worker,/url\.searchParams\.set\("preview",title\)/);
+  assert.match(worker,/url\.searchParams\.set\(mode==="download"\?"dl":"raw","1"\)/);
+  assert.match(worker,/wrongDropboxPayload/);
+  assert.match(worker,/finalType\.includes\("text\/html"\)/);
+  assert.doesNotMatch(xfilez,/3m0ooipt21spernsy34aa/);
 });
