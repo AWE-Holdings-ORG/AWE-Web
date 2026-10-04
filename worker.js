@@ -58,8 +58,17 @@ async function resolveHouseKey(request,env){
   if(!key)return json({ok:false,message:"HOUSE KEY REQUIRED."},400);
   const route=await env.CROWN_DB.prepare(`SELECT k.key_slug,k.house_slug,COALESCE(k.destination,h.destination) AS destination,h.name FROM house_keys k JOIN houses h ON h.slug=k.house_slug WHERE lower(k.key_slug)=? AND k.active=1 LIMIT 1`).bind(key).first();
   if(!route)return json({ok:false,message:"HOUSE KEY NOT RECOGNIZED."},404);
+
   const access=await env.CROWN_DB.prepare(`SELECT destination FROM member_access WHERE member_id=? AND house_slug=? AND active=1 LIMIT 1`).bind(member.id,route.house_slug).first();
-  if(!access)return json({ok:false,message:"HOUSE DISCOVERED // ACCESS NOT YET GRANTED.",house:route.house_slug,houseName:route.name},403);
+
+  if(!access){
+    await env.CROWN_DB.batch([
+      env.CROWN_DB.prepare(`INSERT INTO member_discoveries(member_id,house_slug,discovery_key,discovered_at,last_visited_at) VALUES(?,?,?,datetime('now'),NULL) ON CONFLICT(member_id,house_slug) DO UPDATE SET discovery_key=COALESCE(member_discoveries.discovery_key,excluded.discovery_key)`).bind(member.id,route.house_slug,key),
+      env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,house_slug,created_at) VALUES(?,'house_discovered',?,datetime('now'))`).bind(member.id,route.house_slug)
+    ]);
+    return json({ok:false,message:"HOUSE DISCOVERED // ACCESS NOT YET GRANTED.",house:route.house_slug,houseName:route.name},403);
+  }
+
   const destination=route.destination||access.destination;
   await env.CROWN_DB.batch([
     env.CROWN_DB.prepare(`INSERT INTO member_discoveries(member_id,house_slug,discovery_key,discovered_at,last_visited_at) VALUES(?,?,?,datetime('now'),datetime('now')) ON CONFLICT(member_id,house_slug) DO UPDATE SET discovery_key=COALESCE(member_discoveries.discovery_key,excluded.discovery_key),last_visited_at=datetime('now')`).bind(member.id,route.house_slug,key),
@@ -73,6 +82,79 @@ async function atriumState(request,env){
   const discoveries=(await env.CROWN_DB.prepare(`SELECT d.house_slug,h.name,COALESCE(a.destination,h.destination) AS destination,d.discovered_at,d.last_visited_at,CASE WHEN a.active=1 THEN 1 ELSE 0 END AS authorized FROM member_discoveries d JOIN houses h ON h.slug=d.house_slug LEFT JOIN member_access a ON a.member_id=d.member_id AND a.house_slug=d.house_slug WHERE d.member_id=? ORDER BY d.discovered_at ASC`).bind(member.id).all()).results||[];
   return json({ok:true,awId:member.aw_id,crownName:member.crown_name,discoveries});
 }
+function crownOwner(member){
+  return member?.aw_id==="AWE-000001";
+}
+
+async function crownAdminMembers(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  if(!crownOwner(member))return json({ok:false,message:"OWNER ACCESS REQUIRED."},403);
+
+  const members=(await env.CROWN_DB.prepare(`
+    SELECT m.id,m.aw_id,m.crown_name,m.status,m.created_at,
+           COALESCE(GROUP_CONCAT(CASE WHEN a.active=1 THEN a.house_slug END),'') AS houses
+    FROM members m
+    LEFT JOIN member_access a ON a.member_id=m.id
+    GROUP BY m.id,m.aw_id,m.crown_name,m.status,m.created_at
+    ORDER BY m.id ASC
+  `).all()).results||[];
+
+  const discoveries=(await env.CROWN_DB.prepare(`
+    SELECT d.member_id,d.house_slug,d.discovery_key,d.discovered_at,d.last_visited_at
+    FROM member_discoveries d
+    ORDER BY d.member_id,d.discovered_at
+  `).all()).results||[];
+
+  const byMember=new Map();
+  for(const d of discoveries){
+    if(!byMember.has(Number(d.member_id)))byMember.set(Number(d.member_id),[]);
+    byMember.get(Number(d.member_id)).push({
+      houseSlug:d.house_slug,
+      discoveryKey:d.discovery_key,
+      discoveredAt:d.discovered_at,
+      lastVisitedAt:d.last_visited_at
+    });
+  }
+
+  return json({
+    ok:true,
+    members:members.map(row=>({
+      awId:row.aw_id,
+      crownName:row.crown_name,
+      status:row.status,
+      createdAt:row.created_at,
+      houses:String(row.houses||"").split(",").filter(Boolean),
+      discoveries:byMember.get(Number(row.id))||[]
+    }))
+  });
+}
+
+async function crownAdminGrant(request,env){
+  const member=await sessionMember(request,env);
+  if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
+  if(!crownOwner(member))return json({ok:false,message:"OWNER ACCESS REQUIRED."},403);
+
+  const body=await readJson(request);
+  const awId=String(body.awId||"").trim();
+  const houseSlug=String(body.houseSlug||"").trim().toLowerCase();
+  if(!awId||!houseSlug)return json({ok:false,message:"MEMBER AND HOUSE REQUIRED."},400);
+
+  const target=await env.CROWN_DB.prepare(`SELECT id,aw_id,crown_name,status FROM members WHERE aw_id=? AND status='active' LIMIT 1`).bind(awId).first();
+  if(!target)return json({ok:false,message:"ACTIVE MEMBER NOT FOUND."},404);
+
+  const house=await env.CROWN_DB.prepare(`SELECT slug,name,destination FROM houses WHERE slug=? LIMIT 1`).bind(houseSlug).first();
+  if(!house)return json({ok:false,message:"HOUSE NOT FOUND."},404);
+
+  await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare(`INSERT INTO member_access(member_id,house_slug,destination,active,priority) VALUES(?,?,?,?,?) ON CONFLICT(member_id,house_slug) DO UPDATE SET destination=excluded.destination,active=1,priority=excluded.priority`).bind(target.id,house.slug,house.destination,1,20),
+    env.CROWN_DB.prepare(`INSERT INTO member_discoveries(member_id,house_slug,discovery_key,discovered_at,last_visited_at) VALUES(?,?,?,datetime('now'),NULL) ON CONFLICT(member_id,house_slug) DO NOTHING`).bind(target.id,house.slug,"owner-grant"),
+    env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,house_slug,created_at) VALUES(?,'owner_access_granted',?,datetime('now'))`).bind(target.id,house.slug)
+  ]);
+
+  return json({ok:true,awId:target.aw_id,crownName:target.crown_name,house:house.slug,houseName:house.name,destination:house.destination});
+}
+
 async function visitHouse(request,env){
   const member=await sessionMember(request,env);
   if(!member)return json({ok:false,message:"CROWN SESSION REQUIRED."},401);
@@ -276,6 +358,8 @@ export default {
       if(url.pathname==="/api/crown/competition"&&request.method==="GET")return await competitionDetail(request,env);
       if(url.pathname==="/api/crown/judge"&&request.method==="POST")return await submitBallot(request,env);
       if(url.pathname==="/api/crown/cypherz/link"&&request.method==="POST")return await crownLinkRequest(request,env);
+      if(url.pathname==="/api/crown/admin/members"&&request.method==="GET")return await crownAdminMembers(request,env);
+      if(url.pathname==="/api/crown/admin/grant"&&request.method==="POST")return await crownAdminGrant(request,env);
       if(url.pathname==="/api/crown/logout"&&request.method==="POST")return await logout(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
