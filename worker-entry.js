@@ -300,6 +300,107 @@ async function dropboxSharedFileResponse(request,env,media){
   });
 }
 
+async function dropboxAppCheck(env){
+  if(!dropboxAppConfigured(env))return {ok:false,status:0,stage:"config",detail:"missing"};
+  const key=String(env.DROPBOX_APP_KEY).trim();
+  const secret=String(env.DROPBOX_APP_SECRET).trim();
+  const basic=btoa(key+":"+secret);
+  const response=await fetch("https://api.dropboxapi.com/2/check/app",{
+    method:"POST",
+    headers:{
+      "authorization":"Basic "+basic,
+      "content-type":"application/json"
+    },
+    body:JSON.stringify({query:"awe-x-filez"})
+  });
+  const body=await response.text().catch(()=>"");
+  return {
+    ok:response.ok,
+    status:response.status,
+    stage:"auth",
+    detail:response.ok?"ok":body.slice(0,220)
+  };
+}
+
+async function dropboxSharedMetadataCheck(env,title){
+  if(!dropboxAppConfigured(env))return {ok:false,status:0,stage:"metadata",detail:"missing"};
+  const key=String(env.DROPBOX_APP_KEY).trim();
+  const secret=String(env.DROPBOX_APP_SECRET).trim();
+  const basic=btoa(key+":"+secret);
+  const response=await fetch("https://api.dropboxapi.com/2/sharing/get_shared_link_metadata",{
+    method:"POST",
+    headers:{
+      "authorization":"Basic "+basic,
+      "content-type":"application/json"
+    },
+    body:JSON.stringify({
+      url:X_DROPBOX_SHARED_FOLDER_URL,
+      path:"/"+String(title||"").trim()
+    })
+  });
+  const body=await response.text().catch(()=>"");
+  return {
+    ok:response.ok,
+    status:response.status,
+    stage:"metadata",
+    detail:response.ok?"ok":body.slice(0,300)
+  };
+}
+
+async function dropboxBridgeDiagnostics(request,env){
+  const auth=await dropboxAppCheck(env);
+  if(!auth.ok)return {configured:dropboxAppConfigured(env),auth,metadata:null,file:null};
+
+  const sample=await env.CROWN_DB.prepare(
+    "SELECT id,title,media_type,provider,external_id,canonical_url,thumbnail_url FROM artist_media WHERE provider='dropbox' AND active=1 ORDER BY id LIMIT 1"
+  ).first();
+
+  if(!sample)return {
+    configured:true,
+    auth,
+    metadata:{ok:false,status:0,stage:"metadata",detail:"no-dropbox-record"},
+    file:null
+  };
+
+  const metadata=await dropboxSharedMetadataCheck(env,sample.title);
+  if(!metadata.ok)return {
+    configured:true,
+    auth,
+    metadata,
+    file:null,
+    sample:{id:sample.id,title:sample.title}
+  };
+
+  const probeRequest=new Request(request.url,{headers:{range:"bytes=0-0"}});
+  const response=await dropboxSharedFileResponse(probeRequest,env,sample);
+  if(!response)return {
+    configured:true,
+    auth,
+    metadata,
+    file:{ok:false,status:0,stage:"file",detail:"no-response"},
+    sample:{id:sample.id,title:sample.title}
+  };
+
+  const bodyText=response.ok||response.status===206
+    ?""
+    :await response.clone().text().catch(()=>"");
+
+  return {
+    configured:true,
+    auth,
+    metadata,
+    file:{
+      ok:response.ok||response.status===206,
+      status:response.status,
+      stage:"file",
+      contentType:response.headers.get("content-type")||null,
+      contentRange:response.headers.get("content-range")||null,
+      detail:(response.ok||response.status===206)?"ok":bodyText.slice(0,300)
+    },
+    sample:{id:sample.id,title:sample.title}
+  };
+}
+
 function driveThumbnailUrl(media){
   if(media?.thumbnail_url){
     try{
@@ -472,11 +573,20 @@ export default {
       const identity=await crownIdentity(request,env);
       if(!identity.ok)return identity.response;
       if(identity.member.aw_id!=="AWE-000001")return json({ok:false,message:"OWNER ACCESS REQUIRED."},403);
-      return json({
-        ok:true,
-        configured:dropboxAppConfigured(env),
-        mode:"DROPBOX APP AUTH // SHARED LINK FILE API"
-      });
+      try{
+        const diagnostic=await dropboxBridgeDiagnostics(request,env);
+        return json({
+          ok:true,
+          mode:"DROPBOX APP AUTH // SHARED LINK FILE API",
+          ...diagnostic
+        });
+      }catch{
+        return json({
+          ok:false,
+          configured:dropboxAppConfigured(env),
+          message:"DROPBOX BRIDGE DIAGNOSTIC FAILED."
+        },503);
+      }
     }
 
     if(url.pathname==="/api/crown/archivez/media"&&request.method==="GET"){
