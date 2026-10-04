@@ -166,4 +166,4 @@ WHERE provider='dropbox'
 """).fetchone()[0]
 assert unclassified_video==203, unclassified_video
 
-print("PASS: Tha X Filez holds 1,104 unique records = 92 Drive + 1,012 Dropbox; DXF-0001 through DXF-1230; Dropbox intake is PUBLIC-first and videos remain unclassified")
+print("PASS: Tha X Filez holds 1,230 unique records = 218 Drive + 1,012 Dropbox; DXF-0001 through DXF-1230; intake is PUBLIC-first and raw videos remain unclassified")
