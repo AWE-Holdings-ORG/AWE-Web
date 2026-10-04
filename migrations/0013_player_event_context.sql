@@ -69,6 +69,17 @@ INSERT OR IGNORE INTO player_events(
   rights_status,evidence_status,evidence_note
 ) VALUES
 (
+  'lost-in-space-2022-08-06',
+  'Lost In Space',
+  '2022-08-06',
+  NULL,
+  'X/Twitter Spaces / CROWD battle event',
+  'The CROWD',
+  'gbe-crowd-owned',
+  'high',
+  'Preserved historical project research cites SpacesDashboard for X Tha God vs Jace as a The CROWD Twitter Spaces battle on Aug 6 2022. Exact time/Space URL remain pending.'
+),
+(
   'elements-2022-10-15',
   'Elements',
   '2022-10-15',
@@ -112,6 +123,12 @@ INSERT OR IGNORE INTO player_events(
   'verified',
   'First-party Hostility Vol 1 Drive flyer IMG_3822.JPG prints X Tha God vs Bearvan, Saturday 11/5, 9 PM EST.'
 );
+
+INSERT OR IGNORE INTO player_event_media(event_id,media_id,relation_role,sort_order)
+SELECT e.id,m.id,'primary',0
+FROM player_events e
+JOIN artist_media m ON m.external_id='ms4r261sQ9c'
+WHERE e.event_slug='lost-in-space-2022-08-06';
 
 INSERT OR IGNORE INTO player_event_media(event_id,media_id,relation_role,sort_order)
 SELECT e.id,m.id,'primary',0
