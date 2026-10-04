@@ -25,7 +25,7 @@ Current minimum: **36 distinct battle records/leads**.
 Breakdown:
 - 13 historical @CrowdShyt / GBE-The CROWD owned uploads from the old tracker;
 - 18 external records already in migration 0008;
-- 4 reconciled external additions: OG Duggie / Super Readers, DeeJayy / Sunfall, Tino / Back 2 Business, and Chuck Lucci / Insidious;
+- 4 reconciled additions outside the original 0008 seed: OG Duggie / Super Readers, DeeJayy / Sunfall, Tino / Back 2 Business, and Chuck Lucci / Insidious;
 - 1 reconciled first-party CROWD addition: Big Kannon / Training Day.
 
 The full 36-record minimum is now represented in the staged migration stack through migration 0016. This remains a minimum, not a completeness claim.
@@ -81,7 +81,7 @@ These are distinct records, not duplicates of current seed rows.
 
 | ID | Opponent | League / Event | YouTube ID | Why distinct |
 |---|---|---|---|---|
-| R01 | OG Duggie | Demon Time/Stardom — Super Readers | B3h9fKRPimI | distinct from seeded OG Duggie championship battle `AeoEDYdnJzk`; independently corroborated by the *Super readers* release listing: `X Tha God Vs Og Duggie`, runtime 8:19, release 2023-05-18; exact battle event date still pending |
+| R01 | OG Duggie | Super Readers | B3h9fKRPimI | distinct from seeded OG Duggie championship battle `AeoEDYdnJzk`; Super Readers is an owned CROWD battle-event series held by Big Tali; the *Super readers* release listing independently corroborates `X Tha God Vs Og Duggie`, runtime 8:19, release 2023-05-18; exact battle event date still pending and provider-source provenance remains separate from event ownership |
 | R02 | DeeJayy | iBattleTV — Sunfall | jKl0NU9K8hE | solo battle; distinct from seeded tag battle `QuJEFuUBGCk`; event index dates Sunfall 2024-06-15; provider release 2024-07-24 |
 | R03 | Tino | The Grizz Exam — Back 2 Business | twjhGe-nJCw | absent from migration 0008; event 2024-11-02; provider release 2024-12-02 |
 
@@ -134,7 +134,8 @@ Migration 0012 is **not** the final X catalog migration.
 The staged catalog stack is now:
 - 0012 — 13 historical CROWD-owned uploads;
 - 0014 — DeeJayy, Tino, and Chuck Lucci external reconciliation;
-- 0016 — Big Kannon / Training Day first-party addition plus OG Duggie / Super Readers external addition.
+- 0016 — Big Kannon / Training Day plus OG Duggie / Super Readers battle record;
+- 0017 — Da X Filez collection foundation, YouTube thumbnail presentation metadata, and owned Super Readers event context.
 
 The staged result is 36 distinct battles. It is still a minimum, not catalog completeness.
 
@@ -163,4 +164,4 @@ Remaining:
 
 **31 is not the complete X Tha God battle catalog.**
 
-Current evidence supports at least **36 distinct battles**, and all 36 are now represented in the staged migration stack through 0016. Further archival reconciliation is still in progress.
+Current evidence supports at least **36 distinct battles**, and all 36 are represented in the staged migration stack; migration 0017 adds collection/event context without changing the battle count. Further archival reconciliation is still in progress.
