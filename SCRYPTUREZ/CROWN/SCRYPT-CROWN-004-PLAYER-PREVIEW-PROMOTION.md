@@ -341,3 +341,39 @@ Migration order is:
 7. 0018 initial 92-image PUBLIC Tha X Filez batch.
 
 Production D1 remains untouched.
+
+## Tha X Filez Dropbox Flood — 2026-10-04
+
+Migrations:
+- 0019_tha_x_filez_dropbox_01.sql — 253 records
+- 0020_tha_x_filez_dropbox_02.sql — 253 records
+- 0021_tha_x_filez_dropbox_03.sql — 253 records
+- 0022_tha_x_filez_dropbox_04.sql — 253 records
+
+Dropbox source:
+- /X Tha God
+- 809 images
+- 203 videos
+- 1,012 records total
+- source folder currently has an existing public Dropbox shared-folder link
+- no Dropbox sharing settings were changed during ingestion
+
+Combined Tha X Filez staged total:
+- 92 Google Drive still images
+- 1,012 Dropbox image/video records
+- 1,104 records
+- DXF-0001 through DXF-1104
+
+Access:
+- PUBLIC-first at launch
+- X may reclassify individual records to HOUSE / UNLOCK / CROWN / VAULT
+- generic Dropbox videos remain unclassified until artist review
+
+Preview migration order now continues:
+8. 0019 Dropbox flood chunk 01
+9. 0020 Dropbox flood chunk 02
+10. 0021 Dropbox flood chunk 03
+11. 0022 Dropbox flood chunk 04
+
+Production D1 remains untouched.
+
