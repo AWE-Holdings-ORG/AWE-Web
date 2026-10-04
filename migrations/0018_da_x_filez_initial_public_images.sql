@@ -623,9 +623,15 @@ WHERE artist_id=(SELECT id FROM artists WHERE artist_slug='x-tha-god')
   AND provider='google-drive';
 
 INSERT OR IGNORE INTO player_media_collection_items(
-  collection_id,media_id,is_primary,sort_order,active
+  collection_id,media_id,file_code,is_primary,sort_order,active
 )
-SELECT c.id,m.id,1,m.sort_order,1
+SELECT c.id,m.id,
+       CASE
+         WHEN m.sort_order BETWEEN 1000 AND 1004 THEN printf('DXF-%04d',m.sort_order-999)
+         WHEN m.sort_order BETWEEN 1100 AND 1186 THEN printf('DXF-%04d',m.sort_order-1094)
+         ELSE NULL
+       END,
+       1,m.sort_order,1
 FROM player_media_collections c
 JOIN artist_media m ON m.artist_id=c.artist_id
 WHERE c.collection_slug='da-x-filez'
