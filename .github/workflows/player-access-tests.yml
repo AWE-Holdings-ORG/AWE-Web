@@ -33,6 +33,7 @@ on:
       - "migrations/0022_tha_x_filez_dropbox_04.sql"
       - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
       - "migrations/0024_tha_x_filez_drive_completion.sql"
+      - "migrations/0025_archivez_social_public_meta.sql"
       - "migrations/0021_tha_x_filez_dropbox_03.sql"
       - "migrations/0020_tha_x_filez_dropbox_02.sql"
       - "migrations/0019_tha_x_filez_dropbox_01.sql"
@@ -53,6 +54,8 @@ on:
       - "tests/player-media-collections-migration.test.py"
       - "tests/player-public-surface.test.mjs"
       - "tests/archivez-client.test.mjs"
+      - "tests/archivez-social-migration.test.py"
+      - "tests/archivez-social-ui-api.test.mjs"
       - "tests/tha-x-filez-initial-images-migration.test.py"
       - "tests/tha-x-filez-dropbox-flood.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
@@ -101,6 +104,7 @@ on:
       - "migrations/0022_tha_x_filez_dropbox_04.sql"
       - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
       - "migrations/0024_tha_x_filez_drive_completion.sql"
+      - "migrations/0025_archivez_social_public_meta.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -118,6 +122,8 @@ on:
       - "tests/player-media-collections-migration.test.py"
       - "tests/player-public-surface.test.mjs"
       - "tests/archivez-client.test.mjs"
+      - "tests/archivez-social-migration.test.py"
+      - "tests/archivez-social-ui-api.test.mjs"
       - "tests/tha-x-filez-initial-images-migration.test.py"
       - "tests/tha-x-filez-dropbox-flood.test.py"
       - "SCRYPTUREZ/CROWN/**"
@@ -195,6 +201,12 @@ jobs:
 
       - name: Validate Tha X Filez Dropbox flood
         run: npm run test:tha-x-filez-dropbox-flood
+
+      - name: Validate Archivez social migration
+        run: npm run test:archivez-social-migration
+
+      - name: Validate Archivez social UI and APIs
+        run: npm run test:archivez-social-ui-api
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
