@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test:player-access": "node --test tests/player-access.test.mjs",
-    "check:player-runtime": "node --check worker-entry.js && node --check lib/player-access.js && node --check lib/player-viewer-context.js && node --check lib/player-catalog-service.js && node --check lib/player-api.js && node --check lib/player-analytics.js",
+    "check:player-runtime": "node --check worker-entry.js && node --check lib/player-access.js && node --check lib/player-viewer-context.js && node --check lib/player-catalog-service.js && node --check lib/player-api.js && node --check lib/archivez-api.js && node --check lib/player-analytics.js",
     "test:level-x-seed": "python tests/level-x-seed.test.py",
     "test:preview-security": "node --test tests/preview-security-cleanup.test.mjs",
     "test:level-x-client": "node --test tests/level-x-client.test.mjs",
@@ -17,6 +17,7 @@
     "preview:migrations:apply": "wrangler d1 migrations apply awe-crown-identity-preview --remote --config wrangler.preview-migrations.jsonc",
     "test:player-media-collections-migration": "python tests/player-media-collections-migration.test.py",
     "test:player-public-surface": "node --test tests/player-public-surface.test.mjs",
-    "test:da-x-filez-images-migration": "python tests/da-x-filez-initial-images-migration.test.py"
+    "test:archivez-client": "node --test tests/archivez-client.test.mjs",
+    "test:tha-x-filez-images-migration": "python tests/tha-x-filez-initial-images-migration.test.py"
   }
 }
