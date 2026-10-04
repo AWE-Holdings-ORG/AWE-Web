@@ -129,3 +129,13 @@ test("Dropbox bridge health is owner-only",()=>{
   assert.match(worker,/identity\.member\.aw_id!=="AWE-000001"/);
   assert.match(worker,/dropboxAppConfigured\(env\)/);
 });
+
+test("Dropbox Archivez emits explicit browser-safe MIME types",()=>{
+  assert.match(worker,/function archiveMimeType/);
+  assert.match(worker,/jpg:"image\/jpeg"/);
+  assert.match(worker,/png:"image\/png"/);
+  assert.match(worker,/mp4:"video\/mp4"/);
+  assert.match(worker,/mov:"video\/quicktime"/);
+  assert.match(worker,/content-disposition","inline"/);
+  assert.match(worker,/outHeaders\.set\("content-type",explicitType\)/);
+});
