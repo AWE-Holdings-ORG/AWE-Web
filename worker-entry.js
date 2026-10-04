@@ -262,16 +262,19 @@ async function archiveMediaDecision(env,mediaId,{
   return {authorized:decision.authorized===true,media:decision.authorized===true?media:null};
 }
 
-function dropboxRawUrl(value){
-  try{
-    const url=new URL(String(value||""));
-    if(url.hostname!=="www.dropbox.com"&&url.hostname!=="dropbox.com")return null;
-    url.searchParams.delete("dl");
-    url.searchParams.set("raw","1");
-    return url.toString();
-  }catch{
-    return null;
-  }
+const X_DROPBOX_SHARED_FOLDER={
+  base:"https://www.dropbox.com/scl/fo/3m0ooipt21spernsy34aa/ANAnGkOcszfg7Pk_IU8G240",
+  rlkey:"rditxo7ageg786kr9vaoytljz"
+};
+
+function dropboxSharedFolderFileUrl(media,mode="raw"){
+  const title=String(media?.title||"").trim();
+  if(!title)return null;
+  const url=new URL(X_DROPBOX_SHARED_FOLDER.base);
+  url.searchParams.set("rlkey",X_DROPBOX_SHARED_FOLDER.rlkey);
+  url.searchParams.set("preview",title);
+  url.searchParams.set(mode==="download"?"dl":"raw","1");
+  return url.toString();
 }
 
 function driveThumbnailUrl(media){
@@ -325,7 +328,7 @@ async function archiveMediaProxyResponse(request,env,{
     if(mode==="thumbnail"&&["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)){
       return new Response(null,{status:204,headers:{"cache-control":"private, no-store"}});
     }
-    upstream=dropboxRawUrl(media.canonical_url);
+    upstream=dropboxSharedFolderFileUrl(media,"raw");
   }
 
   if(!upstream){
@@ -336,13 +339,34 @@ async function archiveMediaProxyResponse(request,env,{
   const range=request.headers.get("range");
   if(range)headers.set("range",range);
 
-  const remote=await fetch(upstream,{
+  let remote=await fetch(upstream,{
     method:"GET",
     headers,
     redirect:"follow"
   });
 
+  const expectedImage=["photo","portrait","image","artwork"].includes(type);
+  const expectedVideo=["video","clip","interview","bts","behind-the-scenes","promo"].includes(type);
+  const contentType=String(remote.headers.get("content-type")||"").toLowerCase();
+  const wrongDropboxPayload=media.provider==="dropbox"&&(
+    contentType.includes("text/html")||
+    (expectedImage&&!contentType.startsWith("image/"))||
+    (expectedVideo&&!contentType.startsWith("video/")&&!contentType.includes("application/octet-stream"))
+  );
+
+  if(wrongDropboxPayload){
+    const retryUrl=dropboxSharedFolderFileUrl(media,"download");
+    if(retryUrl){
+      remote=await fetch(retryUrl,{method:"GET",headers,redirect:"follow"});
+    }
+  }
+
   if(!remote.ok&&remote.status!==206){
+    return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},502);
+  }
+
+  const finalType=String(remote.headers.get("content-type")||"").toLowerCase();
+  if(media.provider==="dropbox"&&finalType.includes("text/html")){
     return json({ok:false,message:"ARCHIVE PREVIEW TEMPORARILY UNAVAILABLE."},502);
   }
 
