@@ -20,7 +20,7 @@
 </style></head><body>
 <canvas id="cipher" aria-hidden="true"></canvas>
 <main class="shell">
-<header class="top"><span>CROWN NETWORK // DRT</span><span class="session-tools"><span>AUTHORIZED CROWN SESSION</span><button id="members-admin" type="button" hidden>MEMBERS</button><button id="logout" type="button">END SESSION</button></span></header>
+<header class="top"><span>CROWN NETWORK // DRT</span><span class="session-tools"><span>AUTHORIZED CROWN SESSION</span><button id="members-admin" type="button" hidden>MEMBERS / ACCESS</button><button id="logout" type="button">END SESSION</button></span></header>
 <section class="hero"><div class="crown">♛</div><p class="kicker">DA ROUND TABLE</p><h1>WEAR YOUR CROWN<br><span>PROUDLY.</span></h1><p class="welcome" id="welcome">IDENTITY CONFIRMED.</p></section>
 <p class="prompt">WHICH HOUSE DO YOU SEEK?</p>
 <section class="houses" aria-label="Crown Network Houses">
@@ -33,7 +33,14 @@
 </section>
 <form class="keybox" id="house-key"><label for="key">HOUSE KEY // DISCOVER ANOTHER DOOR</label><div class="keyrow"><input id="key" name="key" placeholder="#________" autocomplete="off" spellcheck="false"><button>SEEK</button></div><p class="msg" id="msg" aria-live="polite"></p></form>
 <section class="member-console" id="member-console" hidden>
-  <div class="member-console-head"><div><p>OWNER CONTROL // PREVIEW</p><h2>Crown Members</h2></div><p>ACCESS IS GRANTED, NOT ASSUMED.</p></div>
+  <div class="member-console-head">
+    <div>
+      <p>OWNER CONTROL // MEMBER ACCESS</p>
+      <h2>Crown Members & House Access</h2>
+    </div>
+    <p>PENDING DISCOVERIES SHOW HERE.</p>
+  </div>
+  <p style="color:#8b8377;line-height:1.65;margin:0 0 12px">Members may discover a House without automatically entering it. Review the member below and grant The CROWD when appropriate.</p>
   <div class="member-list" id="member-list"></div>
   <p class="member-msg" id="member-msg" aria-live="polite"></p>
 </section>
@@ -42,7 +49,12 @@
 <script>
 const welcome=document.querySelector('#welcome'),msg=document.querySelector('#msg'),keyForm=document.querySelector('#house-key'),keyInput=document.querySelector('#key'),logout=document.querySelector('#logout'),membersAdmin=document.querySelector('#members-admin'),memberConsole=document.querySelector('#member-console'),memberList=document.querySelector('#member-list'),memberMsg=document.querySelector('#member-msg');
 const unlock=(slug,destination,authorized=true)=>{const card=document.querySelector('[data-house="'+slug+'"]');if(!card)return;card.classList.remove('locked');if(authorized){card.classList.add('unlocked');card.dataset.destination=destination||'';card.addEventListener('click',()=>{if(card.dataset.destination){fetch('/api/crown/visit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({house:slug}),keepalive:true});location.assign(card.dataset.destination);}},{once:false});}else{card.classList.add('discovered');}};
-fetch('/api/crown/atrium').then(r=>r.json().then(data=>({r,data}))).then(({r,data})=>{if(!r.ok)throw 0;const returning=(data.discoveries||[]).some(d=>d.last_visited_at);welcome.textContent=(returning?'CROWN SESSION ACTIVE':'IDENTITY CONFIRMED')+' // '+data.awId+' // '+(returning?'WELCOME BACK, ':'WELCOME, ')+String(data.crownName).toUpperCase()+'.';(data.discoveries||[]).forEach(d=>unlock(d.house_slug,d.destination,!!d.authorized));if(data.awId==='AWE-000001'&&membersAdmin)membersAdmin.hidden=false;const q=new URLSearchParams(location.search).get('key');if(q){keyInput.value=q;keyForm.requestSubmit();}}).catch(()=>location.assign('/'));
+fetch('/api/crown/atrium').then(r=>r.json().then(data=>({r,data}))).then(({r,data})=>{if(!r.ok)throw 0;const returning=(data.discoveries||[]).some(d=>d.last_visited_at);welcome.textContent=(returning?'CROWN SESSION ACTIVE':'IDENTITY CONFIRMED')+' // '+data.awId+' // '+(returning?'WELCOME BACK, ':'WELCOME, ')+String(data.crownName).toUpperCase()+'.';(data.discoveries||[]).forEach(d=>unlock(d.house_slug,d.destination,!!d.authorized));if(data.awId==='AWE-000001'){
+  if(membersAdmin)membersAdmin.hidden=false;
+  if(memberConsole)memberConsole.hidden=false;
+  loadMembers();
+}
+const q=new URLSearchParams(location.search).get('key');if(q){keyInput.value=q;keyForm.requestSubmit();}}).catch(()=>location.assign('/'));
 async function loadMembers(){
   if(!memberList)return;
   memberMsg.textContent='LOADING MEMBERS...';
@@ -69,8 +81,9 @@ async function loadMembers(){
   }catch(err){memberMsg.textContent=err.message||'MEMBER LIST UNAVAILABLE.';}
 }
 membersAdmin?.addEventListener('click',()=>{
-  memberConsole.hidden=!memberConsole.hidden;
-  if(!memberConsole.hidden){loadMembers();memberConsole.scrollIntoView({behavior:'smooth',block:'start'});}
+  if(memberConsole)memberConsole.hidden=false;
+  loadMembers();
+  memberConsole?.scrollIntoView({behavior:'smooth',block:'start'});
 });
 logout?.addEventListener('click',()=>{logout.disabled=true;fetch('/api/crown/logout',{method:'POST'}).finally(()=>location.assign('/'));});
 keyForm.addEventListener('submit',e=>{e.preventDefault();const key=keyInput.value.trim();if(!key)return;msg.classList.remove('error');msg.textContent='SEEKING HOUSE...';fetch('/api/crown/house-key',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key})}).then(async r=>({r,data:await r.json().catch(()=>({}))})).then(({r,data})=>{if(!r.ok)throw new Error(data.message||'HOUSE KEY NOT RECOGNIZED.');unlock(data.house,data.destination);msg.textContent='HOUSE KEY RECOGNIZED // '+data.houseName.toUpperCase()+'.';document.querySelector('[data-house="'+data.house+'"]')?.scrollIntoView({behavior:'smooth',block:'center'});}).catch(err=>{msg.classList.add('error');msg.textContent=err.message;});});
