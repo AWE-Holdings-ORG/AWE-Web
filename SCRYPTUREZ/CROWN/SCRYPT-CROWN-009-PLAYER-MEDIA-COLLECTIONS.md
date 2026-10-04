@@ -1,7 +1,7 @@
 # SCRYPT-CROWN-009 — Player Media Collections / Da X Filez
 
 Status: ACTIVE / READY FOR PREVIEW DATA APPLY
-Version: 1.0
+Version: 1.1
 Depends On: SCRYPT-CROWN-002, SCRYPT-CROWN-008
 Environment: Da CROWD Player / LEVEL X
 
@@ -50,22 +50,31 @@ LEVEL X may present these as:
 
 The presentation labels do not change the underlying access semantics.
 
-Rules:
-- unreviewed media must not be made public by default;
+Da X Filez launch rule:
+- initial Da X Filez images/interviews launch as PUBLIC;
+- X Tha God is the primary artist curator for the first review pass;
+- X may designate any individual file as PUBLIC / HOUSE / UNLOCK / CROWN / VAULT;
+- an individual X decision overrides the collection launch default and must persist;
 - VAULT remains closed unless an explicit media grant exists;
 - encrypted teasers do not expose collection identity;
 - visible/locked teasers may expose the safe collection label while source URLs remain redacted;
 - collection membership never grants access by itself.
 
-## Intake Rule
+This PUBLIC-first rule is specific to Da X Filez and must not be generalized to unrelated collections without an explicit directive.
+
+## Intake & Artist Review Rule
 
 New X images/interviews should be:
 1. identified and de-duplicated;
 2. assigned to Da X Filez;
-3. given an explicit access policy;
-4. only then made eligible for Player presentation.
+3. launched PUBLIC unless X has already supplied a more restrictive classification;
+4. presented to X for the artist review pass;
+5. reclassified individually when X specifies HOUSE / UNLOCK / CROWN / VAULT.
 
-Do not bulk-publish an unreviewed source folder.
+The public review surface is `/crowd/x/`.
+It is intentionally noindex during the initial artist-review phase.
+
+Do not auto-import ambiguous raw video clips as interviews. Classify them first.
 
 ## @CrowdShyt Thumbnail / Flyer Rule
 
@@ -80,21 +89,38 @@ Therefore:
 
 Migration 0017 stores YouTube provider thumbnails for X media so the Player and reconciliation workflow can surface that art.
 
-## Super Readers
+## Big Tali / Stardom / Super Readers
+
+Big Tali runs **Stardom**, formerly **Demon Time Battle League**.
 
 Super Readers is an owned battle-event series in the CROWD ecosystem and is held by Big Tali.
 
 For X Tha God vs OG Duggie:
 - event: Super Readers;
 - event ownership: GBE / The CROWD;
-- organizer/holder context: Big Tali / The CROWD;
+- organizer/holder context: Big Tali / Stardom / The CROWD;
 - exact battle event date: still pending;
 - 2023-05-18 remains release context, not the event date;
 - the YouTube source/provider relationship remains separate from event ownership.
 
 Migration 0017 represents that distinction at the event layer.
 
+## Initial Public Batch
+
+Migration 0018 stages the first Da X Filez public image batch:
+- Hype3Wear / X Tha God — 5 still images;
+- Grizz Exams / X Tha God — 87 still images;
+- total — 92 still images;
+- raw Grizz Exam `.MOV` files remain unclassified and are not imported as interviews/BTS yet.
+
 ## Runtime
+
+Public `/crowd/x/`:
+- requires no Crown session;
+- consumes only the PUBLIC Player surface;
+- displays only PUBLIC Da X Filez records;
+- automatically stops displaying a file when its access state changes away from PUBLIC;
+- exposes no Crown comments or analytics controls.
 
 LEVEL X:
 - renders `DA X FILEZ` as a collection lane;
@@ -106,7 +132,7 @@ LEVEL X:
 ## Promotion Gate
 
 Before production promotion:
-- migration 0017 passes;
+- migrations 0017 and 0018 pass;
 - collection schema remains optional/schema-safe before migration;
 - locked/encrypted redaction tests pass;
 - LEVEL X client parsing passes;
