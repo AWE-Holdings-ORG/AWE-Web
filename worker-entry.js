@@ -227,6 +227,190 @@ async function engagementMediaId(request){
   return Number.isInteger(value)&&value>0?value:null;
 }
 
+async function archiveSocialSchemaReady(env){
+  if(!env?.CROWN_DB)return false;
+  const row=await env.CROWN_DB.prepare(
+    "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name IN ('archive_media_public_meta','media_likes','media_comments')"
+  ).first();
+  return Number(row?.n||0)===3;
+}
+
+function cleanArchiveText(value,max){
+  return String(value||"").replace(/\s+/g," ").trim().slice(0,max);
+}
+
+async function archiveFileContext(env,mediaId){
+  return env.CROWN_DB.prepare(`
+    SELECT m.id,m.title,m.media_type,m.active,i.file_code,c.collection_slug
+    FROM artist_media m
+    JOIN player_media_collection_items i ON i.media_id=m.id AND i.active=1
+    JOIN player_media_collections c ON c.id=i.collection_id AND c.active=1
+    WHERE m.id=? AND m.active=1 AND c.collection_slug='tha-x-filez'
+    LIMIT 1
+  `).bind(Number(mediaId)).first();
+}
+
+async function archiveSocialData(env,mediaId,memberId=null){
+  const [likesRow,commentsResult,myLike]=await Promise.all([
+    env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM media_likes WHERE media_id=?").bind(mediaId).first(),
+    env.CROWN_DB.prepare(`
+      SELECT c.id,c.body,c.created_at,m.crown_name
+      FROM media_comments c
+      JOIN members m ON m.id=c.member_id
+      WHERE c.media_id=? AND c.status='visible'
+      ORDER BY c.created_at DESC,c.id DESC
+      LIMIT 100
+    `).bind(mediaId).all(),
+    memberId
+      ?env.CROWN_DB.prepare("SELECT 1 AS ok FROM media_likes WHERE media_id=? AND member_id=? LIMIT 1").bind(mediaId,memberId).first()
+      :Promise.resolve(null)
+  ]);
+
+  return {
+    likeCount:Number(likesRow?.n||0),
+    commentCount:Number(commentsResult?.results?.length||0),
+    likedByMe:!!myLike?.ok,
+    comments:(commentsResult?.results||[]).map(row=>({
+      id:Number(row.id),
+      body:row.body,
+      createdAt:row.created_at,
+      crownName:row.crown_name
+    }))
+  };
+}
+
+async function archiveSocialPublicResponse(request,env){
+  if(!(await archiveSocialSchemaReady(env))){
+    return json({ok:false,message:"ARCHIVE SOCIAL LAYER NOT READY.",code:"ARCHIVE_SOCIAL_SCHEMA_MISSING"},503);
+  }
+  const mediaId=Number(new URL(request.url).searchParams.get("mediaId"));
+  if(!Number.isInteger(mediaId)||mediaId<1)return json({ok:false,message:"MEDIA REQUIRED."},400);
+  const decision=await archiveMediaDecision(env,mediaId,{publicOnly:true});
+  if(!decision.authorized)return json({ok:false,message:"MEDIA NOT AVAILABLE."},404);
+  return json({ok:true,mediaId,...await archiveSocialData(env,mediaId,null)});
+}
+
+async function archiveSocialCrownResponse(request,env,member){
+  if(!(await archiveSocialSchemaReady(env))){
+    return json({ok:false,message:"ARCHIVE SOCIAL LAYER NOT READY.",code:"ARCHIVE_SOCIAL_SCHEMA_MISSING"},503);
+  }
+  const mediaId=Number(new URL(request.url).searchParams.get("mediaId"));
+  if(!Number.isInteger(mediaId)||mediaId<1)return json({ok:false,message:"MEDIA REQUIRED."},400);
+  const decision=await playerEngagementAuthorized(request,env,member);
+  if(decision.authorized!==true)return json({ok:false,message:"MEDIA NOT AVAILABLE."},404);
+  return json({ok:true,mediaId,...await archiveSocialData(env,mediaId,Number(member.id))});
+}
+
+async function archiveLikeToggle(request,env,member){
+  if(!(await archiveSocialSchemaReady(env))){
+    return json({ok:false,message:"ARCHIVE SOCIAL LAYER NOT READY.",code:"ARCHIVE_SOCIAL_SCHEMA_MISSING"},503);
+  }
+  const body=await request.clone().json().catch(()=>null);
+  const mediaId=Number(body?.mediaId);
+  if(!Number.isInteger(mediaId)||mediaId<1)return json({ok:false,message:"MEDIA REQUIRED."},400);
+
+  const probe=new Request(new URL("/api/crown/player/comments?mediaId="+mediaId,request.url),{
+    method:"GET",
+    headers:request.headers
+  });
+  const decision=await playerEngagementAuthorized(probe,env,member);
+  if(decision.authorized!==true)return json({ok:false,message:"MEDIA NOT AVAILABLE."},404);
+
+  const existing=await env.CROWN_DB.prepare(
+    "SELECT 1 AS ok FROM media_likes WHERE media_id=? AND member_id=? LIMIT 1"
+  ).bind(mediaId,Number(member.id)).first();
+
+  if(existing?.ok){
+    await env.CROWN_DB.prepare("DELETE FROM media_likes WHERE media_id=? AND member_id=?")
+      .bind(mediaId,Number(member.id)).run();
+  }else{
+    await env.CROWN_DB.prepare(
+      "INSERT OR IGNORE INTO media_likes(media_id,member_id,created_at) VALUES(?,?,datetime('now'))"
+    ).bind(mediaId,Number(member.id)).run();
+  }
+
+  const count=await env.CROWN_DB.prepare("SELECT COUNT(*) AS n FROM media_likes WHERE media_id=?")
+    .bind(mediaId).first();
+
+  return json({ok:true,mediaId,liked:!existing?.ok,likeCount:Number(count?.n||0)});
+}
+
+async function archiveAddComment(request,env,member){
+  if(!(await archiveSocialSchemaReady(env))){
+    return json({ok:false,message:"ARCHIVE SOCIAL LAYER NOT READY.",code:"ARCHIVE_SOCIAL_SCHEMA_MISSING"},503);
+  }
+  const body=await request.clone().json().catch(()=>null);
+  const mediaId=Number(body?.mediaId);
+  const comment=cleanArchiveText(body?.body,1000);
+  if(!Number.isInteger(mediaId)||mediaId<1||!comment)return json({ok:false,message:"COMMENT REQUIRED."},400);
+
+  const probe=new Request(new URL("/api/crown/player/comments?mediaId="+mediaId,request.url),{
+    method:"GET",
+    headers:request.headers
+  });
+  const decision=await playerEngagementAuthorized(probe,env,member);
+  if(decision.authorized!==true)return json({ok:false,message:"MEDIA NOT AVAILABLE."},404);
+
+  await env.CROWN_DB.prepare(`
+    INSERT INTO media_comments(media_id,member_id,body,status,created_at,updated_at)
+    VALUES(?, ?, ?, 'visible', datetime('now'), datetime('now'))
+  `).bind(mediaId,Number(member.id),comment).run();
+
+  return json({ok:true,message:"COMMENT POSTED.",mediaId},201);
+}
+
+async function archiveAdminPublicMeta(request,env,member){
+  if(member.aw_id!=="AWE-000001")return json({ok:false,message:"OWNER ACCESS REQUIRED."},403);
+  if(!(await archiveSocialSchemaReady(env))){
+    return json({ok:false,message:"ARCHIVE SOCIAL LAYER NOT READY.",code:"ARCHIVE_SOCIAL_SCHEMA_MISSING"},503);
+  }
+
+  const body=await request.clone().json().catch(()=>null);
+  const mediaId=Number(body?.mediaId);
+  const publicTitle=cleanArchiveText(body?.publicTitle,180);
+  const publicCaption=cleanArchiveText(body?.publicCaption,1200);
+
+  if(!Number.isInteger(mediaId)||mediaId<1)return json({ok:false,message:"MEDIA REQUIRED."},400);
+  const file=await archiveFileContext(env,mediaId);
+  if(!file)return json({ok:false,message:"ARCHIVE FILE NOT FOUND."},404);
+
+  if(!publicTitle&&!publicCaption){
+    await env.CROWN_DB.prepare("DELETE FROM archive_media_public_meta WHERE media_id=?").bind(mediaId).run();
+    return json({
+      ok:true,
+      mediaId,
+      publicTitle:null,
+      publicCaption:null,
+      displayTitle:file.title,
+      message:"PUBLIC INFO RESET TO SOURCE DEFAULT."
+    });
+  }
+
+  await env.CROWN_DB.prepare(`
+    INSERT INTO archive_media_public_meta(media_id,public_title,public_caption,updated_by_member_id,updated_at)
+    VALUES(?,?,?,?,datetime('now'))
+    ON CONFLICT(media_id) DO UPDATE SET
+      public_title=excluded.public_title,
+      public_caption=excluded.public_caption,
+      updated_by_member_id=excluded.updated_by_member_id,
+      updated_at=datetime('now')
+  `).bind(mediaId,publicTitle||null,publicCaption||null,Number(member.id)).run();
+
+  await env.CROWN_DB.prepare(`
+    INSERT INTO access_events(member_id,event_type,house_slug,created_at)
+    VALUES(?,'archive_public_meta_updated','the-crowd',datetime('now'))
+  `).bind(Number(member.id)).run();
+
+  return json({
+    ok:true,
+    mediaId,
+    publicTitle:publicTitle||null,
+    publicCaption:publicCaption||null,
+    displayTitle:publicTitle||file.title,
+    message:"PUBLIC ARCHIVE INFO UPDATED."
+  });
+}
+
 async function archiveMediaDecision(env,mediaId,{
   crownMemberId=null,
   crownAuthenticated=false,
@@ -573,6 +757,14 @@ export default {
       }
     }
 
+    if(url.pathname==="/api/archivez/social"&&request.method==="GET"){
+      try{
+        return archiveSocialPublicResponse(request,env);
+      }catch{
+        return json({ok:false,message:"ARCHIVE SOCIAL TEMPORARILY UNAVAILABLE."},503);
+      }
+    }
+
     if(url.pathname==="/api/archivez/catalog"&&request.method==="GET"){
       try{
         const schema=await playerAccessSchema(env);
@@ -596,6 +788,46 @@ export default {
           message:"PUBLIC ARCHIVEZ TEMPORARILY UNAVAILABLE.",
           code:"ARCHIVEZ_PUBLIC_RUNTIME_FAILURE"
         },503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/archivez/social"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        return archiveSocialCrownResponse(request,env,identity.member);
+      }catch{
+        return json({ok:false,message:"ARCHIVE SOCIAL TEMPORARILY UNAVAILABLE."},503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/archivez/like"&&request.method==="POST"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        return archiveLikeToggle(request,env,identity.member);
+      }catch{
+        return json({ok:false,message:"LIKE TEMPORARILY UNAVAILABLE."},503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/archivez/comments"&&request.method==="POST"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        return archiveAddComment(request,env,identity.member);
+      }catch{
+        return json({ok:false,message:"COMMENTS TEMPORARILY UNAVAILABLE."},503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/archivez/admin/public-meta"&&request.method==="POST"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+      try{
+        return archiveAdminPublicMeta(request,env,identity.member);
+      }catch{
+        return json({ok:false,message:"PUBLIC INFO UPDATE TEMPORARILY UNAVAILABLE."},503);
       }
     }
 
