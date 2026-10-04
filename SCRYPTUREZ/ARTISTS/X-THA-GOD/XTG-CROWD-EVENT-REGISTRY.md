@@ -41,7 +41,7 @@ Rules:
 | 1 | Geminii | Members Only | TmwYVT_gI0Q | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
 | 2 | Geminii — Da Rematch | The Shootout | 7s82HgWmML0 | PENDING | PENDING | Public @CrowdShyt matchup flyer: SATURDAY SHOOTOUT / X THA GOD VS GEMINII; full-card public flyer also recovered; promo status posted 2022-06-07 22:05:55 UTC | YES | PENDING | GBE / The CROWD | Flyer HIGH; event date pending |
 | 3 | Whytboy | Unforeseen Circumstances | 6JSDWKTBPxw | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
-| 4 | Jace | Lost In Space | ms4r261sQ9c | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
+| 4 | Jace | Lost In Space | ms4r261sQ9c | 2022-08-06 | PENDING | Historical project research preserved from SpacesDashboard identifies X vs Jace as a The CROWD Twitter Spaces battle on Aug. 6, 2022; official @CrowdShyt upload preserved | PENDING | PENDING | GBE / The CROWD | Date HIGH via preserved public Spaces index; flyer/time pending |
 | 5 | Tieso | Crowd Control Vol. 2 | aCyK8W8y5v0 | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
 | 6 | Fuzhjin | Unforeseen Circumstances 7 | dIENORIk-lU | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
 | 7 | Rari Lauren | Whyt Noise | ViOv-hJ4uOs | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
@@ -66,6 +66,17 @@ Evidence recovered:
 Status: VERIFIED MATCHUP / EVENT; exact battle date, Space URL and publication relationship PENDING.
 
 Historical project evidence also records a `WE THE FANS x THE CROWD — Training Day` X/Twitter Space hosted by Jayblac on 2024-01-07 with 2,479 participants. That establishes a Training Day program/Space anchor but the recovered excerpt does not explicitly bind X vs Big Kannon to that specific Space. Therefore 2024-01-07 is NOT yet promoted as the X/Kannon battle date.
+
+### Lost In Space — X vs Jace
+- matchup: X Tha God vs Jace
+- event: Lost In Space
+- event date: 2022-08-06
+- evidence: preserved historical project research citing SpacesDashboard for the audio battle date
+- official @CrowdShyt YouTube ID: `ms4r261sQ9c`
+- exact event time: PENDING
+- Space URL / Space ID: PENDING
+- flyer/card: PENDING
+- confidence: HIGH for date; not first-party flyer-level evidence
 
 ## First-Party Flyer Assets Recovered
 
@@ -143,7 +154,6 @@ Priority A — recover matchup flyers + exact event dates/times:
 1. Members Only — X vs Geminii
 2. The Shootout — exact date/time
 3. Unforeseen Circumstances — X vs Whytboy
-4. Lost In Space — X vs Jace
 5. Crowd Control Vol. 2 — X vs Tieso
 6. Unforeseen Circumstances 7 — X vs Fuzhjin
 7. Whyt Noise — X vs Rari Lauren
