@@ -192,7 +192,14 @@
       "space_url": null,
       "rights": "gbe-crowd-owned",
       "flyer_status": "pending",
-      "confidence": "battle-high"
+      "confidence": "first-party-source-verified-date-pending",
+      "drive": {
+        "battle_asset_id": "1vjdqstq2tNQxgxRH_LK8Ch1EXuG5VpTu",
+        "battle_asset_name": "X Tha God Vs Luxry.mp4",
+        "production_folder": "Battle Drops / Thursday",
+        "created_at": "2023-08-17T03:19:07.880Z",
+        "modified_at": "2023-08-17T03:19:25.693Z"
+      }
     }
   ],
   "recovered_leads": [
