@@ -13,10 +13,10 @@ INSERT OR IGNORE INTO player_events(
   '2023-09-30',
   NULL,
   'battle event',
-  'Demon Time Battle League',
+  'Stardom (formerly Demon Time Battle League)',
   'external',
   'verified-public-index',
-  'Rap Verdict identifies event Sep 30 2023 and provider release Oct 4 2023 for Chuck Lucci vs X Tha God; YouTube ID xgupv_oiIQ8.'
+  'Rap Verdict identifies event Sep 30 2023 and provider release Oct 4 2023 for Chuck Lucci vs X Tha God; YouTube ID xgupv_oiIQ8. Enterprise owner confirms Demon Time Battle League was renamed Stardom and is run by Big Tali. Provider/source rights remain separately classified.'
 ),
 (
   'sunfall-2024-06-15',
