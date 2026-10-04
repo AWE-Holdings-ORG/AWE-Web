@@ -19,6 +19,9 @@ The experience may draw from the broad visual language of fighting-game and char
 - PRESS START enters that artist world.
 - Mobile uses tap-to-select.
 - Locked identities remain encrypted.
+- The roster is member-specific; two authenticated members may legitimately see different discovered signals in the same House.
+- Default House roster membership and member-specific unlocks are separate concepts.
+- A Cheat Code may reveal a hidden signal to one member without changing the artist's canonical House.
 
 ## Slot Law
 
@@ -52,20 +55,30 @@ Locked slots must not reveal a normal route into the artist or Crown architectur
 - PRESS START destination: /crown/crowd/level-x/
 - Roster slot uses the user-supplied close headshot.
 - Selected preview uses the canonical X character artwork.
-- X selected-art composition uses a slight zoom-out at approximately 94% stage height to reduce unnecessary enlargement of the current provisional JPEG while preserving the approved composition.
+- X selected-art composition uses the canonical full poster inside the tall 4:5 Player stage so the trait list and hashtags remain readable instead of being sacrificed to a short landscape crop.
 
 The 2026-09-30 headshot source is intended specifically for the compact roster box and does not replace the larger canonical character artwork.
 
 ## Current Recognized Artists
-- 01 — X Tha God — world available.
-- 02 — Big Tali / Big Taliban — identity recognized; world in development.
-- 03 — DeeJayy — identity recognized; GBE; no automatic CROWD affiliation; world in development.
+
+### The CROWD default roster
+- X Tha God — world available.
+- Big Tali / Big Taliban — identity recognized; world in development.
+
+### GBE default roster
+- DeeJayy — identity recognized; GBE; world in development.
+
+### Member-specific preview exception
+- AWE-000001 may see DeeJayy in The CROWD through the legacy preview unlock created during Player UX testing. This is a personal roster exception, not CROWD affiliation.
 
 DeeJayy image canon:
 - roster/headshot slot uses the user-supplied close-up car selfie;
 - selected/hover preview uses the user-supplied full-body "DEEJAYY — Benton Harbor, Michigan" character artwork;
 - DeeJayy selected-art composition uses controlled full-stage scaling at approximately 100% stage width and 118% stage height with left/center positioning so the portrait artwork reads with the same horizontal presence as X while retaining the intended poster composition;
 - DeeJayy remains WORLD // IN DEVELOPMENT until a destination is canonically assigned.
+- DeeJayy is not a default CROWD roster signal. His CROWD appearance was a development/test preview only.
+- DeeJayy is a canonical GBE signal and seeds the future GBE House Player roster.
+- AWE-000001 may continue seeing DeeJayy in The CROWD as a legacy preview unlock; that does not create CROWD affiliation.
 - Remaining slots stay encrypted until canonically introduced.
 
 ## Visual Law
@@ -74,6 +87,10 @@ DeeJayy image canon:
 - Selected state must be unmistakable.
 - Headshots crop-to-fill inside the slot while preserving the face.
 - Large preview may use fuller artwork.
+- The selected poster stage should run substantially down the page ("to the floor") rather than force portrait artwork into a short landscape crop.
+- Canonical desktop selected-poster geometry targets a tall 4:5 stage with approximately 960px minimum height at the current layout width.
+- The right roster panel stretches to the same height and reserves its lower section for the Cheat Code terminal.
+- X and other full poster assets should use the tall stage so titles, traits, hashtags, and lower-poster information are not unnecessarily cropped.
 - A VS composition is not required.
 
 ## Selected Preview Image Law
