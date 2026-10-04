@@ -75,9 +75,9 @@ Event/flyer/Space reconciliation for these records lives in `XTG-CROWD-EVENT-REG
 | E17 | X vs OG Duggie — championship battle | AeoEDYdnJzk | external |
 | E18 | Foet Dev vs X | BMl9Au_6X6k | external |
 
-## C — Old Tracker External Battles Missing From Migration 0008 — 3
+## C — Old Tracker Battles Missing From Migration 0008 — 3
 
-These are distinct records, not duplicates of current seed rows.
+These are distinct records, not duplicates of current seed rows. Event ownership and provider-source provenance are tracked separately.
 
 | ID | Opponent | League / Event | YouTube ID | Why distinct |
 |---|---|---|---|---|
