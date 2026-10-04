@@ -51,8 +51,9 @@ Rules:
 | 11 | Bearvan | Hostility Vol. 1 | bDgH8kdPbEA | 2022-11-05 | 9:00 PM ET | Hostility Vol 1 Drive `IMG_3822.JPG`: The Crowd Presents Hostility volume 1; X Tha God vs Bearvan; Saturday 11/5; 9pm EST; same folder contains `xVbear.mp4` | YES | PENDING | GBE / The CROWD | VERIFIED |
 | 12 | King TR | Don't Die Vol. 1 | -RHWE4oHcFc | PENDING | PENDING | Historical tracker + official @CrowdShyt upload | PENDING | PENDING | GBE / The CROWD | Battle HIGH; date pending |
 | 13 | Luxry | Unforeseen Circumstances | CyNwV5ir91A | PENDING | PENDING | Historical tracker + official @CrowdShyt upload + first-party Battle Drops master `X Tha God Vs Luxry.mp4` (Drive ID `1vjdqstq2tNQxgxRH_LK8Ch1EXuG5VpTu`) | PENDING | PENDING | GBE / The CROWD | FIRST-PARTY SOURCE VERIFIED; event date pending |
+| 14 | Big Kannon | Training Day | — | 2024-01-07 | PENDING | First-party The CROWD Drive `XVSKannon.mp4` + recovered Training Day matchup card naming X THA GOD vs BIG KANNON + public Training Day Space chronology dated 2024-01-07 | YES | Exact Space URL/ID PENDING | GBE / The CROWD | VERIFIED CROSS-SOURCE |
 
-## Newly Recovered X Battle Lead
+## Reconciled First-Party X Battle Addition
 
 ### X Tha God vs Big Kannon — Training Day
 
@@ -60,12 +61,17 @@ This matchup is not part of the historical 27-row X battle tracker.
 
 Evidence recovered:
 - The CROWD Drive root contains `XVSKannon.mp4` (Drive file ID `1oUWUKwCG8GFLxLuS3kH43pSqyGAb-cks`).
-- A public flyer states `WE THE FANS BATTLE LEAGUE & THE CROWD PRESENTS: TRAINING DAY` and lists `X THA GOD vs BIG KANNON`.
-- Public CROWD-network posts show Training Day activity using X/Twitter Spaces, including a separately confirmed 11/24/23 9 PM ET Spaces matchup. That date must NOT be assigned to X vs Big Kannon without a direct matchup/date source.
+- A recovered Training Day card states `WE THE FANS BATTLE LEAGUE & THE CROWD PRESENTS: TRAINING DAY` and lists `X THA GOD vs BIG KANNON`.
+- Public Training Day Space chronology records `WE THE FANS x THE CROWD PRESENTS TRAINING DAY HOSTED BY JAYBLAC` on 2024-01-07.
+- The same chronology records `TRAINING DAY FACEOFFS HOSTED BY COLA THE BIG SPEAKER` on 2023-12-23, supporting the rollout sequence.
 
-Status: VERIFIED MATCHUP / EVENT; exact battle date, Space URL and publication relationship PENDING.
-
-Historical project evidence also records a `WE THE FANS x THE CROWD — Training Day` X/Twitter Space hosted by Jayblac on 2024-01-07 with 2,479 participants. That establishes a Training Day program/Space anchor but the recovered excerpt does not explicitly bind X vs Big Kannon to that specific Space. Therefore 2024-01-07 is NOT yet promoted as the X/Kannon battle date.
+Status: VERIFIED CROSS-SOURCE.
+- event date: 2024-01-07;
+- event time: PENDING;
+- exact Space URL / Space ID: PENDING;
+- public YouTube distribution URL: PENDING;
+- Player source: first-party The CROWD Drive;
+- staged in migration 0016.
 
 ### Lost In Space — X vs Jace
 - matchup: X Tha God vs Jace
@@ -148,8 +154,9 @@ For each X event above, collect when available:
 - current public corroboration: XspaceGPT / TwitterSpaceGPT host archive
 - historical project source: prior SpacesDashboard research preserved in the project archive recorded 2,479 participants
 - relation to X: historical note says the community touchpoint featured management and X
-- relation to X vs Big Kannon: NOT YET DIRECTLY PROVEN
-- battle event_date remains PENDING until a direct matchup/date or Space-card relationship is recovered.
+- relation to X vs Big Kannon: CROSS-SOURCE BINDING ESTABLISHED through the recovered Training Day matchup card plus first-party `XVSKannon.mp4`;
+- battle event_date: 2024-01-07;
+- exact Space URL/ID and event time remain PENDING.
 
 Related public program chronology:
 - `TRAINING DAY FACEOFFS HOSTED BY COLA THE BIG SPEAKER` — 2023-12-23 — 01:23:09 — 621 tuned in.
@@ -184,7 +191,7 @@ Priority B — recover X/Twitter Space status/ID for every event.
 
 Priority C — compare first-party event date against YouTube publication date and keep both values separately.
 
-Priority D — inspect extra first-party battle assets such as `XVSKannon.mp4` and determine whether additional X battles are missing from the historical tracker.
+Priority D — continue inspecting extra first-party battle assets and event folders for X battles missing from the historical tracker. `XVSKannon.mp4` is reconciled and staged in migration 0016.
 
 ## Player Ingest Rule
 
