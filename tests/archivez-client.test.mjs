@@ -56,7 +56,7 @@ test("Archivez API is a separate route surface with shared access enforcement",(
   assert.match(api,/buildPlayerCatalog/);
   assert.match(api,/collectionSlug/);
   assert.match(service,/collectionSlug=null/);
-  assert.match(service,/const scoped=collectionSlug/);
+  assert.match(service,/const scoped=\(collectionSlug/);
 });
 
 test("Crown Archivez route requires Crown identity while public Archivez does not",()=>{
