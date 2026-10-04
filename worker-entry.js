@@ -1,5 +1,6 @@
 import baseWorker from "./worker.js";
 import {playerCatalogResponse} from "./lib/player-api.js";
+import {archivezCatalogResponse} from "./lib/archivez-api.js";
 import {buildPlayerViewerContext} from "./lib/player-viewer-context.js";
 import {resolveMediaAccess} from "./lib/player-access.js";
 import {playerAnalyticsSchemaReady,playerAnalyticsAuthorized,recordPlaybackSignal,playerAnalyticsResponse} from "./lib/player-analytics.js";
@@ -103,6 +104,60 @@ async function playerEngagementAuthorized(request,env,member){
 export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);
+
+    if(url.pathname==="/api/archivez/catalog"&&request.method==="GET"){
+      try{
+        const schema=await playerAccessSchema(env);
+        if(!schema.ready){
+          return json({
+            ok:false,
+            message:"PUBLIC ARCHIVEZ DATA NOT READY.",
+            code:"PLAYER_ACCESS_SCHEMA_MISSING"
+          },503);
+        }
+
+        return archivezCatalogResponse(request,env,{
+          crownMemberId:null,
+          cypherzProfileId:null,
+          crownAuthenticated:false,
+          surface:"public"
+        });
+      }catch{
+        return json({
+          ok:false,
+          message:"PUBLIC ARCHIVEZ TEMPORARILY UNAVAILABLE.",
+          code:"ARCHIVEZ_PUBLIC_RUNTIME_FAILURE"
+        },503);
+      }
+    }
+
+    if(url.pathname==="/api/crown/archivez/catalog"&&request.method==="GET"){
+      const identity=await crownIdentity(request,env);
+      if(!identity.ok)return identity.response;
+
+      try{
+        const schema=await playerAccessSchema(env);
+        if(!schema.ready){
+          return json({
+            ok:false,
+            message:"ARCHIVEZ DATA NOT READY.",
+            code:"PLAYER_ACCESS_SCHEMA_MISSING"
+          },503);
+        }
+
+        return archivezCatalogResponse(request,env,{
+          crownMemberId:Number(identity.member.id),
+          crownAuthenticated:true,
+          surface:"crown"
+        });
+      }catch{
+        return json({
+          ok:false,
+          message:"ARCHIVEZ TEMPORARILY UNAVAILABLE.",
+          code:"ARCHIVEZ_RUNTIME_FAILURE"
+        },503);
+      }
+    }
 
     if(url.pathname==="/api/player/catalog"&&request.method==="GET"){
       try{
