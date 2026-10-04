@@ -6,8 +6,10 @@ PRAGMA foreign_keys=ON;
 -- Adds:
 -- 1) X Tha God vs OG Duggie — Super Readers
 --    Distinct from the later championship battle already seeded in 0008.
---    Release context is independently corroborated as 2023-05-18, but the
---    exact battle event date remains unknown and is intentionally NULL.
+--    Super Readers event ownership is represented separately by migration 0017.
+--    This row preserves provider/source provenance. Release context is independently
+--    corroborated as 2023-05-18, but the exact battle event date remains unknown
+--    and is intentionally NULL.
 -- 2) X Tha God vs Big Kannon — Training Day
 --    First-party The CROWD Drive source plus recovered matchup card and
 --    public Training Day Space chronology verify the event date 2024-01-07.
