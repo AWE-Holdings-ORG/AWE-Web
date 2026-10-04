@@ -22,9 +22,10 @@ Evidence strength, strongest first:
 1. first-party event flyer/card showing matchup + date/time;
 2. first-party @CrowdShyt / GBE / participant X post with event/date/Space link;
 3. first-party The CROWD Drive event folder containing the battle asset + card/flyer;
-4. official @CrowdShyt YouTube title/description;
-5. historical internal tracker;
-6. inference.
+4. visually confirmed official @CrowdShyt YouTube thumbnail when it is the matchup flyer/event card;
+5. official @CrowdShyt YouTube title/description;
+6. historical internal tracker;
+7. inference.
 
 Rules:
 - never convert upload date into event date without evidence;
@@ -32,7 +33,10 @@ Rules:
 - a general event card may establish event date while a separate matchup asset establishes participation;
 - record whether the specific matchup is printed directly on the inspected flyer;
 - unresolved Space IDs/URLs remain PENDING;
-- historical provider view counts are provenance only and never seed first-party Player analytics.
+- historical provider view counts are provenance only and never seed first-party Player analytics;
+- official @CrowdShyt YouTube thumbnails are flyer-evidence candidates because historical CROWD uploads commonly use the flyer as the thumbnail/video presentation art;
+- a thumbnail must be visually confirmed before it is promoted to a matchup-flyer/event-card artifact;
+- printed date/time on a confirmed flyer thumbnail may support event evidence, but the YouTube upload date itself never becomes the event date.
 
 ## Reconciled CROWD-Owned Battle Registry
 
@@ -177,7 +181,7 @@ This supports the Training Day rollout chronology but still does not bind the X/
 
 ## Outstanding Research Queue
 
-Priority A — recover matchup flyers + exact event dates/times:
+Priority A — inspect official @CrowdShyt video thumbnails first, then recover any separate matchup flyers + exact event dates/times:
 1. Members Only — X vs Geminii
 2. The Shootout — exact date/time
 3. Unforeseen Circumstances — X vs Whytboy
