@@ -82,6 +82,7 @@ migrations=[
   "0020_tha_x_filez_dropbox_02.sql",
   "0021_tha_x_filez_dropbox_03.sql",
   "0022_tha_x_filez_dropbox_04.sql",
+  "0024_tha_x_filez_drive_completion.sql",
 ]
 
 for name in migrations:
@@ -98,7 +99,7 @@ JOIN player_media_collection_items i ON i.media_id=m.id
 JOIN player_media_collections c ON c.id=i.collection_id
 WHERE c.collection_slug='tha-x-filez'
 """).fetchone()
-assert totals==(1104,1104), totals
+assert totals==(1230,1230), totals
 
 providers=dict(db.execute("""
 SELECT m.provider,COUNT(*)
@@ -108,7 +109,7 @@ JOIN player_media_collections c ON c.id=i.collection_id
 WHERE c.collection_slug='tha-x-filez'
 GROUP BY m.provider
 """).fetchall())
-assert providers=={'google-drive':92,'dropbox':1012}, providers
+assert providers=={'google-drive':218,'dropbox':1012}, providers
 
 dropbox_types=dict(db.execute("""
 SELECT media_type,COUNT(*)
@@ -139,10 +140,10 @@ JOIN player_media_collections c ON c.id=i.collection_id
 WHERE c.collection_slug='tha-x-filez'
 ORDER BY i.file_code
 """).fetchall()]
-assert len(codes)==1104
-assert len(set(codes))==1104
+assert len(codes)==1230
+assert len(set(codes))==1230
 assert codes[0]=='DXF-0001'
-assert codes[-1]=='DXF-1104'
+assert codes[-1]=='DXF-1230'
 
 dropbox_urls=db.execute("""
 SELECT COUNT(*)
@@ -165,4 +166,4 @@ WHERE provider='dropbox'
 """).fetchone()[0]
 assert unclassified_video==203, unclassified_video
 
-print("PASS: Tha X Filez holds 1,104 unique records = 92 Drive + 1,012 Dropbox; DXF-0001 through DXF-1104; Dropbox intake is PUBLIC-first and videos remain unclassified")
+print("PASS: Tha X Filez holds 1,104 unique records = 92 Drive + 1,012 Dropbox; DXF-0001 through DXF-1230; Dropbox intake is PUBLIC-first and videos remain unclassified")
