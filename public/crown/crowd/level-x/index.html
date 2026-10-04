@@ -195,7 +195,7 @@ function embed(item){
   }
   if(type==="video"&&url)return '<video controls playsinline preload="metadata" src="'+esc(url)+'"></video>';
   if(type==="audio"&&url)return '<div><div class="x">X</div><audio controls preload="metadata" src="'+esc(url)+'"></audio></div>';
-  if(["image","artwork","photo"].includes(type)&&url)return '<img src="'+esc(url)+'" alt="'+esc(item.title)+'">';
+  if(["image","artwork","photo"].includes(type)&&(item.thumbnail_url||url))return '<img src="'+esc(item.thumbnail_url||url)+'" alt="'+esc(item.title)+'">';
   if(url)return '<div><div class="x">X</div><small>EXTERNAL MEDIA // SOURCE AVAILABLE BELOW</small></div>';
   return '<div><div class="x">X</div><small>'+esc(item.media_type||"ARCHIVE").toUpperCase()+' // '+esc(item.title)+'</small></div>';
 }
