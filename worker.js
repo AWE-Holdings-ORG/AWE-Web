@@ -319,27 +319,174 @@ async function auth(request,env){
   const cookie=`awe_crown_session=${raw}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=28800`;
   return json({ok:true,awId:member.aw_id,crownName:member.crown_name,destination},200,{"set-cookie":cookie});
 }
-async function enroll(request,env){
-  requireRuntime(env);
-  const body=await readJson(request);
-  if(!(await verifyTurnstile(body.turnstileToken,request,env)))return json({ok:false,message:"HUMAN VERIFICATION REQUIRED."},403);
-  const email=String(body.email||"").trim().toLowerCase(), crownName=String(body.crownName||"").trim(), pck=String(body.pck||"");
-  if(!email||!crownName||!pck)return json({ok:false,message:"EMAIL, CROWN NAME AND PCK REQUIRED."},400);
-  if(pck.length<12)return json({ok:false,message:"PCK MUST BE AT LEAST 12 CHARACTERS."},400);
-  const exists=await env.CROWN_DB.prepare(`SELECT id FROM members WHERE email=? OR lower(crown_name)=lower(?) LIMIT 1`).bind(email,crownName).first();
-  if(exists)return json({ok:false,message:"IDENTITY ALREADY EXISTS."},409);
-  const row=await env.CROWN_DB.prepare("SELECT COALESCE(MAX(id),0)+1 AS n FROM members").first();
-  const awId="AWE-"+String(row.n).padStart(6,"0");
-  const salt=randomToken(18), hash=await pckDigest(pck,salt,env.PCK_PEPPER), verificationToken=randomToken(18);
-  await env.CROWN_DB.batch([
-    env.CROWN_DB.prepare(`INSERT INTO members(aw_id,email,crown_name,status,verified_at) VALUES(?,?,?,'active',datetime('now'))`).bind(awId,email,crownName),
-    env.CROWN_DB.prepare(`INSERT INTO enrollment_requests(email,crown_name,verification_token,status,created_at) VALUES(?,?,?,'preview-activated',datetime('now'))`).bind(email,crownName,verificationToken),
-    env.CROWN_DB.prepare(`INSERT INTO crown_credentials(member_id,pck_hash,pck_salt) SELECT id,?,? FROM members WHERE aw_id=?`).bind(hash,salt,awId),
-    env.CROWN_DB.prepare(`INSERT INTO member_access(member_id,house_slug,destination,active,priority) SELECT id,'crown-house','/crown/',1,1 FROM members WHERE aw_id=?`).bind(awId),
-    env.CROWN_DB.prepare(`INSERT INTO access_events(member_id,event_type,created_at) SELECT id,'preview_enrollment',datetime('now') FROM members WHERE aw_id=?`).bind(awId)
-  ]);
-  return json({ok:true,message:"CROWN IDENTITY ESTABLISHED.",awId,crownName},201);
+// Enrollment is deliberately different from authentication: no active Crown
+// identity or House access is granted until email ownership is verified.
+async function crownEnrollmentReady(env){
+  if(!env?.CROWN_DB||!env.PCK_PEPPER||!env.SESSION_PEPPER||
+     !env.TURNSTILE_SECRET||!env.TURNSTILE_SITE_KEY||
+     !env.RESEND_API_KEY||!env.CROWN_EMAIL_FROM||!env.CROWN_PUBLIC_ORIGIN)return false;
+  try{
+    const origin=new URL(env.CROWN_PUBLIC_ORIGIN);
+    if(origin.protocol!=="https:"||origin.username||origin.password)return false;
+    const columns=(await env.CROWN_DB.prepare("PRAGMA table_info(enrollment_requests)").all()).results||[];
+    return ["member_id","expires_at","verified_at","last_sent_at","referral_code"]
+      .every(name=>columns.some(column=>column.name===name));
+  }catch{return false;}
 }
+async function crownSignupConfig(env){
+  const ready=await crownEnrollmentReady(env);
+  return json({ok:true,ready,siteKey:ready?String(env.TURNSTILE_SITE_KEY):null});
+}
+function normalizeReferral(value){
+  return String(value||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60)||null;
+}
+function safeEmail(value){
+  const email=String(value||"").trim().toLowerCase();
+  return email.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?email:null;
+}
+async function sendCrownVerification(email,name,token,env){
+  const verifyUrl=new URL("/verify/",String(env.CROWN_PUBLIC_ORIGIN));
+  verifyUrl.searchParams.set("token",token);
+  const link=verifyUrl.toString();
+  // Token is only transmitted to the email provider and the addressee.
+  // No plaintext verification token is written to D1 or audit logs.
+  const response=await fetch("https://api.resend.com/emails",{
+    method:"POST",
+    headers:{
+      "authorization":"Bearer "+env.RESEND_API_KEY,
+      "content-type":"application/json",
+      "Idempotency-Key":"crown-verify-"+(await tokenDigest(token,env.SESSION_PEPPER))
+    },
+    body:JSON.stringify({
+      from:String(env.CROWN_EMAIL_FROM),
+      to:[email],
+      subject:"Verify your Crown Network email",
+      text:"Welcome to the Crown Network, "+name+"!\n\nVerify your email within 24 hours:\n"+link+
+        "\n\nIf you did not request this invitation, you can ignore this email.\n"+
+        "Crown Coins, if offered, are promotional rewards only; they have no cash value.",
+      html:'<div style="font-family:Arial,sans-serif;background:#080706;color:#f2e7cd;padding:32px;line-height:1.6">'+
+        '<h2 style="color:#e2b85d">WELCOME TO THE CROWN NETWORK</h2>'+
+        '<p>One step left: verify your email to activate your Crown identity.</p>'+
+        '<p><a style="background:#cba250;color:#090806;padding:12px 22px;text-decoration:none;font-weight:bold" href="'+link+'">VERIFY MY EMAIL</a></p>'+
+        '<p>This invitation expires in 24 hours. If you did not register, ignore this message.</p>'+
+        '<small>Crown Coins are promotional, non-cash rewards with no promised monetary value.</small></div>'
+    })
+  });
+  return response.ok;
+}
+async function enroll(request,env){
+  if(!(await crownEnrollmentReady(env))){
+    return json({ok:false,message:"CROWN SIGNUP IS NOT YET OPEN."},503);
+  }
+  const body=await readJson(request);
+  if(!(await verifyTurnstile(body.turnstileToken,request,env))){
+    return json({ok:false,message:"HUMAN VERIFICATION REQUIRED."},403);
+  }
+  const email=safeEmail(body.email);
+  const crownName=String(body.crownName||"").trim().replace(/\s+/g," ");
+  const pck=String(body.pck||"");
+  const referralCode=normalizeReferral(body.referralCode);
+  if(!email||crownName.length<3||crownName.length>60||pck.length<12||pck.length>256){
+    return json({ok:false,message:"VALID EMAIL, CROWN NAME (3–60) AND PCK (12–256) REQUIRED."},400);
+  }
+  const exists=await env.CROWN_DB.prepare(
+    "SELECT 1 AS existing FROM members WHERE email=? OR lower(crown_name)=lower(?) LIMIT 1"
+  ).bind(email,crownName).first();
+  if(exists)return json({ok:false,message:"THIS CROWN NAME OR EMAIL CANNOT BE REGISTERED."},409);
+  const next=await env.CROWN_DB.prepare("SELECT COALESCE(MAX(id),0)+1 AS n FROM members").first();
+  const awId="AWE-"+String(next.n).padStart(6,"0");
+  const salt=randomToken(18),pckHash=await pckDigest(pck,salt,env.PCK_PEPPER);
+  const rawToken=randomToken(32),digest=await tokenDigest(rawToken,env.SESSION_PEPPER);
+  try{
+    await env.CROWN_DB.batch([
+      env.CROWN_DB.prepare(
+        "INSERT INTO members(aw_id,email,crown_name,status,verified_at) VALUES(?,?,?,'pending',NULL)"
+      ).bind(awId,email,crownName),
+      env.CROWN_DB.prepare(
+        "INSERT INTO crown_credentials(member_id,pck_hash,pck_salt) SELECT id,?,? FROM members WHERE aw_id=?"
+      ).bind(pckHash,salt,awId),
+      env.CROWN_DB.prepare(
+        "INSERT INTO enrollment_requests(email,crown_name,verification_token,status,created_at,member_id,expires_at,last_sent_at,referral_code) "+
+        "SELECT email,crown_name,?,'pending',datetime('now'),id,datetime('now','+24 hours'),datetime('now'),? FROM members WHERE aw_id=?"
+      ).bind(digest,referralCode,awId),
+      env.CROWN_DB.prepare(
+        "INSERT INTO access_events(member_id,event_type,created_at) SELECT id,'email_verification_requested',datetime('now') FROM members WHERE aw_id=?"
+      ).bind(awId)
+    ]);
+  }catch{
+    return json({ok:false,message:"SIGNUP COULD NOT BE RESERVED. PLEASE TRY AGAIN."},409);
+  }
+  try{
+    if(!(await sendCrownVerification(email,crownName,rawToken,env)))throw Error("MAIL_FAILED");
+  }catch{
+    return json({ok:false,message:"IDENTITY RESERVED, BUT EMAIL DELIVERY FAILED. PLEASE USE RESEND VERIFICATION AFTER TWO MINUTES."},502);
+  }
+  return json({ok:true,status:"pending",message:"CHECK YOUR EMAIL TO VERIFY YOUR CROWN IDENTITY. YOUR ACCOUNT IS NOT ACTIVE YET."},202);
+}
+async function resendCrownVerification(request,env){
+  if(!(await crownEnrollmentReady(env)))return json({ok:false,message:"CROWN SIGNUP IS NOT YET OPEN."},503);
+  const body=await readJson(request);
+  if(!(await verifyTurnstile(body.turnstileToken,request,env))){
+    return json({ok:false,message:"HUMAN VERIFICATION REQUIRED."},403);
+  }
+  const email=safeEmail(body.email);
+  if(!email)return json({ok:false,message:"VALID EMAIL REQUIRED."},400);
+  // Keep response independent of existence so email discovery is not possible.
+  const generic={ok:true,message:"IF THIS EMAIL HAS A PENDING CROWN SIGNUP, A NEW LINK WILL BE SENT WHEN ELIGIBLE."};
+  const pending=await env.CROWN_DB.prepare(
+    "SELECT e.id,m.crown_name FROM enrollment_requests e JOIN members m ON m.id=e.member_id "+
+    "WHERE m.email=? AND m.status='pending' AND e.status='pending' "+
+    "AND (e.last_sent_at IS NULL OR datetime(e.last_sent_at)<=datetime('now','-2 minutes')) "+
+    "ORDER BY e.id DESC LIMIT 1"
+  ).bind(email).first();
+  if(!pending)return json(generic);
+  const raw=randomToken(32),digest=await tokenDigest(raw,env.SESSION_PEPPER);
+  const updated=await env.CROWN_DB.prepare(
+    "UPDATE enrollment_requests SET verification_token=?,expires_at=datetime('now','+24 hours'),"+
+    "last_sent_at=datetime('now') WHERE id=? AND status='pending' "+
+    "AND (last_sent_at IS NULL OR datetime(last_sent_at)<=datetime('now','-2 minutes'))"
+  ).bind(digest,pending.id).run();
+  if(Number(updated?.meta?.changes||0)!==1)return json(generic);
+  try{await sendCrownVerification(email,pending.crown_name,raw,env);}catch{}
+  return json(generic);
+}
+async function verifyCrownEmail(request,env){
+  if(!(await crownEnrollmentReady(env)))return json({ok:false,message:"CROWN VERIFICATION NOT AVAILABLE."},503);
+  const body=await readJson(request);
+  const token=String(body.token||"");
+  if(token.length<30||token.length>256)return json({ok:false,message:"INVALID VERIFICATION LINK."},400);
+  const digest=await tokenDigest(token,env.SESSION_PEPPER);
+  const entry=await env.CROWN_DB.prepare(
+    "SELECT e.id,e.member_id FROM enrollment_requests e JOIN members m ON m.id=e.member_id "+
+    "WHERE e.verification_token=? AND e.status='pending' AND e.expires_at>datetime('now') "+
+    "AND m.status='pending' LIMIT 1"
+  ).bind(digest).first();
+  if(!entry)return json({ok:false,message:"THIS VERIFICATION LINK HAS EXPIRED OR ALREADY BEEN USED. REQUEST A NEW LINK IF NEEDED."},410);
+  const results=await env.CROWN_DB.batch([
+    env.CROWN_DB.prepare(
+      "UPDATE enrollment_requests SET status='verified',verified_at=datetime('now') "+
+      "WHERE id=? AND verification_token=? AND status='pending' AND expires_at>datetime('now')"
+    ).bind(entry.id,digest),
+    env.CROWN_DB.prepare(
+      "UPDATE members SET status='active',verified_at=datetime('now') "+
+      "WHERE id=? AND status='pending' AND EXISTS ("+
+      "SELECT 1 FROM enrollment_requests WHERE id=? AND status='verified' AND verification_token=?)"
+    ).bind(entry.member_id,entry.id,digest),
+    env.CROWN_DB.prepare(
+      "INSERT OR IGNORE INTO member_access(member_id,house_slug,destination,active,priority) "+
+      "SELECT id,'crown-house','/crown/',1,1 FROM members WHERE id=? AND status='active'"
+    ).bind(entry.member_id)
+  ]);
+  if(Number(results[0]?.meta?.changes||0)!==1){
+    return json({ok:false,message:"VERIFICATION LINK ALREADY USED."},410);
+  }
+  const member=await env.CROWN_DB.prepare(
+    "SELECT aw_id,crown_name FROM members WHERE id=? AND status='active'"
+  ).bind(entry.member_id).first();
+  if(!member)return json({ok:false,message:"VERIFICATION DID NOT COMPLETE."},503);
+  return json({ok:true,message:"EMAIL VERIFIED. YOUR CROWN IDENTITY IS ACTIVE.",awId:member.aw_id,crownName:member.crown_name});
+}
+
 export default {
   async fetch(request,env){
     const url=new URL(request.url);
@@ -362,6 +509,9 @@ export default {
       if(url.pathname==="/api/crown/admin/grant"&&request.method==="POST")return await crownAdminGrant(request,env);
       if(url.pathname==="/api/crown/logout"&&request.method==="POST")return await logout(request,env);
       if(url.pathname==="/api/crown/enroll"&&request.method==="POST")return await enroll(request,env);
+      if(url.pathname==="/api/crown/signup-config"&&request.method==="GET")return await crownSignupConfig(env);
+      if(url.pathname==="/api/crown/resend-verification"&&request.method==="POST")return await resendCrownVerification(request,env);
+      if(url.pathname==="/api/crown/verify-email"&&request.method==="POST")return await verifyCrownEmail(request,env);
       if(url.pathname==="/api/crown/health")return json({ok:true,service:"CROWN IDENTITY",db:!!env.CROWN_DB,pckPepper:typeof env.PCK_PEPPER==="string"&&env.PCK_PEPPER.length>0,sessionPepper:typeof env.SESSION_PEPPER==="string"&&env.SESSION_PEPPER.length>0,pbkdf2Iterations:PBKDF2_ITERATIONS});
       if(url.pathname.startsWith("/crown/"))return await crownAsset(request,env);
     } catch(error) {
