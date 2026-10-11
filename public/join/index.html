@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>Join The Crown | AW Enterprises</title>
+<style>
+:root{color-scheme:dark;--gold:#e4bc65;--ink:#050505;--muted:#aea48e}
+*{box-sizing:border-box}body{min-height:100vh;margin:0;color:#f8efdc;background:radial-gradient(ellipse at 50% 15%,#30230c 0%,#0b0905 43%,#030303 90%);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(520px,calc(100% - 36px));margin:4vh auto 8vh}header{text-align:center;padding:22px 0 28px}header a{color:#c6ab79;text-decoration:none;font-size:11px;letter-spacing:.2em}
+.emblem{font-size:44px;margin:12px 0 0;color:var(--gold)}h1{font:normal clamp(36px,10vw,56px)/1.03 Georgia,serif;margin:16px 0;color:var(--gold);text-align:center}
+.intro{color:#c6b99c;text-align:center;max-width:390px;margin:0 auto 20px}
+.panel{border:1px solid #685024;border-radius:18px;background:linear-gradient(150deg,rgba(34,26,13,.88),rgba(5,5,5,.96));padding:25px;box-shadow:0 18px 75px #0008}
+form{display:grid;gap:14px}label{display:grid;gap:7px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--gold)}
+input{width:100%;border:1px solid #5c4929;border-radius:7px;background:#080808;color:white;padding:14px;font-size:16px;outline-offset:3px}
+input:focus{outline:1px solid var(--gold)}button{cursor:pointer;background:var(--gold);color:#090806;font-weight:850;border:0;border-radius:8px;padding:15px;letter-spacing:.07em;font-size:13px}
+button:disabled{opacity:.45;cursor:not-allowed}small{color:var(--muted)}.note{font-size:12px;color:#b4a58a}.status{min-height:40px;color:var(--gold);font-size:13px;margin:12px 0}
+.secondary{background:transparent;border:1px solid #806434;color:var(--gold);padding:10px;margin-top:10px}
+.checkbox{display:flex;gap:10px;align-items:flex-start;letter-spacing:normal;color:#ccbfa7;line-height:1.4;font-weight:400}
+.checkbox input{width:18px;flex:0 0 18px;margin:2px 0}.hidden{display:none!important}
+hr{border:0;border-top:1px solid #45381d;margin:22px 0}
+@media(max-width:440px){.panel{padding:20px}}
+</style></head><body>
+<main>
+<header><a href="/">AW ENTERPRISES · CROWN NETWORK</a><div class="emblem" aria-hidden="true">♛</div><h1>Claim Your Crown.</h1>
+<p class="intro">You're early. Founding supporters get first access to the world we're building. Verify your email to reserve your Crown identity.</p></header>
+<section class="panel">
+  <p id="invite" class="note hidden"></p>
+  <form id="joinForm" class="hidden">
+    <label>EMAIL ADDRESS<input id="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></label>
+    <label>CROWN NAME<input id="crownName" type="text" autocomplete="nickname" minlength="3" maxlength="60" required placeholder="Your public Crown name"></label>
+    <label>PERSONAL CROWN KEY<input id="pck" type="password" minlength="12" maxlength="256" autocomplete="new-password" required placeholder="At least 12 characters"></label>
+    <label>CONFIRM CROWN KEY<input id="confirm" type="password" minlength="12" maxlength="256" autocomplete="new-password" required></label>
+    <div id="turnstile"></div>
+    <label class="checkbox"><input type="checkbox" required> I understand registration is subject to Crown Network terms and that any future Crown Coins are promotional rewards, not money, with no guaranteed cash value.</label>
+    <button id="joinButton" disabled type="submit">SEND MY VERIFICATION EMAIL</button>
+  </form>
+  <div id="success" class="hidden">
+    <h2>Check your inbox. ✉</h2>
+    <p>We sent a verification link. Open it within 24 hours to activate your Crown identity. Until then, you cannot sign in.</p>
+    <p class="note">No message? Check spam, then request a replacement link after two minutes.</p>
+    <button id="showResend" class="secondary" type="button">RESEND VERIFICATION</button>
+  </div>
+  <div id="resend" class="hidden">
+    <h2>Resend your link</h2>
+    <form id="resendForm">
+      <label>EMAIL ADDRESS<input id="resendEmail" type="email" maxlength="254" autocomplete="email" required></label>
+      <div id="resendTurnstile"></div>
+      <button id="resendButton" disabled type="submit">REQUEST NEW LINK</button>
+    </form>
+  </div>
+  <p id="status" class="status" role="status" aria-live="polite">Checking invitation availability…</p>
+  <hr><small>Already registered? <a style="color:var(--gold)" href="/?crown=login">Enter the Crown Network</a></small>
+</section>
+<p class="note" style="text-align:center">Invitations do not unlock restricted House media. Crown Coins, if offered, are non-cash promotional rewards and subject to published redemption rules.</p>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ const params=new URLSearchParams(location.search);
+ const ref=String(params.get("ref")||"").toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
+ if(ref==="x-tha-god"){$("invite").textContent="YOU'RE INVITED BY X THA GOD // THE CROWD";$("invite").classList.remove("hidden");}
+ const status=msg=>{$("status").textContent=msg;};
+ const state={signupToken:"",resendToken:"",siteKey:"",widgets:[]};
+ const challengeScript=()=>new Promise((resolve,reject)=>{
+   if(window.turnstile)return resolve();
+   const s=document.createElement("script");s.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+   s.async=true;s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
+ });
+ async function init(){
+  try{
+   const r=await fetch("/api/crown/signup-config",{cache:"no-store"});
+   const d=await r.json();
+   if(!r.ok||!d.ready||!d.siteKey){status("INVITATIONS ARE NOT OPEN YET. PLEASE RETURN SOON.");return;}
+   state.siteKey=d.siteKey;
+   await challengeScript();
+   $("joinForm").classList.remove("hidden");status("Verify your email to claim your Crown.");
+   state.widgets.push(window.turnstile.render("#turnstile",{sitekey:d.siteKey,
+     callback:token=>{state.signupToken=token;$("joinButton").disabled=false;},
+     "expired-callback":()=>{state.signupToken="";$("joinButton").disabled=true;}
+   }));
+  }catch{status("REGISTRATION TEMPORARILY UNAVAILABLE.");}
+ }
+ $("joinForm").addEventListener("submit",async e=>{
+   e.preventDefault();
+   if($("pck").value!==$("confirm").value){status("YOUR CROWN KEYS DO NOT MATCH.");return;}
+   if(!state.signupToken){status("COMPLETE HUMAN VERIFICATION FIRST.");return;}
+   $("joinButton").disabled=true;status("RESERVING YOUR CROWN IDENTITY…");
+   try{
+    const r=await fetch("/api/crown/enroll",{method:"POST",headers:{"content-type":"application/json"},
+     body:JSON.stringify({email:$("email").value,crownName:$("crownName").value,pck:$("pck").value,referralCode:ref,turnstileToken:state.signupToken})});
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw Error(d.message||"SIGNUP UNAVAILABLE");
+    $("resendEmail").value=$("email").value;
+    $("pck").value="";$("confirm").value="";
+    $("joinForm").classList.add("hidden");$("success").classList.remove("hidden");
+    status("VERIFICATION EMAIL REQUESTED. YOUR IDENTITY IS PENDING.");
+   }catch(err){status(err.message||"SIGNUP FAILED");state.signupToken="";window.turnstile.reset(state.widgets[0]);}
+ });
+ $("showResend").addEventListener("click",()=>{
+    $("resend").classList.remove("hidden");$("showResend").classList.add("hidden");
+    state.widgets.push(window.turnstile.render("#resendTurnstile",{sitekey:state.siteKey,
+     callback:token=>{state.resendToken=token;$("resendButton").disabled=false;},
+     "expired-callback":()=>{state.resendToken="";$("resendButton").disabled=true;}
+    }));
+ });
+ $("resendForm").addEventListener("submit",async e=>{
+   e.preventDefault();
+   if(!state.resendToken)return;
+   $("resendButton").disabled=true;
+   try{
+    const r=await fetch("/api/crown/resend-verification",{method:"POST",headers:{"content-type":"application/json"},
+      body:JSON.stringify({email:$("resendEmail").value,turnstileToken:state.resendToken})});
+    const d=await r.json();status(d.message||"VERIFICATION REQUEST RECEIVED.");
+   }catch{status("UNABLE TO REQUEST A NEW LINK. PLEASE TRY AGAIN.");}
+   state.resendToken="";window.turnstile.reset(state.widgets[1]);
+ });
+ init();
+})();
+</script></body></html>
