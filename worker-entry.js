@@ -4,6 +4,7 @@ import {archivezCatalogResponse} from "./lib/archivez-api.js";
 import {buildPlayerViewerContext} from "./lib/player-viewer-context.js";
 import {resolveMediaAccess} from "./lib/player-access.js";
 import {playerAnalyticsSchemaReady,playerAnalyticsAuthorized,recordPlaybackSignal,playerAnalyticsResponse} from "./lib/player-analytics.js";
+import {houseAdminCapabilities} from "./lib/house-admin.js";
 
 const json=(data,status=200)=>new Response(JSON.stringify(data),{
   status,
@@ -360,7 +361,10 @@ async function archiveAddComment(request,env,member){
 }
 
 async function archiveAdminPublicMeta(request,env,member){
-  if(member.aw_id!=="AWE-000001")return json({ok:false,message:"OWNER ACCESS REQUIRED."},403);
+  const capability=await houseAdminCapabilities(env.CROWN_DB,Number(member.id),"the-crowd");
+  if(!capability.canEditPublicMeta){
+    return json({ok:false,message:"THE CROWD MEDIA ADMIN ACCESS REQUIRED."},403);
+  }
   if(!(await archiveSocialSchemaReady(env))){
     return json({ok:false,message:"ARCHIVE SOCIAL LAYER NOT READY.",code:"ARCHIVE_SOCIAL_SCHEMA_MISSING"},503);
   }
@@ -407,7 +411,8 @@ async function archiveAdminPublicMeta(request,env,member){
     publicTitle:publicTitle||null,
     publicCaption:publicCaption||null,
     displayTitle:publicTitle||file.title,
-    message:"PUBLIC ARCHIVE INFO UPDATED."
+    message:"PUBLIC ARCHIVE INFO UPDATED.",
+    adminRole:capability.role
   });
 }
 
