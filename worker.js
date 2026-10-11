@@ -491,6 +491,9 @@ export default {
   async fetch(request,env){
     const url=new URL(request.url);
     try {
+      if(request.method==="GET"&&(url.pathname==="/join/x"||url.pathname==="/join/x/")){
+        return Response.redirect(new URL("/join/?ref=x-tha-god",request.url).toString(),302);
+      }
       if(url.pathname==="/api/crown/auth"&&request.method==="POST")return await auth(request,env);
       if(url.pathname==="/api/crown/atrium"&&request.method==="GET")return await atriumState(request,env);
       if(url.pathname==="/api/crown/house-key"&&request.method==="POST")return await resolveHouseKey(request,env);
