@@ -44,7 +44,7 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
 .detail h3{font:500 28px Georgia,serif;margin:0 0 6px}
 .detail p{margin:0;color:#81786c;line-height:1.65}
 .source{color:var(--g2);text-decoration:none;border:1px solid var(--line);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.1em}
-.admin-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.admin-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.admin-badge{border:1px solid #5c4624;color:var(--g2);padding:8px 10px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;background:#0b0905}
 .admin-edit{border:1px solid #5c4624;background:#0b0905;color:var(--g2);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
 .admin-panel{margin-top:12px;border:1px solid #3b2e1b;background:#060503;padding:14px;display:grid;gap:9px}
 .admin-panel[hidden]{display:none}
@@ -98,11 +98,11 @@ h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
     <div class="screen-wrap">
       <div id="screen" class="screen"><div class="placeholder"><div class="x">X</div><small>SELECT A FILE</small></div></div>
       <div class="meta"><span id="code" class="code">DXF-—</span><span id="tier">ACCESS —</span><span id="type">TYPE —</span></div>
-      <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><div class="admin-actions"><button id="adminEdit" class="admin-edit" type="button" hidden>EDIT PUBLIC INFO</button><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>SOURCE ADMIN ↗</a></div></div>
+      <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><div class="admin-actions"><span id="adminBadge" class="admin-badge" hidden>THE CROWD // MEDIA ADMIN</span><button id="adminEdit" class="admin-edit" type="button" hidden>EDIT PUBLIC INFO</button><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>SOURCE ADMIN ↗</a></div></div>
       <section id="adminPanel" class="admin-panel" hidden>
         <label>PUBLIC TITLE<input id="publicTitle" maxlength="180" placeholder="Example: X & Rico at High Alert"></label>
         <label>PUBLIC CAPTION<textarea id="publicCaption" maxlength="1200" placeholder="Optional public caption / context"></textarea></label>
-        <div class="admin-buttons"><button id="savePublicMeta" type="button">SAVE PUBLIC INFO</button><button id="resetPublicMeta" type="button">RESET TO SOURCE</button></div>
+        <div class="admin-buttons"><button id="savePublicMeta" type="button">SAVE PUBLIC INFO</button><button id="saveNextPublicMeta" type="button">SAVE + NEXT</button><button id="resetPublicMeta" type="button">RESET TO SOURCE</button></div>
         <div id="adminMsg" class="admin-msg" aria-live="polite"></div>
       </section>
       <section class="social">
@@ -188,14 +188,21 @@ async function loadSocial(id){
 function syncAdmin(x){
   const edit=document.getElementById("adminEdit");
   const panel=document.getElementById("adminPanel");
+  const badge=document.getElementById("adminBadge");
   const allowed=x?.admin_editable===true;
   edit.hidden=!allowed;
+  badge.hidden=!allowed;
+  if(allowed){
+    badge.textContent=(x?.admin_role==="owner")
+      ?"CROWN OWNER // ARCHIVE ADMIN"
+      :"THE CROWD // MEDIA ADMIN";
+  }
   if(!allowed)panel.hidden=true;
   document.getElementById("publicTitle").value=x?.public_title||"";
   document.getElementById("publicCaption").value=x?.public_caption||"";
   document.getElementById("adminMsg").textContent=x?.source_title?"SOURCE: "+x.source_title:"";
 }
-async function savePublicMeta(reset=false){
+async function savePublicMeta(reset=false,advance=false){
   const x=activeFile(); if(!x)return;
   const msg=document.getElementById("adminMsg");
   msg.textContent="SAVING…";
@@ -218,6 +225,7 @@ async function savePublicMeta(reset=false){
     document.getElementById("publicCaption").value=d.publicCaption||"";
     msg.textContent=d.message||"PUBLIC INFO UPDATED.";
     renderQueue();
+    if(advance)move(1);
   }catch(err){msg.textContent=err.message||"UPDATE FAILED";}
 }
 function select(id){
@@ -320,8 +328,9 @@ async function load(){
   }
 }
 document.getElementById("adminEdit").onclick=()=>{const p=document.getElementById("adminPanel");p.hidden=!p.hidden;};
-document.getElementById("savePublicMeta").onclick=()=>savePublicMeta(false);
-document.getElementById("resetPublicMeta").onclick=()=>savePublicMeta(true);
+document.getElementById("savePublicMeta").onclick=()=>savePublicMeta(false,false);
+document.getElementById("saveNextPublicMeta").onclick=()=>savePublicMeta(false,true);
+document.getElementById("resetPublicMeta").onclick=()=>savePublicMeta(true,false);
 document.getElementById("likeBtn").onclick=async()=>{
   const x=activeFile(); if(!x)return;
   const msg=document.getElementById("socialMsg");
