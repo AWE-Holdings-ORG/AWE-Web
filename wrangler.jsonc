@@ -25,7 +25,10 @@
         "database_name": "awe-crown-identity-preview",
         "database_id": "d93128c2-d34d-4372-be01-72ae772a9230"
       }
-    ]
+    ],
+    "vars": {
+      "CROWN_EMAIL_FROM": "Crown Network <verify@notify.awenterprisesholdings.com>"
+    }
   },
   "d1_databases": [
     {
