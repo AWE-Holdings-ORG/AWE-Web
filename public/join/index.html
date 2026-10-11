@@ -31,7 +31,7 @@ hr{border:0;border-top:1px solid #45381d;margin:22px 0}
     <label>PERSONAL CROWN KEY<input id="pck" type="password" minlength="12" maxlength="256" autocomplete="new-password" required placeholder="At least 12 characters"></label>
     <label>CONFIRM CROWN KEY<input id="confirm" type="password" minlength="12" maxlength="256" autocomplete="new-password" required></label>
     <div id="turnstile"></div>
-    <label class="checkbox"><input type="checkbox" required> I understand registration is subject to Crown Network terms and that any future Crown Coins are promotional rewards, not money, with no guaranteed cash value.</label>
+    <label class="checkbox"><input type="checkbox" required> I understand this is an early-access registration. Any future Crown Coins are promotional rewards, not money, with no promised monetary value.</label>
     <button id="joinButton" disabled type="submit">SEND MY VERIFICATION EMAIL</button>
   </form>
   <div id="success" class="hidden">
@@ -49,6 +49,7 @@ hr{border:0;border-top:1px solid #45381d;margin:22px 0}
     </form>
   </div>
   <p id="status" class="status" role="status" aria-live="polite">Checking invitation availability…</p>
+  <button id="openResend" type="button" class="secondary">NEED ANOTHER VERIFICATION LINK?</button>
   <hr><small>Already registered? <a style="color:var(--gold)" href="/?crown=login">Enter the Crown Network</a></small>
 </section>
 <p class="note" style="text-align:center">Invitations do not unlock restricted House media. Crown Coins, if offered, are non-cash promotional rewards and subject to published redemption rules.</p>
@@ -94,15 +95,31 @@ hr{border:0;border-top:1px solid #45381d;margin:22px 0}
     $("pck").value="";$("confirm").value="";
     $("joinForm").classList.add("hidden");$("success").classList.remove("hidden");
     status("VERIFICATION EMAIL REQUESTED. YOUR IDENTITY IS PENDING.");
-   }catch(err){status(err.message||"SIGNUP FAILED");state.signupToken="";window.turnstile.reset(state.widgets[0]);}
+   }catch(err){
+      if(String(err.message||"").startsWith("IDENTITY RESERVED")){
+        $("resendEmail").value=$("email").value;
+        $("joinForm").classList.add("hidden");
+        $("success").classList.remove("hidden");
+        status("IDENTITY RESERVED, BUT DELIVERY FAILED. TRY RESENDING AFTER TWO MINUTES.");
+      }else{status(err.message||"SIGNUP FAILED");}
+      state.signupToken="";window.turnstile.reset(state.widgets[0]);
+    }
  });
- $("showResend").addEventListener("click",()=>{
-    $("resend").classList.remove("hidden");$("showResend").classList.add("hidden");
-    state.widgets.push(window.turnstile.render("#resendTurnstile",{sitekey:state.siteKey,
-     callback:token=>{state.resendToken=token;$("resendButton").disabled=false;},
-     "expired-callback":()=>{state.resendToken="";$("resendButton").disabled=true;}
-    }));
- });
+ function revealResend(){
+    if(!state.siteKey){status("VERIFICATION IS TEMPORARILY UNAVAILABLE.");return;}
+    $("resend").classList.remove("hidden");
+    $("showResend").classList.add("hidden");
+    $("openResend").classList.add("hidden");
+    $("resendEmail").value=$("resendEmail").value||$("email").value;
+    if(state.widgets.length===1){
+      state.widgets.push(window.turnstile.render("#resendTurnstile",{sitekey:state.siteKey,
+       callback:token=>{state.resendToken=token;$("resendButton").disabled=false;},
+       "expired-callback":()=>{state.resendToken="";$("resendButton").disabled=true;}
+      }));
+    }
+ }
+ $("showResend").addEventListener("click",revealResend);
+ $("openResend").addEventListener("click",revealResend);
  $("resendForm").addEventListener("submit",async e=>{
    e.preventDefault();
    if(!state.resendToken)return;
