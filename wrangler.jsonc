@@ -13,7 +13,9 @@
     "html_handling": "auto-trailing-slash",
     "run_worker_first": [
       "/api/*",
-      "/crown/*"
+      "/crown/*",
+      "/join/x",
+      "/join/x/"
     ]
   },
   "previews": {
