@@ -168,35 +168,13 @@ const enrollName=document.querySelector('#enroll-name');
 const enrollPck=document.querySelector('#enroll-pck');
 const enrollPckConfirm=document.querySelector('#enroll-pck-confirm');
 
-crownEnroll?.addEventListener('click',()=>{
-  crownForm.hidden=true;
-  crownEnroll.hidden=true;
-  crownEnrollForm.hidden=false;
-  showTerminalMessage('ESTABLISH YOUR CROWN IDENTITY.');
-  enrollEmail?.focus();
-});
-crownEnrollForm?.addEventListener('submit',e=>{
-  e.preventDefault();
-  if(enrollPck.value!==enrollPckConfirm.value){showTerminalMessage('PCK CONFIRMATION DOES NOT MATCH.',true);return;}
-  const submit=crownEnrollForm.querySelector('.terminal-submit'); submit.disabled=true;
-  showTerminalMessage('ESTABLISHING CROWN IDENTITY...');
-  fetch('/api/crown/enroll',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:enrollEmail.value.trim(),crownName:enrollName.value.trim(),pck:enrollPck.value})})
-    .then(async r=>({r,data:await r.json().catch(()=>({}))}))
-    .then(({r,data})=>{
-      if(!r.ok||!data.ok)throw new Error(data.message||'ENROLLMENT COULD NOT BE COMPLETED.');
-      crownEnrollForm.hidden=true;
-      crownForm.hidden=false;
-      crownEnroll.hidden=false;
-      crownName.value=data.crownName||enrollName.value.trim();
-      terminalStage='pck';
-      pckLine.hidden=false;
-      showTerminalMessage(`CROWN IDENTITY ESTABLISHED // ${data.awId}. PRESENT YOUR PCK TO ENTER.`);
-      crownPck.focus();
-    })
-    .catch(err=>showTerminalMessage(err.message||'ENROLLMENT COULD NOT BE COMPLETED.',true))
-    .finally(()=>{submit.disabled=false;});
-});
-
+// All signups use the dedicated verified-invitation page.
+function crownJoinUrl(){
+  const ref=String(new URLSearchParams(location.search).get('ref')||'')
+    .toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,60);
+  return '/join/'+(ref?'?ref='+encodeURIComponent(ref):'');
+}
+crownEnroll?.addEventListener('click',()=>window.location.assign(crownJoinUrl()));
 
 // Direct, intentionally shareable Crown invitations. These bypass the hidden
 // AW discovery gesture only; all enrollment and login checks remain server-side.
@@ -204,8 +182,9 @@ crownEnrollForm?.addEventListener('submit',e=>{
 // Existing members (including X) may use /?crown=login instead.
 (function openCrownInvitation(){
   const intent=new URLSearchParams(window.location.search).get('crown');
-  if(!['signup','login'].includes(intent)||!crownDoor||!crownTerminal)return;
+  if(!['signup','login'].includes(intent))return;
+  if(intent==='signup'){window.location.replace(crownJoinUrl());return;}
+  if(!crownDoor||!crownTerminal)return;
   openCrownDoor();
   enterTerminal();
-  if(intent==='signup')crownEnroll?.click();
 })();
