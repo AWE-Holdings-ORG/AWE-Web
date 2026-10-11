@@ -22,6 +22,12 @@ on:
       - "public/crown/crowd/level-x/analytics/index.html"
       - "public/script.js"
       - "tests/crown-invitation.test.mjs"
+      - "public/join/**"
+      - "public/verify/**"
+      - "wrangler.jsonc"
+      - "migrations/0027_crown_email_verification.sql"
+      - "tests/crown-email-verification.test.mjs"
+      - "tests/crown-verification-migration.test.py"
       - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
@@ -95,6 +101,12 @@ on:
       - "public/crown/crowd/level-x/analytics/index.html"
       - "public/script.js"
       - "tests/crown-invitation.test.mjs"
+      - "public/join/**"
+      - "public/verify/**"
+      - "wrangler.jsonc"
+      - "migrations/0027_crown_email_verification.sql"
+      - "tests/crown-email-verification.test.mjs"
+      - "tests/crown-verification-migration.test.py"
       - "package.json"
       - "migrations/0009_player_access_states.sql"
       - "migrations/0010_player_access_grants.sql"
@@ -184,6 +196,12 @@ jobs:
 
       - name: Validate direct Crown invitation links
         run: node --test tests/crown-invitation.test.mjs
+
+      - name: Validate verified-only Crown signup runtime
+        run: node --test tests/crown-email-verification.test.mjs
+
+      - name: Validate Crown email verification migration
+        run: python tests/crown-verification-migration.test.py
 
       - name: Run Player analytics service tests
         run: npm run test:player-analytics
