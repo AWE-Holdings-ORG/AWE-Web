@@ -8,6 +8,7 @@ on:
       - "lib/player-catalog-service.js"
       - "lib/player-api.js"
       - "lib/archivez-api.js"
+      - "lib/house-admin.js"
       - "lib/player-analytics.js"
       - "worker-entry.js"
       - "worker.js"
@@ -34,6 +35,7 @@ on:
       - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
       - "migrations/0024_tha_x_filez_drive_completion.sql"
       - "migrations/0025_archivez_social_public_meta.sql"
+      - "migrations/0026_house_media_admin_grants.sql"
       - "migrations/0021_tha_x_filez_dropbox_03.sql"
       - "migrations/0020_tha_x_filez_dropbox_02.sql"
       - "migrations/0019_tha_x_filez_dropbox_01.sql"
@@ -56,6 +58,7 @@ on:
       - "tests/archivez-client.test.mjs"
       - "tests/archivez-social-migration.test.py"
       - "tests/archivez-social-ui-api.test.mjs"
+      - "tests/house-media-admin-migration.test.py"
       - "tests/tha-x-filez-initial-images-migration.test.py"
       - "tests/tha-x-filez-dropbox-flood.test.py"
       - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
@@ -76,6 +79,7 @@ on:
       - "lib/player-catalog-service.js"
       - "lib/player-api.js"
       - "lib/archivez-api.js"
+      - "lib/house-admin.js"
       - "lib/player-analytics.js"
       - "worker-entry.js"
       - "worker.js"
@@ -105,6 +109,7 @@ on:
       - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
       - "migrations/0024_tha_x_filez_drive_completion.sql"
       - "migrations/0025_archivez_social_public_meta.sql"
+      - "migrations/0026_house_media_admin_grants.sql"
       - "tests/player-access.test.mjs"
       - "tests/player-migrations.test.py"
       - "tests/level-x-seed.test.py"
@@ -124,6 +129,7 @@ on:
       - "tests/archivez-client.test.mjs"
       - "tests/archivez-social-migration.test.py"
       - "tests/archivez-social-ui-api.test.mjs"
+      - "tests/house-media-admin-migration.test.py"
       - "tests/tha-x-filez-initial-images-migration.test.py"
       - "tests/tha-x-filez-dropbox-flood.test.py"
       - "SCRYPTUREZ/CROWN/**"
@@ -207,6 +213,9 @@ jobs:
 
       - name: Validate Archivez social UI and APIs
         run: npm run test:archivez-social-ui-api
+
+      - name: Validate House media-admin grants
+        run: npm run test:house-media-admin-migration
 
       - name: Prevent retired Preview recovery regression
         run: npm run test:preview-security
