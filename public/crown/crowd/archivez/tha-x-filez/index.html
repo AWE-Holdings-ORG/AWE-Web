@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Tha X Filez | Da Archivez</title>
+<style>
+:root{--g:#d8ac4e;--g2:#f1d783;--m:#8b8377;--line:#332814;--panel:#080704;--violet:#b78cff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 78% 8%,#181107,#050403 34%,#000 76%);color:#f8f4ea;font-family:Inter,system-ui,sans-serif}
+.shell{width:min(1320px,94vw);margin:auto;padding:28px 0 72px}
+.top{display:flex;justify-content:space-between;gap:15px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:17px}
+.top a{color:var(--g2);text-decoration:none;font:800 9px ui-monospace,monospace;letter-spacing:.14em}
+.sig{color:#736b5f;font:800 9px ui-monospace,monospace;letter-spacing:.16em}
+.hero{padding:54px 0 34px;display:grid;grid-template-columns:1.35fr .65fr;gap:28px;align-items:end}
+.eyebrow{color:var(--g);font:900 10px ui-monospace,monospace;letter-spacing:.3em}
+h1{font:500 clamp(56px,9.5vw,124px)/.82 Georgia,serif;margin:13px 0 17px}
+.hero p{max-width:700px;margin:0;color:var(--m);line-height:1.78}
+.dossier{border:1px solid var(--line);padding:18px;background:#070603cc}
+.dossier b{display:block;color:var(--g2);font:900 8px ui-monospace,monospace;letter-spacing:.16em}
+.dossier strong{display:block;font:500 32px Georgia,serif;margin:8px 0}
+.dossier small{color:#70685d;font:800 8px ui-monospace,monospace;letter-spacing:.12em}
+.archive{border:1px solid var(--line);background:#060503cc;padding:20px}
+.archive-head{display:flex;justify-content:space-between;gap:14px;align-items:end;margin-bottom:15px}
+.archive-head h2{font:500 clamp(28px,4vw,46px) Georgia,serif;margin:4px 0}
+.archive-head p{margin:0;color:#756d61;font:800 8px ui-monospace,monospace;letter-spacing:.13em}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.filters button{border:1px solid var(--line);background:#080704;color:#8d826e;padding:9px 12px;font:800 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.filters button.active{background:var(--g);border-color:var(--g);color:#050403}
+.stage{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,.75fr);gap:12px}
+.screen-wrap{min-width:0}
+.screen{aspect-ratio:16/10;border:1px solid #211b11;background:radial-gradient(circle,#151008,#030303 64%);display:grid;place-items:center;overflow:hidden;position:relative}
+.screen.image-mode{aspect-ratio:auto;min-height:420px;max-height:78vh;padding:10px}
+.screen.image-mode img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(78vh - 20px);object-fit:contain;margin:auto}
+.screen.video-mode video,.screen.video-mode iframe{width:100%;height:100%;object-fit:contain;border:0}
+.screen:not(.image-mode) img,.screen:not(.video-mode) video,.screen:not(.video-mode) iframe{max-width:100%;max-height:100%;object-fit:contain;border:0}
+.placeholder{text-align:center;padding:30px}
+.placeholder .x{font:500 clamp(72px,13vw,160px) Georgia,serif;color:var(--g)}
+.placeholder small{display:block;color:#71695d;font:900 9px ui-monospace,monospace;letter-spacing:.18em}
+.meta{display:flex;gap:15px;flex-wrap:wrap;border-top:1px solid #211b11;border-bottom:1px solid #211b11;padding:12px 2px;color:#766e62;font:800 8px ui-monospace,monospace;letter-spacing:.12em}
+.meta .code{color:var(--g2)}
+.detail{padding:16px 2px 4px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}
+.detail h3{font:500 28px Georgia,serif;margin:0 0 6px}
+.detail p{margin:0;color:#81786c;line-height:1.65}
+.source{color:var(--g2);text-decoration:none;border:1px solid var(--line);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.1em}
+.admin-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.admin-badge{border:1px solid #5c4624;color:var(--g2);padding:8px 10px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;background:#0b0905}
+.admin-edit{border:1px solid #5c4624;background:#0b0905;color:var(--g2);padding:9px 11px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.admin-panel{margin-top:12px;border:1px solid #3b2e1b;background:#060503;padding:14px;display:grid;gap:9px}
+.admin-panel[hidden]{display:none}
+.admin-panel label{display:grid;gap:5px;color:#897e6b;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
+.admin-panel input,.admin-panel textarea,.comment-form textarea{width:100%;border:1px solid #3b301d;background:#020202;color:#f8f4ea;padding:11px;font:500 13px system-ui,sans-serif;outline:none}
+.admin-panel textarea,.comment-form textarea{min-height:74px;resize:vertical}
+.admin-panel input:focus,.admin-panel textarea:focus,.comment-form textarea:focus{border-color:var(--g)}
+.admin-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.admin-buttons button{border:1px solid var(--g);background:#080704;color:var(--g2);padding:9px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.admin-msg,.social-msg{min-height:16px;color:#8a936d;font:800 8px ui-monospace,monospace;letter-spacing:.09em}
+.social{margin-top:16px;border-top:1px solid #2d2416;padding-top:14px}
+.social-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.social-actions button{border:1px solid #3d311e;background:#080704;color:#d6c49c;padding:10px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.11em;cursor:pointer}
+.social-actions button:hover,.social-actions button.liked{border-color:var(--g);color:var(--g2);background:#171006}
+.comments{display:grid;gap:8px;margin-top:13px}
+.comment{border-top:1px solid #211b12;padding-top:9px}
+.comment b{display:block;color:var(--g2);font:900 8px ui-monospace,monospace;letter-spacing:.11em}
+.comment p{margin:5px 0 0;color:#aaa092;line-height:1.45;font-size:12px}
+.comment time{color:#61594e;font:700 7px ui-monospace,monospace;letter-spacing:.08em}
+.comment-form{display:grid;gap:7px;margin-top:11px}
+.comment-form button{justify-self:start;border:1px solid var(--g);background:#0a0804;color:var(--g2);padding:9px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+.queue{border:1px solid #211b11;max-height:650px;overflow:auto}
+.queue button{width:100%;border:0;border-bottom:1px solid #211b11;background:#070605;color:#eee;padding:9px;text-align:left;display:grid;grid-template-columns:92px minmax(0,1fr);gap:11px;align-items:center;cursor:pointer}
+.queue button:hover,.queue button.active{background:#151008}
+.thumb{width:92px;aspect-ratio:4/3;border:1px solid #211b11;background:#030303;display:grid;place-items:center;overflow:hidden;color:var(--g);font:500 30px Georgia,serif}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.qcopy{min-width:0}
+.qcopy b{display:block;color:var(--g);font:900 7px ui-monospace,monospace;letter-spacing:.11em}
+.qcopy b.vault{color:var(--violet)}
+.qcopy strong{display:block;font:500 16px Georgia,serif;margin:6px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qcopy small{color:#6f675c;font-size:10px}
+.empty{padding:28px;color:#756d61;font:800 9px ui-monospace,monospace;letter-spacing:.13em}
+.nav{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.nav.queue-nav{justify-content:space-between;align-items:center;margin:0 0 10px}
+.nav button{border:1px solid var(--line);background:#080704;color:var(--g2);padding:9px 12px;cursor:pointer;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
+.page-label{color:#756d61;font:900 8px ui-monospace,monospace;letter-spacing:.12em}
+.foot{text-align:center;color:#5d554b;font:800 8px ui-monospace,monospace;letter-spacing:.16em;margin-top:24px}
+@media(max-width:900px){.hero,.stage{grid-template-columns:1fr}.sig{display:none}.queue{max-height:420px}.detail{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top"><a href="/crown/crowd/archivez/">← DA ARCHIVEZ</a><div class="sig">FILE ROOM 001 // X THA GOD</div></header>
+<section class="hero">
+  <div><div class="eyebrow">DA ARCHIVEZ // ARTIST FILE ROOM 001</div><h1>THA X FILEZ</h1><p>X Tha God’s preserved archive inside The CROWD — images, interviews, behind-the-scenes material, promos and history. This room is separate from LEVEL X and Da CROWD Player.</p></div>
+  <aside class="dossier"><b>ARCHIVE STATUS</b><strong id="fileCount">— FILEZ</strong><small>ACCESS IS EVALUATED PER FILE</small><small id="bridgeStatus" hidden style="margin-top:10px">DROPBOX BRIDGE // CHECKING</small></aside>
+</section>
+<section class="archive">
+  <div class="archive-head"><div><p>ARCHIVE PLAYER // THA X FILEZ</p><h2>Open a file.</h2></div><p id="status">CONNECTING TO ARCHIVE…</p></div>
+  <div id="filters" class="filters"></div>
+  <div class="stage">
+    <div class="screen-wrap">
+      <div id="screen" class="screen"><div class="placeholder"><div class="x">X</div><small>SELECT A FILE</small></div></div>
+      <div class="meta"><span id="code" class="code">DXF-—</span><span id="tier">ACCESS —</span><span id="type">TYPE —</span></div>
+      <div class="detail"><div><h3 id="title">Tha X Filez</h3><p id="description">Choose a file from the archive queue.</p></div><div class="admin-actions"><span id="adminBadge" class="admin-badge" hidden>THE CROWD // MEDIA ADMIN</span><button id="adminEdit" class="admin-edit" type="button" hidden>EDIT PUBLIC INFO</button><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>SOURCE ADMIN ↗</a></div></div>
+      <section id="adminPanel" class="admin-panel" hidden>
+        <label>PUBLIC TITLE<input id="publicTitle" maxlength="180" placeholder="Example: X & Rico at High Alert"></label>
+        <label>PUBLIC CAPTION<textarea id="publicCaption" maxlength="1200" placeholder="Optional public caption / context"></textarea></label>
+        <div class="admin-buttons"><button id="savePublicMeta" type="button">SAVE PUBLIC INFO</button><button id="saveNextPublicMeta" type="button">SAVE + NEXT</button><button id="resetPublicMeta" type="button">RESET TO SOURCE</button></div>
+        <div id="adminMsg" class="admin-msg" aria-live="polite"></div>
+      </section>
+      <section class="social">
+        <div class="social-actions"><button id="likeBtn" type="button">♡ LIKE <span id="likeCount">0</span></button><button id="commentJump" type="button">💬 COMMENTS <span id="commentCount">0</span></button><button id="shareBtn" type="button">↗ SHARE</button></div>
+        <div id="socialMsg" class="social-msg" aria-live="polite"></div>
+        <div id="comments" class="comments"></div>
+        <form id="commentForm" class="comment-form"><textarea id="commentBody" maxlength="1000" placeholder="Add a comment as your Crown identity…"></textarea><button type="submit">POST COMMENT</button></form>
+      </section>
+      <div class="nav"><button id="prev" type="button">← PREV</button><button id="next" type="button">NEXT →</button></div>
+    </div>
+    <div>
+      <div class="nav queue-nav"><button id="pagePrev" type="button">← QUEUE</button><span id="pageLabel" class="page-label">PAGE —</span><button id="pageNext" type="button">QUEUE →</button></div>
+      <aside id="queue" class="queue"></aside>
+    </div>
+  </div>
+  <p class="foot">THA X FILEZ // DA ARCHIVEZ // THE CROWD</p>
+</section>
+</main>
+<script>
+const state={media:[],filtered:[],filter:"ALL",activeId:null,page:0,pageSize:60,social:null};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function kind(x){
+  const t=String(x.media_type||"").toLowerCase();
+  if(t==="interview")return "INTERVIEWS";
+  if(["photo","portrait","image","artwork"].includes(t))return "IMAGES";
+  if(t.includes("behind")||t==="bts")return "BTS";
+  if(["document","pdf","text"].includes(t))return "DOCUMENTS";
+  if(["video","clip","promo"].includes(t))return "VIDEO";
+  return "OTHER";
+}
+function tier(x){
+  const t=String(x.access_state||"unknown").toUpperCase();
+  return t==="PUBLIC"?"PUBLIC FILE":t==="HOUSE"?"HOUSE FILE":t==="UNLOCK"?"UNLOCK FILE":t==="CROWN"?"CROWN FILE":t==="VAULT"?"VAULT FILE":"ACCESS UNKNOWN";
+}
+function mediaMarkup(x){
+  if(x.authorized===false){
+    return x.thumb_url
+      ?'<img src="'+esc(x.thumb_url)+'" alt="">'
+      :'<div class="placeholder"><div class="x">⌁</div><small>FILE ACCESS REQUIRED</small></div>';
+  }
+  const type=String(x.media_type||"").toLowerCase();
+  if(["photo","portrait","image","artwork"].includes(type)){
+    return x.preview_url
+      ?'<img src="'+esc(x.preview_url)+'" alt="'+esc(x.title)+'">'
+      :'<div class="placeholder"><small>IMAGE PREVIEW UNAVAILABLE</small></div>';
+  }
+  if(["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)){
+    return x.preview_url
+      ?'<video controls preload="metadata" src="'+esc(x.preview_url)+'"></video>'
+      :'<div class="placeholder"><small>VIDEO PREVIEW UNAVAILABLE</small></div>';
+  }
+  return '<div class="placeholder"><div class="x">X</div><small>'+esc(kind(x))+'</small></div>';
+}
+function activeFile(){return state.media.find(m=>Number(m.id)===Number(state.activeId))||null;}
+function fmtDate(value){
+  const d=new Date(value); return Number.isNaN(d.getTime())?"":d.toLocaleString();
+}
+function publicShareUrl(x){
+  const u=new URL("/crowd/x/",location.origin);
+  u.searchParams.set("file",x.collection_file_code||String(x.id));
+  return u.toString();
+}
+async function loadSocial(id){
+  const likeBtn=document.getElementById("likeBtn");
+  const msg=document.getElementById("socialMsg");
+  try{
+    const r=await fetch("/api/crown/archivez/social?mediaId="+encodeURIComponent(id));
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw Error(d.message||"SOCIAL UNAVAILABLE");
+    state.social=d;
+    document.getElementById("likeCount").textContent=d.likeCount||0;
+    document.getElementById("commentCount").textContent=d.commentCount||0;
+    likeBtn.classList.toggle("liked",d.likedByMe===true);
+    likeBtn.firstChild.textContent=d.likedByMe?"♥ LIKED ":"♡ LIKE ";
+    document.getElementById("comments").innerHTML=(d.comments||[]).map(x=>
+      '<article class="comment"><b>'+esc(x.crownName||"CROWN MEMBER")+'</b><time>'+esc(fmtDate(x.createdAt))+'</time><p>'+esc(x.body)+'</p></article>'
+    ).join("")||'<div class="empty">NO COMMENTS YET.</div>';
+    msg.textContent="";
+  }catch(err){
+    msg.textContent=err.message||"SOCIAL LAYER UNAVAILABLE";
+  }
+}
+function syncAdmin(x){
+  const edit=document.getElementById("adminEdit");
+  const panel=document.getElementById("adminPanel");
+  const badge=document.getElementById("adminBadge");
+  const allowed=x?.admin_editable===true;
+  edit.hidden=!allowed;
+  badge.hidden=!allowed;
+  if(allowed){
+    badge.textContent=(x?.admin_role==="owner")
+      ?"CROWN OWNER // ARCHIVE ADMIN"
+      :"THE CROWD // MEDIA ADMIN";
+  }
+  if(!allowed)panel.hidden=true;
+  document.getElementById("publicTitle").value=x?.public_title||"";
+  document.getElementById("publicCaption").value=x?.public_caption||"";
+  document.getElementById("adminMsg").textContent=x?.source_title?"SOURCE: "+x.source_title:"";
+}
+async function savePublicMeta(reset=false,advance=false){
+  const x=activeFile(); if(!x)return;
+  const msg=document.getElementById("adminMsg");
+  msg.textContent="SAVING…";
+  const payload={
+    mediaId:x.id,
+    publicTitle:reset?"":document.getElementById("publicTitle").value,
+    publicCaption:reset?"":document.getElementById("publicCaption").value
+  };
+  try{
+    const r=await fetch("/api/crown/archivez/admin/public-meta",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw Error(d.message||"UPDATE FAILED");
+    x.public_title=d.publicTitle;
+    x.public_caption=d.publicCaption;
+    x.title=d.displayTitle||x.source_title||x.title;
+    x.description=d.publicCaption||x.description;
+    document.getElementById("title").textContent=x.title;
+    if(d.publicCaption)document.getElementById("description").textContent=d.publicCaption;
+    document.getElementById("publicTitle").value=d.publicTitle||"";
+    document.getElementById("publicCaption").value=d.publicCaption||"";
+    msg.textContent=d.message||"PUBLIC INFO UPDATED.";
+    renderQueue();
+    if(advance)move(1);
+  }catch(err){msg.textContent=err.message||"UPDATE FAILED";}
+}
+function select(id){
+  const x=state.media.find(m=>Number(m.id)===Number(id)); if(!x)return;
+  state.activeId=Number(x.id);
+  document.querySelectorAll("#queue button").forEach(b=>b.classList.toggle("active",Number(b.dataset.id)===state.activeId));
+  const screen=document.getElementById("screen");
+  const selectedType=String(x.media_type||"").toLowerCase();
+  const isImage=["photo","portrait","image","artwork"].includes(selectedType);
+  const isVideo=["video","clip","interview","bts","behind-the-scenes","promo"].includes(selectedType);
+  screen.classList.toggle("image-mode",isImage);
+  screen.classList.toggle("video-mode",isVideo);
+  screen.innerHTML=mediaMarkup(x);
+  document.getElementById("code").textContent=x.collection_file_code||"DXF-—";
+  document.getElementById("tier").textContent=tier(x)+(x.authorized===false?" // LOCKED":"");
+  document.getElementById("type").textContent=kind(x);
+  document.getElementById("title").textContent=x.title||"ARCHIVE FILE";
+  document.getElementById("description").textContent=x.authorized===false?"This file exists in Tha X Filez, but your current Crown does not unlock its contents.":(x.description||"THE CROWD ARCHIVE");
+  const source=document.getElementById("source");
+  const canSeeSource=x.provenance_visible===true&&x.authorized!==false&&(x.source_url||x.canonical_url);
+  source.hidden=!canSeeSource;
+  source.href=canSeeSource?(x.source_url||x.canonical_url):"#";
+  syncAdmin(x);
+  loadSocial(x.id);
+}
+function renderQueue(){
+  state.filtered=state.filter==="ALL"?state.media:state.media.filter(x=>kind(x)===state.filter);
+  const pages=Math.max(1,Math.ceil(state.filtered.length/state.pageSize));
+  state.page=Math.min(Math.max(0,state.page),pages-1);
+  const start=state.page*state.pageSize;
+  const pageItems=state.filtered.slice(start,start+state.pageSize);
+  const q=document.getElementById("queue");
+  q.innerHTML=pageItems.map(x=>{
+    const art=x.thumb_url?'<span class="thumb"><img src="'+esc(x.thumb_url)+'" alt=""></span>':'<span class="thumb">X</span>';
+    const klass=String(x.access_state||"").toLowerCase()==="vault"?"vault":"";
+    return '<button type="button" data-id="'+x.id+'">'+art+'<span class="qcopy"><b class="'+klass+'">'+esc(x.collection_file_code||"DXF")+' // '+esc(tier(x))+(x.authorized===false?" // LOCKED":"")+'</b><strong>'+esc(x.title)+'</strong><small>'+esc(kind(x))+' // ARCHIVE</small></span></button>';
+  }).join("")||'<div class="empty">NO FILEZ IN THIS LANE.</div>';
+  q.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>select(Number(b.dataset.id)));
+  document.getElementById("pageLabel").textContent="PAGE "+(state.page+1)+" / "+pages+" // "+state.filtered.length+" FILEZ";
+  document.getElementById("pagePrev").disabled=state.page<=0;
+  document.getElementById("pageNext").disabled=state.page>=pages-1;
+  if(pageItems.length&&!pageItems.some(x=>Number(x.id)===state.activeId))select(pageItems[0].id);
+}
+function move(step){
+  if(!state.filtered.length)return;
+  let i=state.filtered.findIndex(x=>Number(x.id)===state.activeId);
+  i=(i+step+state.filtered.length)%state.filtered.length;
+  state.page=Math.floor(i/state.pageSize);
+  renderQueue();
+  select(state.filtered[i].id);
+  document.querySelector('#queue button[data-id="'+state.filtered[i].id+'"]')?.scrollIntoView({block:"nearest"});
+}
+async function loadDropboxHealth(ownerVisible){
+  const el=document.getElementById("bridgeStatus");
+  if(!el||!ownerVisible)return;
+  el.hidden=false;
+  el.textContent="DROPBOX BRIDGE // CHECKING";
+  try{
+    const r=await fetch("/api/crown/archivez/dropbox-health");
+    const data=await r.json();
+    if(!data?.configured){
+      el.textContent="DROPBOX BRIDGE // SETUP REQUIRED";
+    }else if(data?.auth?.ok!==true){
+      el.textContent="DROPBOX BRIDGE // AUTH FAIL "+(data?.auth?.status||"");
+    }else if(data?.metadata?.ok!==true){
+      el.textContent="DROPBOX BRIDGE // FILE LOOKUP FAIL "+(data?.metadata?.status||"");
+    }else if(data?.file?.ok!==true){
+      el.textContent="DROPBOX BRIDGE // BYTE STREAM FAIL "+(data?.file?.status||"");
+    }else{
+      el.textContent="DROPBOX BRIDGE // VERIFIED ONLINE";
+    }
+  }catch{
+    el.textContent="DROPBOX BRIDGE // STATUS UNAVAILABLE";
+  }
+}
+
+async function load(){
+  try{
+    const r=await fetch("/api/crown/archivez/catalog?artist=x-tha-god&collection=tha-x-filez");
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw Error(d.code||"archive");
+    state.media=d.media||[];
+    document.getElementById("fileCount").textContent=state.media.length+" FILEZ";
+    document.getElementById("status").textContent="ARCHIVE SIGNAL // ONLINE";
+    loadDropboxHealth(d?.archive?.provenanceVisible===true);
+    const cats=["ALL",...new Set(state.media.map(kind))];
+    const f=document.getElementById("filters");
+    f.innerHTML=cats.map(c=>'<button data-filter="'+esc(c)+'" class="'+(c==="ALL"?"active":"")+'">'+esc(c)+'</button>').join("");
+    f.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      state.filter=b.dataset.filter;
+      state.page=0;
+      f.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+      renderQueue();
+    });
+    renderQueue();
+  }catch(err){
+    document.getElementById("status").textContent="ARCHIVE SIGNAL // OFFLINE";
+    console.error("Tha X Filez catalog failed",err);
+    document.getElementById("queue").innerHTML='<div class="empty">THA X FILEZ IS TEMPORARILY UNAVAILABLE.</div>';
+  }
+}
+document.getElementById("adminEdit").onclick=()=>{const p=document.getElementById("adminPanel");p.hidden=!p.hidden;};
+document.getElementById("savePublicMeta").onclick=()=>savePublicMeta(false,false);
+document.getElementById("saveNextPublicMeta").onclick=()=>savePublicMeta(false,true);
+document.getElementById("resetPublicMeta").onclick=()=>savePublicMeta(true,false);
+document.getElementById("likeBtn").onclick=async()=>{
+  const x=activeFile(); if(!x)return;
+  const msg=document.getElementById("socialMsg");
+  try{
+    const r=await fetch("/api/crown/archivez/like",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:x.id})});
+    const d=await r.json(); if(!r.ok||!d.ok)throw Error(d.message||"LIKE FAILED");
+    await loadSocial(x.id);
+  }catch(err){msg.textContent=err.message||"LIKE FAILED";}
+};
+document.getElementById("commentJump").onclick=()=>document.getElementById("commentBody").focus();
+document.getElementById("commentForm").addEventListener("submit",async e=>{
+  e.preventDefault(); const x=activeFile(); if(!x)return;
+  const body=document.getElementById("commentBody").value.trim(); if(!body)return;
+  const msg=document.getElementById("socialMsg"); msg.textContent="POSTING…";
+  try{
+    const r=await fetch("/api/crown/archivez/comments",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:x.id,body})});
+    const d=await r.json(); if(!r.ok||!d.ok)throw Error(d.message||"COMMENT FAILED");
+    document.getElementById("commentBody").value="";
+    await loadSocial(x.id);
+  }catch(err){msg.textContent=err.message||"COMMENT FAILED";}
+});
+document.getElementById("shareBtn").onclick=async()=>{
+  const x=activeFile(); if(!x)return;
+  const url=publicShareUrl(x),msg=document.getElementById("socialMsg");
+  try{
+    if(navigator.share)await navigator.share({title:x.title||"Tha X Filez",text:"Tha X Filez // "+(x.title||"X Tha God"),url});
+    else{await navigator.clipboard.writeText(url);msg.textContent="PUBLIC FILE LINK COPIED.";}
+  }catch(err){if(err?.name!=="AbortError")msg.textContent="SHARE UNAVAILABLE.";}
+};
+
+document.getElementById("prev").onclick=()=>move(-1);
+document.getElementById("next").onclick=()=>move(1);
+document.getElementById("pagePrev").onclick=()=>{state.page=Math.max(0,state.page-1);renderQueue();};
+document.getElementById("pageNext").onclick=()=>{state.page+=1;renderQueue();};
+load();
+</script>
+</body>
+</html>

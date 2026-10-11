@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Select Your Signal | Da CROWD Player</title>
+<style>
+:root{--g:#d8ac4e;--g2:#f1d783;--m:#8c8579;--bg:#020202;--line:#332814;--panel:#090704}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#191208,#050403 32%,#000 74%);color:#f7f3e9;font-family:Inter,system-ui,sans-serif}
+button,a{font:inherit}
+.shell{width:min(1440px,95vw);margin:auto;padding:26px 0 64px}
+.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:16px}
+.top a{color:var(--g2);text-decoration:none;font:800 9px ui-monospace,monospace;letter-spacing:.14em}
+.sig{color:#736a5c;font:800 9px ui-monospace,monospace;letter-spacing:.16em}
+.hero{padding:40px 0 24px}
+.eyebrow{color:var(--g);font:900 9px ui-monospace,monospace;letter-spacing:.3em}
+.hero h1{font:500 clamp(38px,5.4vw,72px)/.96 Georgia,serif;margin:10px 0}
+.hero p{max-width:720px;color:var(--m);line-height:1.65;margin:0}
+.selector{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(360px,.78fr);gap:14px;align-items:stretch}
+.stage{position:relative;min-height:590px;border:1px solid var(--line);background:#050403;overflow:hidden;isolation:isolate}
+.stage.poster-stage{min-height:960px;aspect-ratio:4/5}
+.stage-art{position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at 35% 28%,#3a2911,#090705 58%,#020202 92%);transition:opacity .18s ease}
+.stage-art.has-image{background-size:auto 100%;background-repeat:no-repeat;background-position:left center;background-color:#030302}
+.stage-art.has-image:before{content:"";position:absolute;inset:-5%;background-image:inherit;background-size:cover;background-position:center;filter:blur(22px) saturate(.65);opacity:.16;transform:scale(1.05);z-index:-1}
+.stage-art:after{content:none}
+.stage-silhouette{position:absolute;left:29%;top:50%;width:36%;height:70%;transform:translate(-50%,-48%);opacity:.72}
+.stage-silhouette:before{content:"";position:absolute;left:50%;top:0;width:40%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:#000}
+.stage-silhouette:after{content:"";position:absolute;left:50%;bottom:0;width:100%;height:72%;border-radius:48% 48% 10% 10%;transform:translateX(-50%);background:#000}
+.stage-copy{position:absolute;right:22px;bottom:22px;width:min(390px,44%);min-height:270px;padding:22px;background:linear-gradient(135deg,rgba(8,7,4,.76),rgba(2,2,2,.92));border:1px solid rgba(216,172,78,.18);backdrop-filter:blur(7px);display:flex;flex-direction:column}
+.stage-num{color:var(--g);font:900 8px ui-monospace,monospace;letter-spacing:.2em}
+.stage-copy h2{font:500 clamp(32px,4vw,54px)/1 Georgia,serif;margin:8px 0 14px}
+.stage-line{display:flex;justify-content:space-between;gap:16px;border-top:1px solid #211b11;padding:9px 0;color:#82796b;font:800 8px ui-monospace,monospace;letter-spacing:.11em}
+.stage-line span:last-child{text-align:right;color:#c9b986}
+.start{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:auto;border:1px solid var(--g);background:rgba(216,172,78,.08);color:var(--g2);text-decoration:none;font:900 10px ui-monospace,monospace;letter-spacing:.2em;transition:background .15s ease,color .15s ease,transform .15s ease}
+.start:hover,.start:focus-visible{background:var(--g);color:#080603;transform:translateY(-1px);outline:none}
+.start[hidden]{display:none}.status-only[hidden]{display:none}
+.status-only{margin-top:auto;min-height:44px;display:flex;align-items:center;color:#6f6658;font:900 9px ui-monospace,monospace;letter-spacing:.18em}
+.roster-panel{border:1px solid var(--line);background:rgba(5,4,3,.78);padding:14px;display:flex;flex-direction:column}
+.roster-title{display:flex;justify-content:space-between;gap:12px;padding:2px 2px 12px;color:#766d60;font:800 8px ui-monospace,monospace;letter-spacing:.14em}
+.roster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.slot{position:relative;aspect-ratio:1;border:1px solid #312713;background:#080704;overflow:hidden;padding:0;color:inherit;cursor:pointer;transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+.slot:hover,.slot:focus-visible,.slot[aria-selected="true"]{border-color:var(--g);transform:translateY(-2px);box-shadow:0 0 0 1px rgba(216,172,78,.16),0 0 24px rgba(216,172,78,.08);outline:none}
+.slot[aria-selected="true"]:after{content:"SELECTED";position:absolute;left:6px;top:6px;z-index:3;background:#050403;color:var(--g2);padding:4px 5px;font:900 6px ui-monospace,monospace;letter-spacing:.13em;border:1px solid #564421}
+.headshot,.slot-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.headshot{object-position:center center;filter:saturate(.88) contrast(1.05)}
+.slot-shade{position:absolute;inset:0;background:linear-gradient(transparent 38%,rgba(0,0,0,.2) 56%,rgba(0,0,0,.96) 100%)}
+.slot-meta{position:absolute;inset:auto 8px 8px;z-index:2}
+.slot-num{color:var(--g);font:900 6px ui-monospace,monospace;letter-spacing:.15em}
+.slot-name{font:500 clamp(10px,1.4vw,18px) Georgia,serif;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.initials{position:absolute;inset:0;display:grid;place-items:center;font:500 clamp(30px,5vw,64px) Georgia,serif;color:#352b1e}
+.locked{cursor:default}
+.locked:hover,.locked:focus-visible{transform:none;border-color:#312713;box-shadow:none}
+.mini-silhouette{position:absolute;left:50%;top:50%;width:54%;height:68%;transform:translate(-50%,-47%);opacity:.72}
+.mini-silhouette:before{content:"";position:absolute;left:50%;top:0;width:42%;aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:#000}
+.mini-silhouette:after{content:"";position:absolute;left:50%;bottom:0;width:100%;height:72%;border-radius:48% 48% 10% 10%;transform:translateX(-50%);background:#000}
+.locked .slot-name{color:#6b6459}
+.cheat-terminal{margin-top:auto;border-top:1px solid #2a2112;padding-top:18px}.cheat-kicker{color:var(--g);font:900 8px ui-monospace,monospace;letter-spacing:.2em}.cheat-terminal h3{font:500 25px Georgia,serif;margin:6px 0 8px}.cheat-terminal p{margin:0 0 12px;color:#756d61;font:700 9px/1.55 ui-monospace,monospace;letter-spacing:.08em}.cheat-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.cheat-form input{min-width:0;border:1px solid #3b301d;background:#030302;color:#f8f4ea;padding:12px 13px;font:900 10px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;outline:none}.cheat-form input:focus{border-color:var(--g)}.cheat-form button{border:1px solid var(--g);background:rgba(216,172,78,.08);color:var(--g2);padding:10px 14px;font:900 8px ui-monospace,monospace;letter-spacing:.14em;cursor:pointer}.cheat-msg{min-height:18px;margin-top:9px;color:#7e8f62;font:800 8px ui-monospace,monospace;letter-spacing:.1em}.control-note{padding:14px 2px 2px;color:#5f584d;font:800 8px/1.5 ui-monospace,monospace;letter-spacing:.12em}
+.note{margin:22px 0 0;text-align:center;color:#5e574c;font:800 8px ui-monospace,monospace;letter-spacing:.16em}
+@media(max-width:1050px){.selector{grid-template-columns:1fr}.stage{min-height:560px}.stage.poster-stage{min-height:980px;aspect-ratio:auto}.roster{grid-template-columns:repeat(6,minmax(0,1fr))}.stage-copy{width:min(410px,46%)}}
+@media(max-width:720px){.sig{display:none}.hero{padding-top:30px}.stage{min-height:620px}.stage.poster-stage{min-height:820px;aspect-ratio:auto}.stage-art.has-image{background-position:left center;background-size:auto 100%}.stage.poster-stage .stage-art.has-image{background-position:left top;background-size:auto 100%}.stage-copy{left:14px;right:14px;bottom:14px;width:auto}.roster{grid-template-columns:repeat(4,minmax(0,1fr))}.slot-name{font-size:12px}}
+@media(max-width:440px){.roster{grid-template-columns:repeat(3,minmax(0,1fr))}.stage{min-height:590px}.stage.poster-stage{min-height:780px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top"><a href="/crown/crowd/">← THE CROWD</a><div class="sig">DA CROWD PLAYER // CHARACTER SELECT</div></header>
+<section class="hero"><div class="eyebrow">DA CROWD PLAYER // SELECT YOUR SIGNAL</div><h1>Choose your artist.</h1><p>Hover or focus a discovered signal to preview the artist. Press Start to enter an available world. Locked signals stay encrypted until they are discovered.</p></section>
+
+<section class="selector" aria-label="Da CROWD Player artist selection">
+<div class="stage poster-stage" id="stage">
+  <div class="stage-art has-image" id="stageArt" style="background-image:url('/assets/x-tha-god-character.jpeg')"></div>
+  <div class="stage-copy">
+    <div class="stage-num" id="stageNum">01 // ACTIVE SIGNAL</div>
+    <h2 id="stageName">X THA GOD</h2>
+    <div class="stage-line"><span>REPRESENTS</span><span id="stageRep">THE CROWD // GBE</span></div>
+    <div class="stage-line"><span>WORLD</span><span id="stageWorld">LEVEL X</span></div>
+    <div class="stage-line"><span>STATUS</span><span id="stageStatus">ACTIVE // UNLOCKED</span></div>
+    <a class="start" id="startButton" href="/crown/crowd/level-x/">PRESS START // ENTER LEVEL X</a>
+    <div class="status-only" id="statusOnly" hidden></div>
+  </div>
+</div>
+
+<aside class="roster-panel" aria-label="Artist slots">
+  <div class="roster-title"><span>PLAYER 01 // SELECT</span><span id="slotCounter">01 / 12</span></div>
+  <div class="roster" id="roster">
+    <button class="slot" type="button" aria-selected="true"
+      data-index="01" data-signal="ACTIVE SIGNAL" data-name="X THA GOD"
+      data-rep="THE CROWD // GBE" data-world="LEVEL X" data-status="ACTIVE // UNLOCKED"
+      data-image="/assets/x-tha-god-character.jpeg" data-art-fit="cover" data-art-position="center center" data-stage-class="poster-stage" data-href="/crown/crowd/level-x/" data-start="PRESS START // ENTER LEVEL X">
+      <img class="headshot" src="/assets/x-tha-god-headshot.jpg" alt="X Tha God headshot">
+      <span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">01 // ACTIVE</span><span class="slot-name">X THA GOD</span></span>
+    </button>
+    <button class="slot" type="button" aria-selected="false"
+      data-index="02" data-signal="ACTIVE SIGNAL" data-name="BIG TALI"
+      data-rep="THE CROWD // STARDOM" data-world="IN DEVELOPMENT" data-status="IDENTITY RECOGNIZED"
+      data-initials="BT" data-message="SIGNAL FOUND // ARTIST WORLD BUILDING">
+      <span class="initials">BT</span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">02 // ACTIVE</span><span class="slot-name">BIG TALI</span></span>
+    </button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 03 locked" data-index="03" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">03 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 04 locked" data-index="04" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">04 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 05 locked" data-index="05" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">05 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 06 locked" data-index="06" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">06 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 07 locked" data-index="07" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">07 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 08 locked" data-index="08" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">08 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 09 locked" data-index="09" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">09 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 10 locked" data-index="10" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">10 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 11 locked" data-index="11" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">11 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+    <button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal 12 locked" data-index="12" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">12 // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>
+  </div>
+  <section class="cheat-terminal" aria-label="Player Cheat Code terminal">
+    <div class="cheat-kicker">CHEAT CODE // HIDDEN SIGNAL</div>
+    <h3>Know something the roster doesn't?</h3>
+    <p>A valid code can reveal a member-specific signal without changing that artist's real House.</p>
+    <form id="cheatForm" class="cheat-form">
+      <input id="cheatCode" type="text" autocomplete="off" spellcheck="false" maxlength="80" placeholder="ENTER CHEAT CODE">
+      <button type="submit">EXECUTE</button>
+    </form>
+    <div id="cheatMsg" class="cheat-msg" aria-live="polite"></div>
+  </section>
+  <div class="control-note">DESKTOP // HOVER OR TAB TO PREVIEW · MOBILE // TAP TO SELECT · PRESS START TO ENTER</div>
+</aside>
+</section>
+<p class="note">DA CROWD PLAYER // CHARACTER SELECT · YOUR CROWN REMEMBERS WHAT YOU DISCOVER.</p>
+</main>
+<script>
+(()=>{
+  let slots=[];
+  let capacity=12;
+  const stage=document.getElementById('stage');
+  const art=document.getElementById('stageArt');
+  const num=document.getElementById('stageNum');
+  const name=document.getElementById('stageName');
+  const rep=document.getElementById('stageRep');
+  const world=document.getElementById('stageWorld');
+  const status=document.getElementById('stageStatus');
+  const start=document.getElementById('startButton');
+  const statusOnly=document.getElementById('statusOnly');
+  const counter=document.getElementById('slotCounter');
+  const roster=document.getElementById('roster');
+  const cheatForm=document.getElementById('cheatForm');
+  const cheatCode=document.getElementById('cheatCode');
+  const cheatMsg=document.getElementById('cheatMsg');
+
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pad=n=>String(n).padStart(2,'0');
+
+  function slotState(signal){
+    if(signal?.unlockSource==='cheat-code')return {label:'CHEAT SIGNAL',badge:'CHEAT'};
+    if(signal?.unlockSource==='legacy-preview')return {label:'LEGACY SIGNAL',badge:'LEGACY'};
+    if(signal?.unlockSource)return {label:'UNLOCKED SIGNAL',badge:'UNLOCKED'};
+    return {label:signal?.signalLabel||'ACTIVE SIGNAL',badge:'ACTIVE'};
+  }
+
+  function renderRoster(signals){
+    const discovered=(signals||[]).slice(0,capacity);
+    let html=discovered.map((s,i)=>{
+      const index=pad(i+1);
+      const state=slotState(s);
+      const image=s.headshotUrl?'<img class="headshot" src="'+esc(s.headshotUrl)+'" alt="'+esc(s.displayName)+' headshot">':s.displayName?'<span class="initials">'+esc(s.displayName.split(/\s+/).map(x=>x[0]).join('').slice(0,2))+'</span>':'<span class="mini-silhouette"></span>';
+      const attrs=[
+        'data-index="'+index+'"',
+        'data-signal="'+esc(state.label)+'"',
+        'data-name="'+esc(s.displayName)+'"',
+        'data-rep="'+esc(s.representsText||'UNKNOWN')+'"',
+        'data-world="'+esc(s.worldText||'UNDISCOVERED')+'"',
+        'data-status="'+esc(s.statusText||'IDENTITY RECOGNIZED')+'"'
+      ];
+      if(s.characterImageUrl){
+        attrs.push('data-image="'+esc(s.characterImageUrl)+'"');
+        attrs.push('data-art-fit="'+esc(s.artFit||'cover')+'"');
+        attrs.push('data-art-position="'+esc(s.artPosition||'center center')+'"');
+        attrs.push('data-stage-class="poster-stage"');
+      }
+      if(s.destination){
+        attrs.push('data-href="'+esc(s.destination)+'"');
+        attrs.push('data-start="'+esc(s.startText||'PRESS START')+'"');
+      }else{
+        attrs.push('data-message="'+esc(s.buildingMessage||'SIGNAL FOUND // WORLD BUILDING')+'"');
+      }
+      return '<button class="slot" type="button" aria-selected="'+(i===0?'true':'false')+'" '+attrs.join(' ')+'>'+image+'<span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">'+index+' // '+esc(state.badge)+'</span><span class="slot-name">'+esc(s.displayName)+'</span></span></button>';
+    }).join('');
+
+    for(let i=discovered.length;i<capacity;i++){
+      const index=pad(i+1);
+      html+='<button class="slot locked" type="button" aria-selected="false" aria-label="Unknown Signal '+index+' locked" data-index="'+index+'" data-locked="true"><span class="mini-silhouette"></span><span class="slot-shade"></span><span class="slot-meta"><span class="slot-num">'+index+' // ENCRYPTED</span><span class="slot-name">UNKNOWN</span></span></button>';
+    }
+
+    roster.innerHTML=html;
+    bindSlots();
+    if(slots[0])select(slots[0]);
+  }
+
+  function select(slot){
+    if(slot.dataset.locked==='true'){
+      num.textContent=slot.dataset.index+' // ENCRYPTED SIGNAL';
+      name.textContent='UNKNOWN SIGNAL';
+      rep.textContent='UNKNOWN';
+      world.textContent='UNDISCOVERED';
+      status.textContent='SIGNAL LOCKED';
+      stage.classList.remove('poster-stage');
+      art.style.backgroundImage='';
+      art.style.backgroundSize='';
+      art.style.backgroundPosition='';
+      art.classList.remove('has-image');
+      art.innerHTML='<span class="stage-silhouette"></span>';
+      start.hidden=true;
+      statusOnly.hidden=false;
+      statusOnly.textContent='IDENTITY // ENCRYPTED';
+    }else{
+      num.textContent=slot.dataset.index+' // '+slot.dataset.signal;
+      name.textContent=slot.dataset.name;
+      rep.textContent=slot.dataset.rep;
+      world.textContent=slot.dataset.world;
+      status.textContent=slot.dataset.status;
+      art.innerHTML='';
+      stage.classList.remove('poster-stage');
+      if(slot.dataset.stageClass)stage.classList.add(slot.dataset.stageClass);
+      if(slot.dataset.image){
+        art.style.backgroundImage='url("'+slot.dataset.image+'")';
+        art.style.backgroundSize=slot.dataset.artFit||'cover';
+        art.style.backgroundPosition=slot.dataset.artPosition||'center center';
+        art.classList.add('has-image');
+      }else{
+        art.style.backgroundImage='';
+        art.style.backgroundSize='';
+        art.style.backgroundPosition='';
+        art.classList.remove('has-image');
+        art.innerHTML='<span class="stage-silhouette"></span>';
+      }
+      if(slot.dataset.href){
+        start.href=slot.dataset.href;
+        start.textContent=slot.dataset.start||'PRESS START';
+        start.hidden=false;
+        statusOnly.hidden=true;
+      }else{
+        start.hidden=true;
+        statusOnly.hidden=false;
+        statusOnly.textContent=slot.dataset.message||'SIGNAL FOUND // WORLD BUILDING';
+      }
+    }
+    slots.forEach(s=>s.setAttribute('aria-selected',s===slot?'true':'false'));
+    counter.textContent=slot.dataset.index+' / '+pad(capacity);
+  }
+
+  function bindSlots(){
+    slots=[...document.querySelectorAll('.slot')];
+    slots.forEach(slot=>{
+      slot.addEventListener('mouseenter',()=>select(slot));
+      slot.addEventListener('focus',()=>select(slot));
+      slot.addEventListener('click',()=>select(slot));
+    });
+  }
+
+  async function loadRoster(){
+    try{
+      const r=await fetch('/api/crown/player/roster?house=the-crowd');
+      const data=await r.json();
+      if(!r.ok||!data.ok)throw new Error(data.code||data.message||'ROSTER_UNAVAILABLE');
+      capacity=Number(data.capacity)||12;
+      renderRoster(data.signals||[]);
+      cheatMsg.textContent=(data.signals||[]).length+' DISCOVERED SIGNAL'+((data.signals||[]).length===1?'':'S')+' // PERSONAL ROSTER';
+    }catch{
+      bindSlots();
+      if(slots[0])select(slots[0]);
+      cheatMsg.textContent='CHEAT SYSTEM // WAITING FOR ROSTER DATA';
+    }
+  }
+
+  cheatForm?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const code=String(cheatCode.value||'').trim();
+    if(!code){cheatMsg.textContent='ENTER A CHEAT CODE.';return;}
+    cheatMsg.textContent='EXECUTING...';
+    try{
+      const r=await fetch('/api/crown/player/cheat',{
+        method:'POST',
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify({houseSlug:'the-crowd',code})
+      });
+      const data=await r.json();
+      if(!r.ok||!data.ok)throw new Error(data.message||'NO SIGNAL FOUND.');
+      cheatMsg.textContent='CHEAT ACCEPTED // '+String(data.displayName||data.signalSlug).toUpperCase()+' UNLOCKED.';
+      cheatCode.value='';
+      await loadRoster();
+    }catch(err){
+      cheatMsg.textContent=err.message||'CHEAT CODE // NO SIGNAL FOUND.';
+    }
+  });
+
+  bindSlots();
+  loadRoster();
+})();
+</script>
+</body>
+</html>
