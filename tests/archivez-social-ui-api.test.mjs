@@ -38,7 +38,7 @@ test("public naming overlays raw source title without destroying Dropbox filenam
   assert.match(api,/const sourceTitle=item\.title/);
   assert.match(api,/const publicTitle=/);
   assert.match(api,/title:publicTitle/);
-  assert.match(api,/source_title:provenanceVisible\?sourceTitle:null/);
+  assert.match(api,/source_title:adminCapabilities\.canViewSourceTitle\?sourceTitle:null/);
 });
 
 test("likes are Crown-member scoped and toggleable",()=>{
