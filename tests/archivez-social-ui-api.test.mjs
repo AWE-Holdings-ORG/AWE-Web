@@ -21,12 +21,16 @@ for(const [name,html] of [["crown",crown],["public",pub]]){
   });
 }
 
-test("admin public metadata update is owner-only",()=>{
+test("Archivez public metadata update is scoped to authorized House media admins",()=>{
   assert.match(worker,/\/api\/crown\/archivez\/admin\/public-meta/);
-  assert.match(worker,/member\.aw_id!=="AWE-000001"/);
+  assert.match(worker,/houseAdminCapabilities/);
+  assert.match(worker,/canEditPublicMeta/);
+  assert.match(worker,/THE CROWD MEDIA ADMIN ACCESS REQUIRED/);
   assert.match(worker,/archive_media_public_meta/);
+  assert.match(crown,/THE CROWD \/\/ MEDIA ADMIN/);
   assert.match(crown,/EDIT PUBLIC INFO/);
   assert.match(crown,/PUBLIC TITLE/);
+  assert.match(crown,/SAVE \+ NEXT/);
   assert.match(crown,/RESET TO SOURCE/);
 });
 
@@ -80,4 +84,13 @@ test("Archivez social controls use Crown styling",()=>{
   assert.match(crown,/\.social-actions button\{/);
   assert.match(crown,/\.admin-edit\{/);
   assert.match(crown,/\.comment-form textarea/);
+});
+
+
+test("scoped media admin sees source filename without provider provenance",()=>{
+  assert.match(api,/canViewSourceTitle/);
+  assert.match(api,/source_title:adminCapabilities\.canViewSourceTitle\?sourceTitle:null/);
+  assert.match(api,/provenance_visible:provenanceVisible/);
+  assert.match(api,/admin_role:adminCapabilities\.role/);
+  assert.match(api,/admin_editable:adminCapabilities\.canEditPublicMeta/);
 });
