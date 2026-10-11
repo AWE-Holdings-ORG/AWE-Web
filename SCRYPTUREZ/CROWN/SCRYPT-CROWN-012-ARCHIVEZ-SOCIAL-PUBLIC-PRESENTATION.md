@@ -1,7 +1,7 @@
 # SCRYPT-CROWN-012 — ARCHIVEZ SOCIAL & PUBLIC PRESENTATION LAW
 
 Status: ACTIVE / PREVIEW
-Version: 1.0
+Version: 1.1
 Domain: Crown / Archivez / Social
 Depends On: SCRYPT-CROWN-002, SCRYPT-CROWN-009, SCRYPT-CROWN-010
 
@@ -29,8 +29,12 @@ The public title must never be used as the storage-provider lookup key.
 
 Only an authorized Archivez administrator may edit public title/caption metadata.
 
-Preview owner authority:
-- `AWE-000001`
+Archivez naming authority:
+- Crown owner `AWE-000001` retains full Archivez authority.
+- X Tha God `AWE-000002` is the first scoped `the-crowd / media-admin`.
+- Scoped media admins may edit public title/caption metadata for their House archive.
+- X may see the immutable source filename so he can identify what he is naming.
+- Scoped media admins do not receive source-provider URLs, Crown member management, credentials, infrastructure controls, cross-House authority, access-tier management, or comment moderation unless separately granted.
 
 Public viewers and ordinary Crown members cannot rename archive records.
 
@@ -74,6 +78,13 @@ Provider URLs, storage IDs, and credentials must never appear in shared links.
 
 ## Data Model
 
+`house_admin_grants`
+- `member_id`
+- `house_slug`
+- `role_slug`
+- capability flags
+- grant/revocation state
+
 `archive_media_public_meta`
 - `media_id`
 - `public_title`
@@ -97,12 +108,16 @@ Provider URLs, storage IDs, and credentials must never appear in shared links.
 - Owner/admin checks occur server-side.
 - Likes/comments require Crown identity.
 - Public comment reads only expose Crown Name, body, and timestamps.
-- Dropbox/Drive provenance remains hidden from non-admin viewers.
+- Dropbox/Drive provider provenance remains owner-only by default.
+- A scoped media admin may receive the immutable source filename when `can_view_source_title=1`, without receiving provider URLs or credentials.
 - Public deep links resolve through AWE media delivery, not provider storage.
 
 ## Preview Migration
 
-Migration:
+Migrations:
 - `0025_archivez_social_public_meta.sql`
+- `0026_house_media_admin_grants.sql`
 
-The runtime must fail gracefully when the migration is not yet applied.
+During Preview bootstrap only, `AWE-000002` may receive the same narrowly scoped The CROWD media-admin capability when 0026 is not yet present so archive curation is not blocked by migration timing. Once `house_admin_grants` exists, the database grant is authoritative.
+
+The runtime must fail gracefully when a required migration is not yet applied.
