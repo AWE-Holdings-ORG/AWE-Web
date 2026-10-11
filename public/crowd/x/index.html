@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050403">
+  <title>Tha X Filez | X Tha God × The CROWD</title>
+  <meta name="description" content="Tha X Filez — the public X Tha God image and interview archive from The CROWD.">
+  <style>
+    :root{--gold:#d8ac4e;--gold2:#f1d783;--ink:#050403;--panel:#0b0906;--line:#2e2517;--muted:#8d826e}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 80% 0,#1a1207 0,#080604 30%,#020202 72%);color:#f8f4ea;font-family:Inter,system-ui,sans-serif;min-height:100vh}
+    a{color:inherit}
+    .shell{width:min(1280px,92vw);margin:auto;padding:26px 0 70px}
+    .top{display:flex;justify-content:space-between;gap:18px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:16px}
+    .brand{font:900 10px ui-monospace,monospace;letter-spacing:.18em;color:var(--gold2);text-decoration:none}
+    .sig{font:800 9px ui-monospace,monospace;letter-spacing:.16em;color:#726858}
+    .hero{padding:76px 0 42px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:end}
+    .eyebrow{font:900 10px ui-monospace,monospace;letter-spacing:.3em;color:var(--gold)}
+    h1{font:500 clamp(58px,10vw,126px)/.82 Georgia,serif;margin:14px 0 18px}
+    .hero p{max-width:710px;color:var(--muted);line-height:1.8;margin:0}
+    .count{border:1px solid var(--line);padding:18px 22px;background:#070603cc;min-width:170px}
+    .count b{display:block;font:900 9px ui-monospace,monospace;letter-spacing:.16em;color:var(--gold)}
+    .count strong{display:block;font:500 38px Georgia,serif;margin-top:8px}
+    .bar{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0;margin-bottom:18px}
+    .filters{display:flex;gap:7px;flex-wrap:wrap}
+    .filters button{border:1px solid var(--line);background:#080704;color:#8d826e;padding:9px 12px;font:800 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+    .filters button.active{background:var(--gold);border-color:var(--gold);color:#050403}
+    .status{font:800 8px ui-monospace,monospace;letter-spacing:.13em;color:#766d5e}
+    .grid{columns:4 240px;column-gap:12px}
+    .file{display:inline-block;width:100%;margin:0 0 12px;border:1px solid var(--line);background:var(--panel);break-inside:avoid;cursor:pointer;padding:0;text-align:left;color:#f8f4ea}
+    .file:hover{border-color:#70582b}
+    .file img{display:block;width:100%;height:auto;background:#030303}
+    .file-copy{padding:13px}
+    .file b{display:block;color:var(--gold);font:900 8px ui-monospace,monospace;letter-spacing:.13em}
+    .file strong{display:block;font:500 17px Georgia,serif;margin:7px 0}
+    .file small{color:#776f64;line-height:1.5}
+    .empty{border:1px solid var(--line);padding:40px;text-align:center;color:var(--muted)}
+    dialog{border:1px solid #49381d;background:#050403;color:#fff;width:min(1060px,94vw);padding:0;box-shadow:0 30px 120px #000}
+    dialog::backdrop{background:#000c;backdrop-filter:blur(4px)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+    .modal-head b{font:900 9px ui-monospace,monospace;letter-spacing:.16em;color:var(--gold)}
+    .close{background:none;border:0;color:#aaa;font-size:28px;cursor:pointer}
+    .modal-body{padding:14px}
+    .modal-body img{display:block;max-width:100%;max-height:76vh;margin:auto}
+    .modal-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--line);color:#8d826e;font-size:12px}.social{padding:14px;border-top:1px solid var(--line)}.social-actions{display:flex;gap:8px;flex-wrap:wrap}.social-actions button{border:1px solid #3d311e;background:#080704;color:#d8c59f;padding:10px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.11em;cursor:pointer}.social-actions button.liked{border-color:var(--gold);color:var(--gold2);background:#171006}.social-msg{min-height:18px;margin-top:8px;color:#8b8f6d;font:800 8px ui-monospace,monospace;letter-spacing:.09em}.comments{display:grid;gap:8px;margin-top:12px}.comment{border-top:1px solid #211b12;padding-top:9px}.comment b{display:block;color:var(--gold2);font:900 8px ui-monospace,monospace;letter-spacing:.11em}.comment time{color:#61594e;font:700 7px ui-monospace,monospace;letter-spacing:.08em}.comment p{margin:5px 0 0;color:#aaa092;line-height:1.45;font-size:12px}.comment-form{display:grid;gap:7px;margin-top:11px}.comment-form textarea{width:100%;min-height:72px;resize:vertical;border:1px solid #3b301d;background:#020202;color:#f8f4ea;padding:11px;outline:none}.comment-form button{justify-self:start;border:1px solid var(--gold);background:#0a0804;color:var(--gold2);padding:9px 12px;font:900 8px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}
+    .source{color:var(--gold2);font:800 9px ui-monospace,monospace;letter-spacing:.12em;text-decoration:none}
+    .more{display:block;margin:22px auto 0;border:1px solid var(--line);background:#080704;color:var(--gold2);padding:12px 18px;font:900 9px ui-monospace,monospace;letter-spacing:.13em;cursor:pointer}.placeholder-card{min-height:160px;display:grid;place-items:center;background:radial-gradient(circle,#151008,#030303 72%);color:var(--gold);font:500 36px Georgia,serif}.foot{text-align:center;color:#5e574c;font:800 9px ui-monospace,monospace;letter-spacing:.16em;margin-top:34px}
+    @media(max-width:700px){.hero{grid-template-columns:1fr;padding-top:52px}.count{width:max-content}.sig{display:none}.grid{columns:2 150px}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="top">
+    <a class="brand" href="/">AWE HOLDINGS // THE CROWD</a>
+    <div class="sig">PUBLIC ARCHIVE SIGNAL // X THA GOD</div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">THE CROWD // ARTIST 001</div>
+      <h1>THA X FILEZ</h1>
+      <p>Images, interviews and visual history from X Tha God. This public archive is one layer of a deeper collection curated through The CROWD.</p>
+    </div>
+    <aside class="count"><b>PUBLIC FILEZ</b><strong id="count">—</strong></aside>
+  </section>
+
+  <section class="bar">
+    <div id="filters" class="filters"></div>
+    <div id="status" class="status">CONNECTING TO ARCHIVE…</div>
+  </section>
+
+  <section id="grid" class="grid" aria-live="polite"></section>
+  <button id="more" class="more" type="button" hidden>LOAD MORE FILEZ</button>
+
+  <p class="foot">THA X FILEZ // X THA GOD × THE CROWD × GBE</p>
+</main>
+
+<dialog id="viewer">
+  <div class="modal-head"><b id="viewerLabel">THA X FILEZ</b><button id="close" class="close" aria-label="Close">×</button></div>
+  <div id="viewerBody" class="modal-body"></div>
+  <div class="modal-foot"><span id="viewerTitle"></span><a id="viewerSource" class="source" target="_blank" rel="noopener noreferrer">ORIGINAL FILE ↗</a></div>
+  <section class="social">
+    <div class="social-actions"><button id="likeBtn" type="button">♡ LIKE <span id="likeCount">0</span></button><button id="commentJump" type="button">💬 COMMENTS <span id="commentCount">0</span></button><button id="shareBtn" type="button">↗ SHARE</button></div>
+    <div id="socialMsg" class="social-msg" aria-live="polite"></div>
+    <div id="comments" class="comments"></div>
+    <form id="commentForm" class="comment-form"><textarea id="commentBody" maxlength="1000" placeholder="Comment with your Crown identity…"></textarea><button type="submit">POST COMMENT</button></form>
+  </section>
+</dialog>
+
+<script>
+const state={files:[],filter:"ALL",limit:60,activeId:null,social:null};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function kind(x){
+  const t=String(x.media_type||"").toLowerCase();
+  if(t==="interview")return "INTERVIEWS";
+  if(["video","clip","promo","bts","behind-the-scenes"].includes(t))return "VIDEO";
+  return "IMAGES";
+}
+function render(){
+  const all=state.filter==="ALL"?state.files:state.files.filter(x=>kind(x)===state.filter);
+  const files=all.slice(0,state.limit);
+  const grid=document.getElementById("grid");
+  grid.innerHTML=files.map(x=>{
+    const art=x.thumb_url
+      ?'<img loading="lazy" src="'+esc(x.thumb_url)+'" alt="'+esc(x.title)+'">'
+      :'<span class="placeholder-card">X</span>';
+    return '<button class="file" data-id="'+x.id+'">'+art+
+      '<span class="file-copy"><b>'+esc(x.collection_file_code||"DXF")+' // '+esc(kind(x))+' // PUBLIC FILE</b><strong>'+esc(x.title)+'</strong><small>'+esc(x.description||"THE CROWD ARCHIVE")+'</small></span></button>';
+  }).join("")||'<div class="empty">NO PUBLIC FILEZ IN THIS LANE YET.</div>';
+  grid.querySelectorAll("[data-id]").forEach(el=>el.onclick=()=>openFile(Number(el.dataset.id)));
+  const more=document.getElementById("more");
+  more.hidden=files.length>=all.length;
+  more.textContent="LOAD MORE FILEZ // "+files.length+" OF "+all.length;
+}
+function fmtDate(value){const d=new Date(value);return Number.isNaN(d.getTime())?"":d.toLocaleString();}
+function activeFile(){return state.files.find(x=>Number(x.id)===Number(state.activeId))||null;}
+function fileShareUrl(x){
+  const u=new URL("/crowd/x/",location.origin);
+  u.searchParams.set("file",x.collection_file_code||String(x.id));
+  return u.toString();
+}
+async function fetchSocial(id){
+  let data=null;
+  // If the viewer already has a Crown session, use it so LIKE state is personal.
+  try{
+    const crown=await fetch("/api/crown/archivez/social?mediaId="+encodeURIComponent(id));
+    if(crown.ok)data=await crown.json();
+  }catch{}
+  if(!data?.ok){
+    const pub=await fetch("/api/archivez/social?mediaId="+encodeURIComponent(id));
+    data=await pub.json();
+    if(!pub.ok||!data?.ok)throw Error(data?.message||"SOCIAL UNAVAILABLE");
+  }
+  state.social=data;
+  const btn=document.getElementById("likeBtn");
+  document.getElementById("likeCount").textContent=data.likeCount||0;
+  document.getElementById("commentCount").textContent=data.commentCount||0;
+  btn.classList.toggle("liked",data.likedByMe===true);
+  btn.firstChild.textContent=data.likedByMe?"♥ LIKED ":"♡ LIKE ";
+  document.getElementById("comments").innerHTML=(data.comments||[]).map(x=>
+    '<article class="comment"><b>'+esc(x.crownName||"CROWN MEMBER")+'</b><time>'+esc(fmtDate(x.createdAt))+'</time><p>'+esc(x.body)+'</p></article>'
+  ).join("")||'<div class="empty">NO COMMENTS YET.</div>';
+  document.getElementById("socialMsg").textContent="";
+}
+function openFile(id){
+  const x=state.files.find(f=>Number(f.id)===id); if(!x)return;
+  state.activeId=Number(id);
+  const dialog=document.getElementById("viewer");
+  document.getElementById("viewerLabel").textContent=(x.collection_file_code||"THA X FILEZ")+" // "+kind(x);
+  document.getElementById("viewerTitle").textContent=x.title||"X THA GOD";
+  const source=document.getElementById("viewerSource");
+  source.hidden=true;
+  source.removeAttribute("href");
+  const type=String(x.media_type||"").toLowerCase();
+  if(["video","clip","interview","bts","behind-the-scenes","promo"].includes(type)&&x.preview_url){
+    document.getElementById("viewerBody").innerHTML='<video controls preload="metadata" style="width:100%;max-height:76vh" src="'+esc(x.preview_url)+'"></video>';
+  }else if(x.preview_url){
+    document.getElementById("viewerBody").innerHTML='<img src="'+esc(x.preview_url)+'" alt="'+esc(x.title)+'">';
+  }else{
+    document.getElementById("viewerBody").innerHTML='<div class="placeholder-card" style="min-height:52vh">X</div>';
+  }
+  dialog.showModal();
+  fetchSocial(x.id).catch(err=>document.getElementById("socialMsg").textContent=err.message||"SOCIAL UNAVAILABLE");
+  const u=new URL(location.href);
+  u.searchParams.set("file",x.collection_file_code||String(x.id));
+  history.replaceState(null,"",u);
+}
+async function load(){
+  const status=document.getElementById("status");
+  try{
+    const r=await fetch("/api/archivez/catalog?artist=x-tha-god&collection=tha-x-filez");
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw Error(d.code||"archive");
+    state.files=(d.media||[]).filter(x=>String(x.collection_slug||"").toLowerCase()==="tha-x-filez"&&x.authorized!==false);
+    document.getElementById("count").textContent=state.files.length;
+    const cats=["ALL",...new Set(state.files.map(kind))];
+    const filters=document.getElementById("filters");
+    filters.innerHTML=cats.map(c=>'<button data-filter="'+c+'" class="'+(c==="ALL"?"active":"")+'">'+c+'</button>').join("");
+    filters.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      state.filter=b.dataset.filter;
+      state.limit=60;
+      filters.querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+      render();
+    });
+    status.textContent="PUBLIC ARCHIVE // ONLINE";
+    render();
+    const requested=new URLSearchParams(location.search).get("file");
+    if(requested){
+      const x=state.files.find(f=>String(f.collection_file_code||f.id).toLowerCase()===String(requested).toLowerCase());
+      if(x)openFile(Number(x.id));
+    }
+  }catch{
+    status.textContent="ARCHIVE SIGNAL TEMPORARILY UNAVAILABLE";
+    document.getElementById("grid").innerHTML='<div class="empty">THA X FILEZ IS CURRENTLY OFFLINE.</div>';
+  }
+}
+document.getElementById("more").onclick=()=>{state.limit+=60;render();};
+document.getElementById("likeBtn").onclick=async()=>{
+  const x=activeFile();if(!x)return;
+  const msg=document.getElementById("socialMsg");
+  try{
+    const r=await fetch("/api/crown/archivez/like",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:x.id})});
+    const d=await r.json();
+    if(r.status===401)throw Error("CROWN ID REQUIRED TO LIKE.");
+    if(!r.ok||!d.ok)throw Error(d.message||"LIKE FAILED");
+    await fetchSocial(x.id);
+  }catch(err){msg.textContent=err.message||"LIKE FAILED";}
+};
+document.getElementById("commentJump").onclick=()=>document.getElementById("commentBody").focus();
+document.getElementById("commentForm").addEventListener("submit",async e=>{
+  e.preventDefault();const x=activeFile();if(!x)return;
+  const body=document.getElementById("commentBody").value.trim();if(!body)return;
+  const msg=document.getElementById("socialMsg");
+  try{
+    const r=await fetch("/api/crown/archivez/comments",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mediaId:x.id,body})});
+    const d=await r.json();
+    if(r.status===401)throw Error("CROWN ID REQUIRED TO COMMENT.");
+    if(!r.ok||!d.ok)throw Error(d.message||"COMMENT FAILED");
+    document.getElementById("commentBody").value="";
+    await fetchSocial(x.id);
+  }catch(err){msg.textContent=err.message||"COMMENT FAILED";}
+});
+document.getElementById("shareBtn").onclick=async()=>{
+  const x=activeFile();if(!x)return;
+  const url=fileShareUrl(x),msg=document.getElementById("socialMsg");
+  try{
+    if(navigator.share)await navigator.share({title:x.title||"Tha X Filez",text:"Tha X Filez // "+(x.title||"X Tha God"),url});
+    else{await navigator.clipboard.writeText(url);msg.textContent="FILE LINK COPIED.";}
+  }catch(err){if(err?.name!=="AbortError")msg.textContent="SHARE UNAVAILABLE.";}
+};
+document.getElementById("close").onclick=()=>{document.getElementById("viewer").close();const u=new URL(location.href);u.searchParams.delete("file");history.replaceState(null,"",u);};
+document.getElementById("viewer").addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
+load();
+</script>
+</body>
+</html>

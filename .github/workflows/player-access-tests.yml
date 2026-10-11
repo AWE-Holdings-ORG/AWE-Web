@@ -1,0 +1,246 @@
+name: Player Access Tests
+
+on:
+  push:
+    paths:
+      - "lib/player-access.js"
+      - "lib/player-viewer-context.js"
+      - "lib/player-catalog-service.js"
+      - "lib/player-api.js"
+      - "lib/archivez-api.js"
+      - "lib/house-admin.js"
+      - "lib/player-analytics.js"
+      - "worker-entry.js"
+      - "worker.js"
+      - "public/crown/index.html"
+      - "public/crown/crowd/level-x/index.html"
+      - "public/crown/crowd/player/index.html"
+      - "public/crown/crowd/index.html"
+      - "public/crown/crowd/archivez/index.html"
+      - "public/crown/crowd/archivez/tha-x-filez/index.html"
+      - "public/crowd/x/index.html"
+      - "public/crown/crowd/level-x/analytics/index.html"
+      - "public/script.js"
+      - "tests/crown-invitation.test.mjs"
+      - "public/join/**"
+      - "public/verify/**"
+      - "wrangler.jsonc"
+      - "migrations/0027_crown_email_verification.sql"
+      - "tests/crown-email-verification.test.mjs"
+      - "tests/crown-verification-migration.test.py"
+      - "package.json"
+      - "migrations/0009_player_access_states.sql"
+      - "migrations/0010_player_access_grants.sql"
+      - "migrations/0011_player_engagement_analytics.sql"
+      - "migrations/0012_x_tha_god_crowd_owned_battles.sql"
+      - "migrations/0013_player_event_context.sql"
+      - "migrations/0015_x_tha_god_external_event_context.sql"
+      - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
+      - "migrations/0016_x_tha_god_reconciled_additions.sql"
+      - "migrations/0017_tha_x_filez_and_super_readers.sql"
+      - "migrations/0018_tha_x_filez_initial_public_images.sql"
+      - "migrations/0022_tha_x_filez_dropbox_04.sql"
+      - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
+      - "migrations/0024_tha_x_filez_drive_completion.sql"
+      - "migrations/0025_archivez_social_public_meta.sql"
+      - "migrations/0026_house_media_admin_grants.sql"
+      - "migrations/0021_tha_x_filez_dropbox_03.sql"
+      - "migrations/0020_tha_x_filez_dropbox_02.sql"
+      - "migrations/0019_tha_x_filez_dropbox_01.sql"
+      - "tests/player-access.test.mjs"
+      - "tests/player-migrations.test.py"
+      - "tests/level-x-seed.test.py"
+      - "tests/preview-security-cleanup.test.mjs"
+      - "tests/level-x-client.test.mjs"
+      - "tests/crowd-player-select.test.mjs"
+      - "tests/player-personal-roster-api.test.mjs"
+      - "tests/player-personal-roster-migration.test.py"
+      - "tests/crown-member-admin.test.mjs"
+      - "tests/player-analytics.test.mjs"
+      - "tests/player-analytics-migration.test.py"
+      - "tests/player-event-context-migration.test.py"
+      - "tests/x-external-event-context-migration.test.py"
+      - "tests/x-reconciled-additions-migration.test.py"
+      - "tests/player-media-collections-migration.test.py"
+      - "tests/player-public-surface.test.mjs"
+      - "tests/archivez-client.test.mjs"
+      - "tests/archivez-social-migration.test.py"
+      - "tests/archivez-social-ui-api.test.mjs"
+      - "tests/house-media-admin-migration.test.py"
+      - "tests/tha-x-filez-initial-images-migration.test.py"
+      - "tests/tha-x-filez-dropbox-flood.test.py"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-001-PLAYER-ACCESS-LAW.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-002-PLAYER-ACCESS-RESOLVER.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-004-PLAYER-PREVIEW-PROMOTION.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-006-PLAYER-QUALIFIED-VIEWS.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-007-PLAYER-ENGAGEMENT-ANALYTICS.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-008-PLAYER-EVENT-CONTEXT.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-009-THA-X-FILEZ.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-010-DA-ARCHIVEZ.md"
+      - "SCRYPTUREZ/CROWN/SCRYPT-CROWN-011-PERSONAL-ROSTERS-CHEAT-CODES.md"
+      - "SCRYPTUREZ/INDEX.md"
+      - ".github/workflows/player-access-tests.yml"
+  pull_request:
+    paths:
+      - "lib/player-access.js"
+      - "lib/player-viewer-context.js"
+      - "lib/player-catalog-service.js"
+      - "lib/player-api.js"
+      - "lib/archivez-api.js"
+      - "lib/house-admin.js"
+      - "lib/player-analytics.js"
+      - "worker-entry.js"
+      - "worker.js"
+      - "public/crown/index.html"
+      - "public/crown/crowd/level-x/index.html"
+      - "public/crown/crowd/player/index.html"
+      - "public/crown/crowd/index.html"
+      - "public/crown/crowd/archivez/index.html"
+      - "public/crown/crowd/archivez/tha-x-filez/index.html"
+      - "public/crowd/x/index.html"
+      - "public/crown/crowd/level-x/analytics/index.html"
+      - "public/script.js"
+      - "tests/crown-invitation.test.mjs"
+      - "public/join/**"
+      - "public/verify/**"
+      - "wrangler.jsonc"
+      - "migrations/0027_crown_email_verification.sql"
+      - "tests/crown-email-verification.test.mjs"
+      - "tests/crown-verification-migration.test.py"
+      - "package.json"
+      - "migrations/0009_player_access_states.sql"
+      - "migrations/0010_player_access_grants.sql"
+      - "migrations/0011_player_engagement_analytics.sql"
+      - "migrations/0012_x_tha_god_crowd_owned_battles.sql"
+      - "migrations/0013_player_event_context.sql"
+      - "migrations/0015_x_tha_god_external_event_context.sql"
+      - "migrations/0014_x_tha_god_verified_external_reconciliation.sql"
+      - "migrations/0016_x_tha_god_reconciled_additions.sql"
+      - "migrations/0017_tha_x_filez_and_super_readers.sql"
+      - "migrations/0018_tha_x_filez_initial_public_images.sql"
+      - "migrations/0019_tha_x_filez_dropbox_01.sql"
+      - "migrations/0020_tha_x_filez_dropbox_02.sql"
+      - "migrations/0021_tha_x_filez_dropbox_03.sql"
+      - "migrations/0022_tha_x_filez_dropbox_04.sql"
+      - "migrations/0023_player_personal_rosters_and_cheat_codes.sql"
+      - "migrations/0024_tha_x_filez_drive_completion.sql"
+      - "migrations/0025_archivez_social_public_meta.sql"
+      - "migrations/0026_house_media_admin_grants.sql"
+      - "tests/player-access.test.mjs"
+      - "tests/player-migrations.test.py"
+      - "tests/level-x-seed.test.py"
+      - "tests/preview-security-cleanup.test.mjs"
+      - "tests/level-x-client.test.mjs"
+      - "tests/crowd-player-select.test.mjs"
+      - "tests/player-personal-roster-api.test.mjs"
+      - "tests/player-personal-roster-migration.test.py"
+      - "tests/crown-member-admin.test.mjs"
+      - "tests/player-analytics.test.mjs"
+      - "tests/player-analytics-migration.test.py"
+      - "tests/player-event-context-migration.test.py"
+      - "tests/x-external-event-context-migration.test.py"
+      - "tests/x-reconciled-additions-migration.test.py"
+      - "tests/player-media-collections-migration.test.py"
+      - "tests/player-public-surface.test.mjs"
+      - "tests/archivez-client.test.mjs"
+      - "tests/archivez-social-migration.test.py"
+      - "tests/archivez-social-ui-api.test.mjs"
+      - "tests/house-media-admin-migration.test.py"
+      - "tests/tha-x-filez-initial-images-migration.test.py"
+      - "tests/tha-x-filez-dropbox-flood.test.py"
+      - "SCRYPTUREZ/CROWN/**"
+      - ".github/workflows/player-access-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  player-access:
+    name: SCRYPT-CROWN-002 access gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check Player runtime syntax
+        run: npm run check:player-runtime
+
+      - name: Run Player access resolver tests
+        run: npm run test:player-access
+
+      - name: Validate Player access migrations
+        run: python tests/player-migrations.test.py
+
+      - name: Validate LEVEL X verified battle seed
+        run: npm run test:level-x-seed
+
+      - name: Validate LEVEL X client playback wiring
+        run: npm run test:level-x-client
+
+      - name: Validate CROWD Player artist-select formula
+        run: npm run test:crowd-player-select
+
+      - name: Validate personalized Player roster migration
+        run: npm run test:player-personal-roster-migration
+
+      - name: Validate personalized roster and Cheat Code API
+        run: npm run test:player-personal-roster-api
+
+      - name: Validate Crown member admin controls
+        run: npm run test:crown-member-admin
+
+      - name: Validate direct Crown invitation links
+        run: node --test tests/crown-invitation.test.mjs
+
+      - name: Validate verified-only Crown signup runtime
+        run: node --test tests/crown-email-verification.test.mjs
+
+      - name: Validate Crown email verification migration
+        run: python tests/crown-verification-migration.test.py
+
+      - name: Run Player analytics service tests
+        run: npm run test:player-analytics
+
+      - name: Validate Player analytics migration
+        run: npm run test:player-analytics-migration
+
+      - name: Validate Player event context migration
+        run: npm run test:player-event-context-migration
+
+      - name: Validate reconciled X external event context
+        run: npm run test:x-external-event-context-migration
+
+      - name: Validate X reconciled additions
+        run: npm run test:x-reconciled-additions-migration
+
+      - name: Validate Tha X Filez collection migration
+        run: npm run test:player-media-collections-migration
+
+      - name: Validate public Tha X Filez surface
+        run: npm run test:player-public-surface
+
+      - name: Validate Da Archivez architecture
+        run: npm run test:archivez-client
+
+      - name: Validate initial Tha X Filez image seed
+        run: npm run test:tha-x-filez-images-migration
+
+      - name: Validate Tha X Filez Dropbox flood
+        run: npm run test:tha-x-filez-dropbox-flood
+
+      - name: Validate Archivez social migration
+        run: npm run test:archivez-social-migration
+
+      - name: Validate Archivez social UI and APIs
+        run: npm run test:archivez-social-ui-api
+
+      - name: Validate House media-admin grants
+        run: npm run test:house-media-admin-migration
+
+      - name: Prevent retired Preview recovery regression
+        run: npm run test:preview-security

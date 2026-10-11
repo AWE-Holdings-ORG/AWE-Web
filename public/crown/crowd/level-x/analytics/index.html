@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>LEVEL X Analytics | Da CROWD Player</title>
+<style>
+:root{--g:#d8ac4e;--g2:#f1d783;--bg:#030302;--panel:#090806;--line:#2c2417;--muted:#82796b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0,#1c1409,#050403 35%,#000 80%);color:#f7f2e8;font-family:Inter,system-ui,sans-serif;min-height:100vh}.shell{width:min(1280px,94vw);margin:auto;padding:28px 0 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid var(--line);padding-bottom:16px}.top a{color:var(--g2);text-decoration:none;font:800 9px ui-monospace,monospace;letter-spacing:.14em}.sig{color:#746b5d;font:800 9px ui-monospace,monospace;letter-spacing:.16em}.hero{padding:55px 0 26px}.eyebrow{color:var(--g);font:900 10px ui-monospace,monospace;letter-spacing:.28em}.hero h1{font:500 clamp(42px,7vw,86px)/.95 Georgia,serif;margin:12px 0}.hero p{color:var(--muted);max-width:780px;line-height:1.7}.ranges{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}.ranges button{background:#090806;border:1px solid var(--line);color:#a79c8b;padding:9px 13px;font:800 9px ui-monospace,monospace;letter-spacing:.12em;cursor:pointer}.ranges button.active{background:var(--g);color:#070503;border-color:var(--g)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.card{background:var(--panel);border:1px solid var(--line);padding:18px;min-height:118px}.card b{display:block;color:#766e62;font:800 9px ui-monospace,monospace;letter-spacing:.14em}.card strong{display:block;font:500 34px Georgia,serif;color:var(--g2);margin-top:15px}.section{margin-top:14px;background:var(--panel);border:1px solid var(--line);padding:20px}.section h2{font:500 28px Georgia,serif;margin:0 0 16px}.funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.step{border:1px solid #201a11;padding:14px}.step b{font:800 9px ui-monospace,monospace;letter-spacing:.12em;color:#776f63}.step strong{display:block;font:500 26px Georgia,serif;margin-top:9px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:980px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid #1f1a12;font-size:12px}th{color:#7f7668;font:800 9px ui-monospace,monospace;letter-spacing:.1em}td.title{min-width:300px;color:#e9dfcd}.num{font-variant-numeric:tabular-nums}.muted{color:#756d60}.error{border:1px solid #5e2a2a;background:#170808;padding:16px;color:#e0aaaa}.loading{color:#8b8172;font:800 10px ui-monospace,monospace;letter-spacing:.14em}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.funnel{grid-template-columns:1fr 1fr}.sig{display:none}}@media(max-width:520px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top"><a href="/crown/crowd/level-x/">← LEVEL X</a><div class="sig">DA CROWD PLAYER // OPERATOR ANALYTICS</div></header>
+<section class="hero"><div class="eyebrow">LEVEL X // FIRST-PARTY ENGAGEMENT</div><h1>THE CROWD IS TALKING.</h1><p>Play starts show curiosity. CROWD VIEWS show meaningful battle consumption. Completion tells us what actually held attention.</p></section>
+<div class="ranges" id="ranges"><button data-days="7">7 DAYS</button><button data-days="30" class="active">30 DAYS</button><button data-days="90">90 DAYS</button><button data-days="365">365 DAYS</button></div>
+<div id="status" class="loading">READING THE SIGNAL…</div>
+<section id="dashboard" hidden>
+<div class="cards">
+<article class="card"><b>PLAY STARTS</b><strong id="playStarts">0</strong></article>
+<article class="card"><b>CROWD VIEWS</b><strong id="crowdViews">0</strong></article>
+<article class="card"><b>CROWD VIEW RATE</b><strong id="crowdViewRate">0%</strong></article>
+<article class="card"><b>ACTIVE WATCH HOURS</b><strong id="watchHours">0</strong></article>
+<article class="card"><b>AVG WATCH TIME</b><strong id="avgWatch">0:00</strong></article>
+<article class="card"><b>AVG COMPLETION</b><strong id="avgCompletion">0%</strong></article>
+<article class="card"><b>90%+ SESSIONS</b><strong id="nearComplete">0</strong></article>
+<article class="card"><b>100% SESSIONS</b><strong id="complete">0</strong></article>
+</div>
+<section class="section"><h2>Consumption Funnel</h2><div class="funnel">
+<div class="step"><b>25%</b><strong id="f25">0</strong></div>
+<div class="step"><b>50%</b><strong id="f50">0</strong></div>
+<div class="step"><b>75%</b><strong id="f75">0</strong></div>
+<div class="step"><b>90%</b><strong id="f90">0</strong></div>
+<div class="step"><b>100%</b><strong id="f100">0</strong></div>
+</div></section>
+<section class="section"><h2>Battle Performance</h2><div class="table-wrap"><table><thead><tr><th>BATTLE</th><th>STARTS</th><th>CROWD VIEWS</th><th>CV RATE</th><th>WATCH TIME</th><th>AVG WATCH</th><th>AVG COMPLETE</th><th>90%+</th></tr></thead><tbody id="mediaRows"></tbody></table></div></section>
+<section class="section"><h2>Daily Signal</h2><div class="table-wrap"><table><thead><tr><th>DAY</th><th>PLAY STARTS</th><th>CROWD VIEWS</th><th>ACTIVE WATCH</th></tr></thead><tbody id="dailyRows"></tbody></table></div></section>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function clock(seconds){
+  const s=Math.max(0,Math.round(Number(seconds)||0)),m=Math.floor(s/60);
+  return m+":"+String(s%60).padStart(2,"0");
+}
+function watchLabel(seconds){
+  const s=Number(seconds)||0;
+  return s>=3600?(s/3600).toFixed(2)+"h":clock(s);
+}
+async function load(days=30){
+  $("status").hidden=false;
+  $("status").className="loading";
+  $("status").textContent="READING THE SIGNAL…";
+  $("dashboard").hidden=true;
+  const r=await fetch("/api/crown/player/analytics?artist=x-tha-god&days="+days);
+  const d=await r.json().catch(()=>null);
+  if(!r.ok||!d?.ok){
+    $("status").className="error";
+    $("status").textContent=r.status===403?"ANALYTICS ACCESS REQUIRED.":(d?.message||"ANALYTICS TEMPORARILY UNAVAILABLE.");
+    return;
+  }
+  const f=d.funnel||{};
+  $("playStarts").textContent=f.playStarts??0;
+  $("crowdViews").textContent=f.crowdViews??0;
+  $("crowdViewRate").textContent=(f.crowdViewRate??0)+"%";
+  $("watchHours").textContent=f.activeWatchHours??0;
+  $("avgWatch").textContent=clock(f.averageWatchSeconds);
+  $("avgCompletion").textContent=(f.averageCompletionPct??0)+"%";
+  $("nearComplete").textContent=f.reached90??0;
+  $("complete").textContent=f.reached100??0;
+  $("f25").textContent=f.reached25??0;
+  $("f50").textContent=f.reached50??0;
+  $("f75").textContent=f.reached75??0;
+  $("f90").textContent=f.reached90??0;
+  $("f100").textContent=f.reached100??0;
+
+  $("mediaRows").innerHTML=(d.media||[]).map(row=>'<tr><td class="title">'+esc(row.title)+'</td><td class="num">'+row.playStarts+'</td><td class="num">'+row.crowdViews+'</td><td class="num">'+row.crowdViewRate+'%</td><td class="num">'+watchLabel(row.activeWatchSeconds)+'</td><td class="num">'+clock(row.averageWatchSeconds)+'</td><td class="num">'+row.averageCompletionPct+'%</td><td class="num">'+row.reached90+'</td></tr>').join("")||'<tr><td colspan="8" class="muted">NO SIGNALS IN THIS WINDOW.</td></tr>';
+
+  $("dailyRows").innerHTML=(d.daily||[]).slice().reverse().map(row=>'<tr><td>'+esc(row.day)+'</td><td class="num">'+row.playStarts+'</td><td class="num">'+row.crowdViews+'</td><td class="num">'+watchLabel(row.activeWatchSeconds)+'</td></tr>').join("")||'<tr><td colspan="4" class="muted">NO DAILY SIGNALS YET.</td></tr>';
+
+  $("status").hidden=true;
+  $("dashboard").hidden=false;
+}
+$("ranges").addEventListener("click",e=>{
+  const button=e.target.closest("button[data-days]");
+  if(!button)return;
+  document.querySelectorAll("#ranges button").forEach(x=>x.classList.toggle("active",x===button));
+  load(Number(button.dataset.days));
+});
+load();
+</script>
+</body>
+</html>

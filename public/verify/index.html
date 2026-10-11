@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>Verify Your Crown | AW Enterprises</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{display:grid;min-height:100vh;place-items:center;padding:20px;margin:0;background:radial-gradient(circle at top,#32250c 0%,#090807 50%,#020202 100%);color:#f4ebd4;font:16px/1.6 system-ui,sans-serif}
+main{width:min(520px,100%);text-align:center;border:1px solid #665027;border-radius:18px;background:#0b0908;padding:42px 25px}
+em{font:normal 48px Georgia,serif;color:#e5be63}h1{font:normal 40px Georgia,serif;color:#e5be63;margin:10px 0}
+button,.link{display:inline-block;padding:14px 23px;border:0;border-radius:8px;background:#d7ab55;color:#0b0904;text-decoration:none;font-weight:bold;cursor:pointer;margin:10px}
+button:disabled{opacity:.5}.muted{color:#ad9e85;font-size:13px}
+</style></head><body><main>
+<em aria-hidden="true">♛</em><h1>Verify Your Crown.</h1>
+<p id="status" role="status" aria-live="polite">Confirm your email to activate your Crown identity.</p>
+<button id="verify" type="button">VERIFY MY EMAIL</button>
+<p><a class="link" id="login" href="/?crown=login" hidden>ENTER THE CROWN NETWORK</a></p>
+<p class="muted">Verification links expire in 24 hours and can only be used once. If expired, request a fresh link from <a href="/join/" style="color:#e5be63">Crown signup</a>.</p>
+</main><script>
+(()=>{
+ const url=new URL(location.href);
+ const token=url.searchParams.get("token")||"";
+ history.replaceState(null,"","/verify/");
+ const btn=document.getElementById("verify"),msg=document.getElementById("status");
+ if(token.length<30){btn.disabled=true;msg.textContent="NO VALID VERIFICATION CODE FOUND.";return;}
+ btn.addEventListener("click",async()=>{
+  btn.disabled=true;msg.textContent="VERIFYING EMAIL OWNERSHIP…";
+  try{
+   const response=await fetch("/api/crown/verify-email",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token})});
+   const data=await response.json();
+   if(!response.ok||!data.ok)throw Error(data.message||"Verification failed");
+   msg.textContent="EMAIL VERIFIED. YOUR CROWN IDENTITY IS ACTIVE. Welcome!";
+   btn.hidden=true;document.getElementById("login").hidden=false;
+  }catch(error){msg.textContent=error.message||"COULD NOT VERIFY EMAIL.";btn.hidden=true;}
+ });
+})();
+</script></body></html>
