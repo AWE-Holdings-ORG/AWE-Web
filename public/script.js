@@ -196,3 +196,16 @@ crownEnrollForm?.addEventListener('submit',e=>{
     .catch(err=>showTerminalMessage(err.message||'ENROLLMENT COULD NOT BE COMPLETED.',true))
     .finally(()=>{submit.disabled=false;});
 });
+
+
+// Direct, intentionally shareable Crown invitations. These bypass the hidden
+// AW discovery gesture only; all enrollment and login checks remain server-side.
+// Example: /?crown=signup&ref=x-tha-god
+// Existing members (including X) may use /?crown=login instead.
+(function openCrownInvitation(){
+  const intent=new URLSearchParams(window.location.search).get('crown');
+  if(!['signup','login'].includes(intent)||!crownDoor||!crownTerminal)return;
+  openCrownDoor();
+  enterTerminal();
+  if(intent==='signup')crownEnroll?.click();
+})();
